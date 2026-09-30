@@ -1,0 +1,19 @@
+{
+  "name": "pace-bot",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Local controller for Paradigm's PACE game",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test test/",
+    "build": "node tools/build.mjs",
+    "engine": "node engine/extract.mjs",
+    "eval:repro": "node sim/evaluate.mjs",
+    "eval:final": "node sim/final.mjs 1000",
+    "eval:online": "node sim/online.mjs",
+    "eval:refine": "node sim/refine.mjs",
+    "search": "node sim/search.mjs",
+    "live": "node tools/build.mjs && node tools/live-practice.mjs --test-controls --games 1"
+  }
+}

@@ -1,0 +1,6 @@
+pace-bot-handoff
+node_modules/
+# Paradigm's bundle and the extracted engine are fetched locally by `npm run engine`, not redistributed.
+vendor/
+engine/engine-original.cjs
+runs/*.trace.json

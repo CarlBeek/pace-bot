@@ -1,0 +1,81 @@
+{
+  "startedAt": "2026-09-30T21:06:47.704Z",
+  "chrome": "separate throwaway profile",
+  "url": "https://www.paradigm.xyz/research/pace/",
+  "objective": "cash",
+  "controls": {
+    "afterPressImmediate": true,
+    "afterPress": {
+      "t": 0.7833333333333341,
+      "held": true,
+      "speed": 0.2635231424696538,
+      "ui": true
+    },
+    "afterRelease": {
+      "t": 1.4,
+      "held": false,
+      "speed": 0.1236238901032434,
+      "ui": false
+    },
+    "armedHolding": {
+      "t": 1.733333333333332,
+      "held": true,
+      "speed": 0.27894402014640507,
+      "ui": true
+    },
+    "afterStop": {
+      "t": 2.0499999999999976,
+      "held": false,
+      "speed": 0.0769172909224225,
+      "ui": false
+    },
+    "statusAfterStop": "control test stop",
+    "pass": true
+  },
+  "games": [
+    {
+      "phase": "finished",
+      "t": 91.99999999999606,
+      "cash": 16917847795.841782,
+      "oppCash": 17755198981.050667,
+      "hazard": 0.0000019744785162638087,
+      "end": {
+        "k": "end",
+        "now": 93545.79999999888,
+        "phase": "finished",
+        "cash": 16917847795.841782,
+        "oppCash": 17755198981.050667,
+        "hazard": 0.0000019744785162638087
+      }
+    }
+  ],
+  "latency": {
+    "snapshotIntervalMs": {
+      "n": 1152,
+      "median": 80,
+      "p95": 82.10000000149012,
+      "p99": 82.80000000074506,
+      "max": 93.69999999925494
+    },
+    "inputAckMs": {
+      "n": 288,
+      "median": 80.19999999925494,
+      "p95": 82.30000000074506,
+      "p99": 83.09999999962747,
+      "max": 83.40000000037253
+    },
+    "inputAckGameSec": {
+      "n": 288,
+      "median": 0.0833333333333286,
+      "p95": 0.0833333333333286,
+      "p99": 0.0833333333333357,
+      "max": 0.08333333333333748
+    },
+    "stale": 0,
+    "duplicates": 0,
+    "outOfOrder": 0,
+    "missedIntervals": 0,
+    "rejected": 0
+  },
+  "finalStatus": "match limit 1 reached"
+}

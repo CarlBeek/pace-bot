@@ -1,0 +1,33 @@
+
+## measured (5f, headless)  (N=1000 fresh seeds)
+policy                      E[cash] $B   ±95%    survival   P(win)   own/opp raw
+cash (compensated)           18.1824  ±0.042   0.99996   0.0000   18.18/19.08
+cash (lookahead+horizon2)    18.0612  ±0.040   0.99999   0.0000   18.06/19.12
+frontier -0.1                17.4575  ±0.051   0.99919   0.0000   17.47/19.13
+win (compensated)            17.4296  ±0.049   0.97179   0.9689   17.93/13.52
+repro-cash (handoff)         17.1476  ±0.049   0.98784   0.6429   17.36/16.98
+cash (no lookahead)          17.1245  ±0.041   0.99042   0.0000   17.29/18.91
+repro-win (handoff)          17.1096  ±0.055   0.96602   0.9573   17.71/13.18
+cpu mirror                   15.3472  ±0.120   0.90094   0.4085   16.99/17.05
+
+## 4f (60Hz timers)  (N=1000 fresh seeds)
+policy                      E[cash] $B   ±95%    survival   P(win)   own/opp raw
+cash (compensated)           18.2812  ±0.043   0.99990   0.0000   18.28/19.03
+cash (lookahead+horizon2)    18.2148  ±0.041   0.99998   0.0000   18.22/19.07
+frontier -0.1                17.5808  ±0.049   0.99942   0.0000   17.59/19.12
+win (compensated)            17.4257  ±0.049   0.96959   0.9657   17.97/13.26
+repro-cash (handoff)         17.1635  ±0.048   0.98807   0.6508   17.37/16.98
+repro-win (handoff)          17.1229  ±0.054   0.96625   0.9604   17.72/13.18
+cash (no lookahead)          17.1202  ±0.041   0.99056   0.0000   17.28/18.91
+cpu mirror                   15.4515  ±0.124   0.90482   0.4249   17.02/17.08
+
+## degraded  (N=1000 fresh seeds)
+policy                      E[cash] $B   ±95%    survival   P(win)   own/opp raw
+cash (lookahead+horizon2)    17.8624  ±0.042   0.99912   0.0000   17.88/19.15
+cash (compensated)           17.8263  ±0.045   0.99752   0.0000   17.87/19.14
+win (compensated)            17.2102  ±0.052   0.96633   0.9615   17.81/13.59
+cash (no lookahead)          16.9585  ±0.045   0.98943   0.0000   17.14/18.89
+repro-cash (handoff)         16.7516  ±0.054   0.97620   0.5280   17.16/17.02
+repro-win (handoff)          16.6397  ±0.062   0.95190   0.9388   17.48/13.25
+frontier -0.1                16.5865  ±0.057   0.98955   0.0000   16.76/19.28
+cpu mirror                   14.8393  ±0.125   0.88216   0.3766   16.76/16.84

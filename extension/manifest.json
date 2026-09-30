@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "PACE bot (local)",
+  "version": "0.3.0",
+  "description": "Local, inspectable controller for PACE. Disarmed on load.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.paradigm.xyz/research/pace*"],
+      "js": ["pace-bot.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ]
+}

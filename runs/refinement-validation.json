@@ -1,0 +1,729 @@
+{
+  "generatedAt": "2026-09-30T23:07:58.393Z",
+  "seedStart": 7000,
+  "seedsPerOpponent": 40,
+  "candidates": {
+    "v02": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1.5,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "motionModel": "issued"
+      }
+    },
+    "capped": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "motionModel": "issued",
+        "opponentModel": "anchored",
+        "maxTargetGap": 2
+      }
+    },
+    "cappedPending": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "motionModel": "pending",
+        "opponentModel": "anchored",
+        "maxTargetGap": 2
+      }
+    }
+  },
+  "caveat": "Equal-weight simulated opponent mix; does not establish live performance or leaderboard placement.",
+  "scenarios": [
+    {
+      "scenario": "normal",
+      "timing": {
+        "obsDelay": 3,
+        "inputDelay": 4
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 14.816659058185355,
+          "cashSE": 0.2698313124463785,
+          "cash": 17.73702579801829,
+          "opponentCash": 10.750089517367037,
+          "win": 0.8331336468396119,
+          "survival": 0.8331336468396119
+        },
+        {
+          "opponent": "cpu",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 15.059116327172521,
+          "cashSE": 0.2379233133900721,
+          "cash": 17.58183117037324,
+          "opponentCash": 10.847630237871394,
+          "win": 0.854644804462307,
+          "survival": 0.854644804462307
+        },
+        {
+          "opponent": "cpu",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 15.111370679718048,
+          "cashSE": 0.23876094769436013,
+          "cash": 17.573457051386463,
+          "opponentCash": 10.812495032631038,
+          "win": 0.8580018771382207,
+          "survival": 0.8580018771382207
+        },
+        {
+          "opponent": "cautious",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.593989466465743,
+          "cashSE": 0.11294828449577153,
+          "cash": 20.568454066049448,
+          "opponentCash": 9.02946732121355,
+          "win": 0.9528206253304179,
+          "survival": 0.9528206253304179
+        },
+        {
+          "opponent": "cautious",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 19.745838979745766,
+          "cashSE": 0.10861590102857417,
+          "cash": 20.258466015382876,
+          "opponentCash": 11.950181243692999,
+          "win": 0.974734713220791,
+          "survival": 0.974734713220791
+        },
+        {
+          "opponent": "cautious",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 19.757561823082373,
+          "cashSE": 0.10819225170493428,
+          "cash": 20.249355131127405,
+          "opponentCash": 12.034377068759825,
+          "win": 0.9757576904236892,
+          "survival": 0.9757576904236892
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.19016158858799,
+          "cashSE": 0.10918754947867007,
+          "cash": 20.226176497123102,
+          "opponentCash": 12.737500618011737,
+          "win": 0.9489318044106305,
+          "survival": 0.9489318044106305
+        },
+        {
+          "opponent": "oldWin",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 19.332997944111153,
+          "cashSE": 0.09796706545992004,
+          "cash": 19.93868760185299,
+          "opponentCash": 14.752887917164799,
+          "win": 0.9696872533557526,
+          "survival": 0.9696872533557526
+        },
+        {
+          "opponent": "oldWin",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 19.35792087960053,
+          "cashSE": 0.09763245387166007,
+          "cash": 19.928798520257516,
+          "opponentCash": 14.845939568689808,
+          "win": 0.971418257087884,
+          "survival": 0.971418257087884
+        },
+        {
+          "opponent": "frontier",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 16.35251561527,
+          "cashSE": 0.10936352792810954,
+          "cash": 18.788810576335166,
+          "opponentCash": 18.495168228995077,
+          "win": 0.7851954424761256,
+          "survival": 0.8704317299330956
+        },
+        {
+          "opponent": "frontier",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 16.1096073528688,
+          "cashSE": 0.10036790157563442,
+          "cash": 18.75930956116831,
+          "opponentCash": 17.633907415985853,
+          "win": 0.8145418132874285,
+          "survival": 0.8588624798138909
+        },
+        {
+          "opponent": "frontier",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 16.12411338465723,
+          "cashSE": 0.10218222425533871,
+          "cash": 18.743927862838248,
+          "opponentCash": 17.670317539401438,
+          "win": 0.815942280752348,
+          "survival": 0.8603193153812075
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 11.117739501639596,
+          "cashSE": 0.1060066490598455,
+          "cash": 17.705844961059608,
+          "opponentCash": 19.04145775663504,
+          "win": 0,
+          "survival": 0.6278868791812163
+        },
+        {
+          "opponent": "aggressive",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 10.917291990210245,
+          "cashSE": 0.11232042822306898,
+          "cash": 16.260886434603176,
+          "opponentCash": 20.053594306187204,
+          "win": 0,
+          "survival": 0.6710869971274612
+        },
+        {
+          "opponent": "aggressive",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 10.895635120912997,
+          "cashSE": 0.11164162474102901,
+          "cash": 16.235384787554917,
+          "opponentCash": 20.053290558132844,
+          "win": 0,
+          "survival": 0.6708215451282621
+        },
+        {
+          "opponent": "chaser",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 9.766087116999328,
+          "cashSE": 0.35040069573254684,
+          "cash": 16.38799734004209,
+          "opponentCash": 16.8340196693857,
+          "win": 0.15275175386051612,
+          "survival": 0.5910908920971258
+        },
+        {
+          "opponent": "chaser",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 10.624622142351962,
+          "cashSE": 0.22787953915853568,
+          "cash": 15.999792878769128,
+          "opponentCash": 17.47703056392305,
+          "win": 0.037293545935582505,
+          "survival": 0.6613792540191323
+        },
+        {
+          "opponent": "chaser",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 10.607806605704816,
+          "cashSE": 0.2271004966625991,
+          "cash": 15.982697341240414,
+          "opponentCash": 17.510500992954803,
+          "win": 0.036980446495222696,
+          "survival": 0.660991807599325
+        },
+        {
+          "opponent": "gentle",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.820758235713253,
+          "cashSE": 0.11447864924446044,
+          "cash": 20.783593095488484,
+          "opponentCash": 6.781202746692914,
+          "win": 0.9538406932256933,
+          "survival": 0.9538406932256933
+        },
+        {
+          "opponent": "gentle",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 20.010681331492375,
+          "cashSE": 0.10421169988474537,
+          "cash": 20.483395450999897,
+          "opponentCash": 9.986220933268328,
+          "win": 0.9769778501461566,
+          "survival": 0.9769778501461566
+        },
+        {
+          "opponent": "gentle",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 20.016420327847943,
+          "cashSE": 0.10330166256680413,
+          "cash": 20.474365952194052,
+          "opponentCash": 10.063963344054782,
+          "win": 0.977690369684877,
+          "survival": 0.977690369684877
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 12.019954634735841,
+          "cashSE": 0.09462912164709716,
+          "cash": 16.270719034206437,
+          "opponentCash": 16.634654247806846,
+          "win": 0.19875760848896368,
+          "survival": 0.7388580549625778
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 12.22475983970255,
+          "cashSE": 0.1107700507261821,
+          "cash": 16.043871738259675,
+          "opponentCash": 17.647742048109137,
+          "win": 0.03828609532867775,
+          "survival": 0.7617951507713023
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 12.188709409829707,
+          "cashSE": 0.11283570679577083,
+          "cash": 16.008512146164996,
+          "opponentCash": 17.660580062298894,
+          "win": 0.0383598396003116,
+          "survival": 0.7612000565032226
+        }
+      ],
+      "overall": {
+        "v02": {
+          "n": 320,
+          "expectedCash": 15.334733152199627,
+          "cashSE": 0.22082584007090592,
+          "cash": 18.558577671040325,
+          "opponentCash": 13.787945013263498,
+          "win": 0.6031789468289953,
+          "survival": 0.8146242907475457
+        },
+        "capped": {
+          "n": 320,
+          "expectedCash": 15.50311448845692,
+          "cashSE": 0.2130131294754145,
+          "cash": 18.16578010642617,
+          "opponentCash": 15.043649333275342,
+          "win": 0.583270759467087,
+          "survival": 0.8411460628645996
+        },
+        "cappedPending": {
+          "n": 320,
+          "expectedCash": 15.507442278919195,
+          "cashSE": 0.21386694026983777,
+          "cash": 18.149562349095486,
+          "opponentCash": 15.081433020865417,
+          "win": 0.5842688451478193,
+          "survival": 0.8420251148683358
+        }
+      },
+      "differences": {
+        "capped": {
+          "meanBillions": 0.16838133625728074,
+          "lower95": 0.08789603911109492,
+          "upper95": 0.24886663340346657
+        },
+        "cappedPending": {
+          "meanBillions": 0.17270912671956645,
+          "lower95": 0.08876809936046959,
+          "upper95": 0.2566501540786633
+        }
+      }
+    },
+    {
+      "scenario": "delayed",
+      "timing": {
+        "obsDelay": 6,
+        "inputDelay": 8,
+        "drop": 0.05
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 13.491788497363041,
+          "cashSE": 0.30105510685319536,
+          "cash": 17.288511382639005,
+          "opponentCash": 10.50974926189539,
+          "win": 0.7777236936125347,
+          "survival": 0.7777236936125347
+        },
+        {
+          "opponent": "cpu",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 14.264990745466394,
+          "cashSE": 0.26368970010081844,
+          "cash": 17.40522851052943,
+          "opponentCash": 10.755601830786205,
+          "win": 0.8171638865003832,
+          "survival": 0.8171638865003832
+        },
+        {
+          "opponent": "cpu",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 14.369738923088166,
+          "cashSE": 0.27999933378251574,
+          "cash": 17.41760404718714,
+          "opponentCash": 10.72449814054048,
+          "win": 0.8223541174033558,
+          "survival": 0.8223541174033558
+        },
+        {
+          "opponent": "cautious",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.104885534145993,
+          "cashSE": 0.1482455080800508,
+          "cash": 20.606819073672526,
+          "opponentCash": 8.375596791849103,
+          "win": 0.9273783068946766,
+          "survival": 0.9273783068946766
+        },
+        {
+          "opponent": "cautious",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 19.492255275696767,
+          "cashSE": 0.11177880229187606,
+          "cash": 20.335023043322476,
+          "opponentCash": 11.002089378985383,
+          "win": 0.9586074619079266,
+          "survival": 0.9586074619079266
+        },
+        {
+          "opponent": "cautious",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 19.53540861375502,
+          "cashSE": 0.11188543343425583,
+          "cash": 20.29807281039077,
+          "opponentCash": 11.27530997042777,
+          "win": 0.9624763858409919,
+          "survival": 0.9624763858409919
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 18.753217818869963,
+          "cashSE": 0.12528975052801117,
+          "cash": 20.283318799501863,
+          "opponentCash": 11.828824061325001,
+          "win": 0.9248066354300958,
+          "survival": 0.9248066354300958
+        },
+        {
+          "opponent": "oldWin",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 19.01184555314164,
+          "cashSE": 0.10417361729407065,
+          "cash": 20.020271071053052,
+          "opponentCash": 13.682213080298666,
+          "win": 0.9497699405638057,
+          "survival": 0.9497699405638057
+        },
+        {
+          "opponent": "oldWin",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 19.064431896116112,
+          "cashSE": 0.11836563790983912,
+          "cash": 19.994446893701387,
+          "opponentCash": 13.965260271239309,
+          "win": 0.9534692180160509,
+          "survival": 0.9534692180160509
+        },
+        {
+          "opponent": "frontier",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 15.581779539524822,
+          "cashSE": 0.1399309092110912,
+          "cash": 18.64571123288205,
+          "opponentCash": 17.84259341052476,
+          "win": 0.8355310435751168,
+          "survival": 0.8355310435751168
+        },
+        {
+          "opponent": "frontier",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 15.69664798541748,
+          "cashSE": 0.1078802047819314,
+          "cash": 18.871646519642276,
+          "opponentCash": 17.039074833472448,
+          "win": 0.8319290000035929,
+          "survival": 0.8319290000035929
+        },
+        {
+          "opponent": "frontier",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 15.714815544305429,
+          "cashSE": 0.11860350532542425,
+          "cash": 18.803452744171743,
+          "opponentCash": 17.17667780095022,
+          "win": 0.7926383517430539,
+          "survival": 0.8357528718859065
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 10.359410146110163,
+          "cashSE": 0.12483232027647914,
+          "cash": 17.596118048986597,
+          "opponentCash": 18.387929644561645,
+          "win": 0.03759971499161322,
+          "survival": 0.5887995373140651
+        },
+        {
+          "opponent": "aggressive",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 10.972740641266252,
+          "cashSE": 0.10530806619833526,
+          "cash": 16.703497845849803,
+          "opponentCash": 19.856117836563076,
+          "win": 0,
+          "survival": 0.6568390210134236
+        },
+        {
+          "opponent": "aggressive",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 10.990743985524846,
+          "cashSE": 0.10450663277886213,
+          "cash": 16.642979529688898,
+          "opponentCash": 19.899263894954586,
+          "win": 0,
+          "survival": 0.6603261067394304
+        },
+        {
+          "opponent": "chaser",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 8.465218514597776,
+          "cashSE": 0.38648559698146595,
+          "cash": 16.046919827271633,
+          "opponentCash": 16.093354204783683,
+          "win": 0.3131138806883488,
+          "survival": 0.5215180755475284
+        },
+        {
+          "opponent": "chaser",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 9.947881504874664,
+          "cashSE": 0.24068520180449932,
+          "cash": 15.803966355119115,
+          "opponentCash": 17.099895730322704,
+          "win": 0.0715996321002329,
+          "survival": 0.6263783608501245
+        },
+        {
+          "opponent": "chaser",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 10.008454924225582,
+          "cashSE": 0.22755314630315826,
+          "cash": 15.80854536942507,
+          "opponentCash": 17.070204594603048,
+          "win": 0.0709464880433194,
+          "survival": 0.6302641546698082
+        },
+        {
+          "opponent": "gentle",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.323134352653256,
+          "cashSE": 0.1562642107056874,
+          "cash": 20.81716002047436,
+          "opponentCash": 6.3655676349546315,
+          "win": 0.9283299161668985,
+          "survival": 0.9283299161668985
+        },
+        {
+          "opponent": "gentle",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 19.729416299728378,
+          "cashSE": 0.11552931996938301,
+          "cash": 20.53285615987457,
+          "opponentCash": 9.195258377972761,
+          "win": 0.9609156632425805,
+          "survival": 0.9609156632425805
+        },
+        {
+          "opponent": "gentle",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 19.756601445313834,
+          "cashSE": 0.11189956147795936,
+          "cash": 20.499515839058066,
+          "opponentCash": 9.365468314451913,
+          "win": 0.9638358684941426,
+          "survival": 0.9638358684941426
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 11.732574538917428,
+          "cashSE": 0.10606456957952115,
+          "cash": 16.48631468174283,
+          "opponentCash": 16.208688284834064,
+          "win": 0.4210658018525925,
+          "survival": 0.7118415496077322
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "capped",
+          "n": 40,
+          "expectedCash": 12.357090131359703,
+          "cashSE": 0.09377952807754934,
+          "cash": 16.49473298038782,
+          "opponentCash": 17.375330043210326,
+          "win": 0.11072919736188572,
+          "survival": 0.7494039649942892
+        },
+        {
+          "opponent": "lateEscalation",
+          "name": "cappedPending",
+          "n": 40,
+          "expectedCash": 12.261070217474003,
+          "cashSE": 0.09670847275273248,
+          "cash": 16.362151343931853,
+          "opponentCash": 17.41589303360426,
+          "win": 0.11200237107295843,
+          "survival": 0.749442624722654
+        }
+      ],
+      "overall": {
+        "v02": {
+          "n": 320,
+          "expectedCash": 14.6015011177728,
+          "cashSE": 0.23370650596450904,
+          "cash": 18.47135913339635,
+          "opponentCash": 13.20153791184103,
+          "win": 0.6456936241514845,
+          "survival": 0.7769910947685806
+        },
+        "capped": {
+          "n": 320,
+          "expectedCash": 15.184108517118911,
+          "cashSE": 0.2128231318363255,
+          "cash": 18.270902810722315,
+          "opponentCash": 14.50069763895144,
+          "win": 0.5875893477100511,
+          "survival": 0.8188759123845163
+        },
+        "cappedPending": {
+          "n": 320,
+          "expectedCash": 15.212658193725373,
+          "cashSE": 0.21368734646504542,
+          "cash": 18.22834607219437,
+          "opponentCash": 14.611572002596441,
+          "win": 0.5847153500767338,
+          "survival": 0.8222401684715424
+        }
+      },
+      "differences": {
+        "capped": {
+          "meanBillions": 0.582607399346107,
+          "lower95": 0.4709650597245415,
+          "upper95": 0.6942497389676724
+        },
+        "cappedPending": {
+          "meanBillions": 0.6111570759525702,
+          "lower95": 0.5000098519499784,
+          "upper95": 0.722304299955162
+        }
+      }
+    }
+  ],
+  "replays": [
+    {
+      "match": 1,
+      "name": "v02",
+      "cash": 18848290127.243065,
+      "oppCash": 12214434120.774559,
+      "survival": 0.9430408786832469,
+      "expectedCash": 17774708083.272068,
+      "win": 0.9430408786832469
+    },
+    {
+      "match": 1,
+      "name": "capped",
+      "cash": 18934394978.352665,
+      "oppCash": 10864142811.664284,
+      "survival": 0.9270600001488744,
+      "expectedCash": 17553320211.450466,
+      "win": 0.9270600001488744
+    },
+    {
+      "match": 1,
+      "name": "cappedPending",
+      "cash": 18857097569.38518,
+      "oppCash": 11046479222.16171,
+      "survival": 0.9319575290239066,
+      "expectedCash": 17574014055.326927,
+      "win": 0.9319575290239066
+    },
+    {
+      "match": 2,
+      "name": "v02",
+      "cash": 17671110926.25425,
+      "oppCash": 14704190526.110176,
+      "survival": 0.9456535713379978,
+      "expectedCash": 16710749156.922245,
+      "win": 0.9456535713379978
+    },
+    {
+      "match": 2,
+      "name": "capped",
+      "cash": 18185587755.62845,
+      "oppCash": 13801331224.95903,
+      "survival": 0.9273693941505267,
+      "expectedCash": 16864757499.20839,
+      "win": 0.9273693941505267
+    },
+    {
+      "match": 2,
+      "name": "cappedPending",
+      "cash": 18183575636.47681,
+      "oppCash": 13770339896.061373,
+      "survival": 0.9272901430561176,
+      "expectedCash": 16861450453.220316,
+      "win": 0.9272901430561176
+    }
+  ]
+}
