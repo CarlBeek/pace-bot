@@ -62,14 +62,51 @@ test('match change resets history and command state', () => {
   assert.equal(a.match, 'practice:2');
 });
 
-test('stale state, hidden page and user stop all release and disarm', () => {
-  for (const f of [a => a.tick(1000, {}), a => a.tick(10, { hidden: true }), a => a.disarm(10)]) {
+test('hidden page and user stop release and disarm permanently', () => {
+  for (const f of [a => a.tick(10, { hidden: true }), a => a.disarm(10)]) {
     const a = new Agent(); a.arm(0);
     assert.equal(a.onSnapshot(snap({ t: 1 }), 0).held, true);
     const cmd = f(a);
     assert.equal(cmd.held, false);
     assert.equal(a.armed, false);
+    assert.equal(a.onSnapshot(snap({ t: 1.1 }), 80), null);
+    assert.equal(a.onSnapshot(snap({ t: 1.2 }), 160), null);
   }
+});
+
+test('a stale snapshot pauses and releases once, then resumes after two advancing snapshots', () => {
+  const a = new Agent({ staleMs: 250 }); a.arm(0);
+  a.onSnapshot(snap({ t: 1 }), 0);
+  assert.equal(a.tick(300).held, false);
+  assert.equal(a.armed, true);
+  assert.equal(a.paused, true);
+  assert.equal(a.tick(350), null);
+  assert.equal(a.stats.stale, 1);
+  assert.equal(a.onSnapshot(snap({ t: 1 }), 360), null); // Duplicate cannot resume.
+  assert.equal(a.onSnapshot(snap({ t: 1.1 }), 400), null);
+  assert.equal(a.tick(420, { uiHeld: true }), null); // No stale re-press/resync.
+  assert.equal(a.paused, true);
+  assert.equal(a.onSnapshot(snap({ t: 1.2 }), 480)?.held, true);
+  assert.equal(a.paused, false);
+  assert.equal(a.trace.filter(e => e.k === 'resume').length, 1);
+});
+
+test('isolated snapshots separated by another stall do not resume input', () => {
+  const a = new Agent({ staleMs: 250 }); a.arm(0);
+  a.onSnapshot(snap({ t: 1 }), 0);
+  a.tick(300);
+  a.onSnapshot(snap({ t: 1.1 }), 400);
+  assert.equal(a.onSnapshot(snap({ t: 1.2 }), 800), null);
+  assert.equal(a.paused, true);
+  assert.equal(a.onSnapshot(snap({ t: 1.3 }), 880)?.held, true);
+});
+
+test('Stop during a stale pause cannot auto-resume', () => {
+  const a = new Agent({ staleMs: 250 }); a.arm(0);
+  a.onSnapshot(snap({ t: 1 }), 0); a.tick(300); a.disarm(350);
+  assert.equal(a.onSnapshot(snap({ t: 1.1 }), 400), null);
+  assert.equal(a.onSnapshot(snap({ t: 1.2 }), 480), null);
+  assert.equal(a.armed, false);
 });
 
 test('online and ranked snapshots are handled like any other game', () => {
@@ -140,4 +177,50 @@ test('run cash average includes zero-score crashes, honors terminal scores, and 
   forfeit.game.scores = [10e9, 0];
   a.onSnapshot(forfeit, 500);
   assert.deepEqual(a.performance(), { games: 3, averageCash: 20e9 / 3, wins: 1, crashes: 1 });
+});
+
+test('participated games finishing while disarmed still count toward the limit and average', () => {
+  const a = new Agent({ matchLimit: 1 }); a.arm(0);
+  a.onSnapshot(snap({ t: 1 }), 0);
+  a.disarm(50);
+  a.onSnapshot(snap({ t: 92, phase: 'finished' }), 100);
+  assert.equal(a.completed, 1);
+  assert.equal(a.performance().games, 1);
+  assert.equal(a.arm(150), false);
+});
+
+test('a terminal snapshot during a pause counts, but merely observed games do not', () => {
+  const a = new Agent({ matchLimit: 2, staleMs: 250 });
+  a.onSnapshot(snap({ t: 92, phase: 'finished' }), 0);
+  assert.equal(a.completed, 0);
+  a.arm(100);
+  a.onSnapshot(snap({ t: 1, match: 2 }), 200);
+  a.tick(500);
+  a.onSnapshot(snap({ t: 2, match: 2, phase: 'crashed' }), 600);
+  assert.equal(a.completed, 1);
+  assert.equal(a.paused, false);
+  assert.equal(a.armed, true);
+  assert.equal(a.onSnapshot(snap({ t: .1, match: 3 }), 700)?.held, true);
+});
+
+test('a same-time terminal transition counts exactly once', () => {
+  const a = new Agent(); a.arm(0);
+  a.onSnapshot(snap({ t: 10 }), 0);
+  a.onSnapshot(snap({ t: 10, phase: 'finished' }), 100);
+  a.onSnapshot(snap({ t: 10, phase: 'finished' }), 200);
+  assert.equal(a.completed, 1);
+  assert.equal(a.armed, false);
+});
+
+test('match limits are whole numbers from 1 to 50 and lowering to the completed count stops', () => {
+  const a = new Agent({ matchLimit: 3 }); a.arm(0);
+  a.onSnapshot(snap({ t: 1 }), 0);
+  a.onSnapshot(snap({ t: 92, phase: 'finished' }), 100);
+  a.setMatchLimit(1, 200);
+  assert.equal(a.armed, false);
+  assert.equal(a.arm(300), false);
+  for (const [n, expected] of [[NaN, 1], [0, 1], [Infinity, 50], [2.7, 2], ['5', 5], [999, 50]]) {
+    a.setMatchLimit(n, 400);
+    assert.equal(a.matchLimit, expected);
+  }
 });

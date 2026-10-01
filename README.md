@@ -6,21 +6,24 @@ A local, inspectable controller for [Paradigm's PACE](https://www.paradigm.xyz/r
 
 1. `npm run build` (writes `extension/pace-bot.js` from `src/`; a built copy is already there).
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `extension/` folder.
-3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.3** panel appears at the bottom right, **disarmed**.
+3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.3.1** panel appears at the bottom right, **disarmed**.
 
-After updating the code, reload the extension at `chrome://extensions` and refresh the game tab. The v0.3 label confirms the new build is loaded.
+After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.3.1 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab.
 
 The extension has no permissions. It only runs on `paradigm.xyz/research/pace*`, as one main-world content script. It never reads cookies, tokens, or network traffic, and your existing login session is left alone.
 
 ## Use
 
 1. Use **Leaderboard** (`leaderboard`, the default) for average final cash with competitive pressure when behind. **Win-focused** (`competitive`) puts more weight on beating the opponent and accepts more risk. **Cash (legacy CPU)** and **Win (legacy CPU)** are the old practice-tuned presets, not the new online policies. `repro-cash` and `repro-win` remain available for reproduction.
-2. Set the match limit (default 1) and click **Start**. Then start or join a game on the page. The bot never starts or re-queues games itself.
-3. **STOP**, or pressing **Esc**, releases the accelerator and disarms. The bot also disarms and releases on its own if state goes stale, a snapshot is malformed, the page is hidden, or the match limit is reached.
+2. Set the match limit (1–50, default 1) and click **Start**. Start or join the first game on the page. After each game, including a catastrophe, the bot stays armed and clicks the game's **Play again** button after a one-second delay if the limit has not been reached. This uses the site's normal matchmaking/rematch flow and waits when its button is disabled or unavailable. It requests each next game only once. In a private room, the opponent must also ready up.
+3. **STOP**, or pressing **Esc**, releases the accelerator, disarms, and cancels any next-game click that has not happened yet. If a matchmaking request is already pending, use the site's Cancel control to leave that queue. The bot also disarms if a snapshot is malformed, the page is hidden, or the match limit is reached. Keep the game tab visible. A stale snapshot now **pauses** and releases input without disarming; two advancing snapshots arriving without another stale interval restore play automatically. Stop and other disarms never auto-resume.
 4. **Export trace** downloads a JSON log with every observation, decision, input and acknowledgment, plus latency percentiles.
-5. **run cash / game** shows mean terminal score for games completed while the bot was armed in this page session, including zero-score crashes and forfeits. It includes practice games and resets on page reload; it is not your account's all-time ranked average. The export includes those results for analysis.
+5. **run cash / game** shows mean terminal score for games the bot participated in during this page session, including zero-score crashes and forfeits. A game still counts if it finishes after a pause or Stop, provided the terminal snapshot arrives. It includes practice games and resets on page reload; it is not your account's all-time ranked average. The export includes those results for analysis.
+6. The limit is the total completed-game count for this page session, not an additional-game count. To continue after reaching it, raise the limit and click **Start**. Lowering the limit to the completed count stops immediately.
 
 Don't hold Space yourself while the bot is armed, because you share one accelerator.
+
+v0.3.1 passes 43 offline tests, including the generated extension running against a simulated DOM/timer environment: automatic next-game clicks, exact match-limit stopping, Stop cancellation, stale-state recovery, and hidden-page stopping. No live matchmaking is exercised by these tests.
 
 ## How it works
 
@@ -31,6 +34,8 @@ Don't hold Space yourself while the bot is armed, because you share one accelera
 - **Legacy policy** (`src/policy.mjs`). Retains the original CPU-tuned target tracker for comparison. It does not use the new economic target or adaptive delay horizon.
 
 ## Leaderboard refinement (v0.3)
+
+v0.3.1 changes session continuation, stale-state recovery, and result accounting only; the v0.3 strategy is unchanged. Later v0.2 traces challenged that strategy refinement: fixed-opponent replays of three uninterrupted online wins produced lower expected cash under v0.3 across three timing settings. The historical synthetic results below do not establish an improvement against that real opponent.
 
 Leaderboard now uses a shorter, one-second frontier forecast, predicts opponent progress through brief accelerator pauses, and caps its research target at two points above the predicted frontier. The cap cannot guarantee a risk limit: forecasts can be wrong and deployed research is irreversible. Motion prediction also distinguishes a command still in transit from one already applied. Win-focused retains its v0.2 settings.
 
@@ -45,7 +50,7 @@ Normal-delay survival improved from 81.5% to 84.2%, while expected wins fell fro
 
 The exported-match replays remain wins, conditional on survival: $18.86B vs $11.05B and $18.18B vs $13.77B. Expected own cash changes from $17.77B to $17.57B in the first replay and $16.71B to $16.86B in the second, so this refinement is not a universal improvement. No live v0.2 or v0.3 online trace was available for tuning; new exports are needed to test the real advantage.
 
-Reproduce with `npm run eval:refine -- 40 /path/to/export.json runs/refinement-validation.json`. All 27 unit tests pass, including target caps, commands in transit, and cash averages that honor terminal scores and include crashes.
+Reproduce with `npm run eval:refine -- 40 /path/to/export.json runs/refinement-validation.json`. The v0.3 release passed 27 unit tests, including target caps, commands in transit, and cash averages that honor terminal scores and include crashes.
 
 ## Historical online-policy validation (v0.2)
 
@@ -111,6 +116,7 @@ src/controller.mjs   handoff reproduction baseline (pure)
 src/policy.mjs       target policy, movement projection, baselines
 src/competitive.mjs  economic target selection and public-observation opponent prediction
 src/agent.mjs        stateful agent: allowlist, ordering, staleness, match reset, latency stats
+src/replay.mjs       guarded next-game scheduling through the normal Play again control
 src/browser.mjs      page adapter + operator panel
 extension/           MV3 extension (manifest + built bundle)
 engine/extract.mjs   fetch + hash-check + verbatim slice of the public engine (offline only)

@@ -4,6 +4,7 @@ import { decideTarget, PRESETS } from './policy.mjs';
 import { decideCompetitive, COMPETITIVE_PRESETS } from './competitive.mjs';
 
 export const OBJECTIVES = ['leaderboard', 'competitive', 'cash', 'win', 'repro-cash', 'repro-win'];
+export const normalizeMatchLimit = n => Math.max(1, Math.min(50, Math.trunc(Number(n)) || 1));
 
 // Allowlisted, player-visible fields only. Nothing else from the snapshot is retained.
 export function extractObservation(snap) {
@@ -30,7 +31,7 @@ export class Agent {
   constructor({ objective = 'leaderboard', matchLimit = 1, staleMs = null, traceLimit = 200000, policyParams = null } = {}) {
     this.objective = objective;
     this.policyParams = policyParams ? { ...policyParams } : null;
-    this.matchLimit = matchLimit;
+    this.matchLimit = normalizeMatchLimit(matchLimit);
     this.staleMsOverride = staleMs;
     this.traceLimit = traceLimit;
     this.armed = false;
@@ -55,6 +56,9 @@ export class Agent {
     this.pending = null;       // issued input awaiting observed effect
     this.decision = null;
     this.endedCounted = false;
+    this.participated = false;
+    this.paused = false;
+    this.freshSnapshots = 0;
   }
 
   get staleMs() {
@@ -67,14 +71,20 @@ export class Agent {
 
   arm(now) {
     if (this.completed >= this.matchLimit) { this.reason = `match limit ${this.matchLimit} reached`; return false; }
+    if (['running', 'settling'].includes(this.last?.phase)) this.participated = true;
     this.armed = true; this.reason = 'armed'; this.log({ k: 'arm', now, objective: this.objective });
     return true;
+  }
+
+  setMatchLimit(n, now) {
+    this.matchLimit = normalizeMatchLimit(n);
+    return this.armed && this.completed >= this.matchLimit ? this.disarm(now, `match limit ${this.matchLimit} reached`) : null;
   }
 
   // Returns the input the adapter must issue (always a release) or null.
   disarm(now, reason = 'user stop') {
     const was = this.armed;
-    this.armed = false; this.desired = false; this.reason = reason;
+    this.armed = false; this.paused = false; this.freshSnapshots = 0; this.desired = false; this.reason = reason;
     this.log({ k: 'disarm', now, reason });
     return was || this.lastIssued ? this.issue(false, now, reason) : null;
   }
@@ -95,11 +105,13 @@ export class Agent {
     if (!o) { this.stats.rejected++; return this.armed ? this.disarm(now, 'malformed snapshot') : null; }
     if (o.match !== this.match) { this.resetMatch(o.match); this.log({ k: 'match', now, match: o.match }); }
     if (this.last) {
-      if (o.t === this.last.t) { this.stats.duplicates++; return null; }
+      // A forfeit can finish at the same game time as the previous running state.
+      if (o.t === this.last.t && o.phase === this.last.phase) { this.stats.duplicates++; return null; }
       if (o.t < this.last.t) { this.stats.outOfOrder++; return null; }
     }
     if (this.lastRecv != null) {
       const gap = now - this.lastRecv;
+      if (this.paused && gap > this.staleMs) this.freshSnapshots = 0;
       this.stats.interArrival.push(gap);
       if (gap > 2.5 * (pct(this.stats.interArrival.slice(-300), .5) || 67)) this.stats.missedIntervals++;
     }
@@ -108,6 +120,7 @@ export class Agent {
       if (this.frameGaps.length > 60) this.frameGaps.shift();
     }
     this.last = o; this.lastRecv = now;
+    if (this.armed && ['running', 'settling'].includes(o.phase)) this.participated = true;
     this.history.push({ t: o.t, safety: o.safety, opponent: o.opponent.deployed });
     if (this.history.length > 64) this.history.splice(0, this.history.length - 32);
 
@@ -131,13 +144,14 @@ export class Agent {
       dep: o.own.deployed, held: o.own.held, opp: o.opponent.deployed, cash: o.own.cash, oppCash: o.opponent.cash, hz: o.hazard };
 
     if (o.phase !== 'running') {
-      if (['finished', 'crashed'].includes(o.phase) && !this.endedCounted && this.armed) {
+      if (['finished', 'crashed'].includes(o.phase) && !this.endedCounted && this.participated) {
         this.endedCounted = true; this.completed++;
         this.results.push({ match: this.match, objective: this.objective, phase: o.phase,
           cash: o.phase === 'crashed' ? 0 : o.own.score ?? o.own.cash,
           opponentCash: o.phase === 'crashed' ? 0 : o.opponent.score ?? o.opponent.cash });
         this.log({ k: 'end', now, phase: o.phase, cash: o.own.cash, oppCash: o.opponent.cash, hazard: o.hazard });
       }
+      if (['finished', 'crashed'].includes(o.phase)) { this.paused = false; this.freshSnapshots = 0; }
       this.log(entry);
       if (this.armed && this.completed >= this.matchLimit && ['finished', 'crashed'].includes(o.phase))
         return this.disarm(now, `match limit ${this.matchLimit} reached`);
@@ -145,6 +159,13 @@ export class Agent {
       return null;
     }
     if (!this.armed) { this.log(entry); return null; }
+    if (this.paused) {
+      // Recover from a transient stall only after two advancing snapshots arrive.
+      // Explicit Stop, hidden-page and malformed-state disarms never auto-resume.
+      if (++this.freshSnapshots < 2) { this.log(entry); return null; }
+      this.paused = false; this.freshSnapshots = 0;
+      this.log({ k: 'resume', now, reason: 'fresh snapshots restored' });
+    }
 
     const competitive = COMPETITIVE_PRESETS[this.objective] && { ...COMPETITIVE_PRESETS[this.objective], ...this.policyParams };
     const params = PRESETS[this.objective];
@@ -175,9 +196,14 @@ export class Agent {
     if (!this.armed) return null;
     if (hidden) return this.disarm(now, 'page hidden');
     if (this.lastRecv != null && this.last?.phase === 'running' && now - this.lastRecv > this.staleMs) {
-      this.stats.stale++;
-      return this.disarm(now, `stale state (${Math.round(now - this.lastRecv)} ms)`);
+      this.freshSnapshots = 0;
+      if (this.paused) return null;
+      this.stats.stale++; this.paused = true; this.desired = false;
+      this.reason = `paused: stale state (${Math.round(now - this.lastRecv)} ms)`;
+      this.log({ k: 'pause', now, reason: this.reason });
+      return this.issue(false, now, this.reason);
     }
+    if (this.paused) return null;
     if (uiHeld != null && this.last?.phase === 'running' && uiHeld !== !!this.lastIssued &&
         now - Math.max(this.pending?.now ?? -Infinity, this.lastResync ?? -Infinity) > 50) {
       this.lastResync = now;

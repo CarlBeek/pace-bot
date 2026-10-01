@@ -97,8 +97,9 @@ try {
 
   await evaluate(`window.__paceBot.setObjective(${JSON.stringify(objective)}); window.__paceBot.setMatchLimit(${games}); true`);
   for (let gi = 0; gi < games; gi++) {
-    await waitFor(clickPlayComputer, 10000, 200).catch(() => { throw new Error('could not start practice game'); });
-    await waitFor(`(() => { const s=window.__paceBot.status(); return s.last && s.last.phase==='running' && s.last.t < 1 })()`);
+    // Only launch the first game manually; subsequent games exercise adapter autoplay.
+    if (gi === 0) await waitFor(clickPlayComputer, 10000, 200).catch(() => { throw new Error('could not start practice game'); });
+    await waitFor(`(() => { const s=window.__paceBot.status(); return s.last && s.last.phase==='running' && s.completed === ${gi} && s.last.t < 1 })()`);
     if (gi === 0 && !(await evaluate(`window.__paceBot.arm()`))) throw new Error('arm refused');
     let last = null;
     while (true) {
