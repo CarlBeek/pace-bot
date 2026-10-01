@@ -6,9 +6,9 @@ A local, inspectable controller for [Paradigm's PACE](https://www.paradigm.xyz/r
 
 1. `npm run build` (writes `extension/pace-bot.js` from `src/`; a built copy is already there).
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `extension/` folder.
-3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.3.1** panel appears at the bottom right, **disarmed**.
+3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.4** panel appears at the bottom right, **disarmed**.
 
-After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.3.1 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab.
+After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.4 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab. A refresh resets the run count, match limit, and armed state; set the limit and click Start again.
 
 The extension has no permissions. It only runs on `paradigm.xyz/research/pace*`, as one main-world content script. It never reads cookies, tokens, or network traffic, and your existing login session is left alone.
 
@@ -23,7 +23,7 @@ The extension has no permissions. It only runs on `paradigm.xyz/research/pace*`,
 
 Don't hold Space yourself while the bot is armed, because you share one accelerator.
 
-v0.3.1 passes 43 offline tests, including the generated extension running against a simulated DOM/timer environment: automatic next-game clicks, exact match-limit stopping, Stop cancellation, stale-state recovery, and hidden-page stopping. No live matchmaking is exercised by these tests.
+The offline tests include the generated extension running against a simulated DOM/timer environment: automatic next-game clicks, exact match-limit stopping, Stop cancellation, stale-state recovery, and hidden-page stopping. No live matchmaking is exercised by these tests.
 
 ## How it works
 
@@ -33,11 +33,32 @@ v0.3.1 passes 43 offline tests, including the generated extension running agains
 - **Timing.** New policies project motion over estimated observation-to-command-effect delay, then check the stopping point after one further decision interval. Delay is estimated from input acknowledgements in game time, subtracting half a snapshot interval for sampling delay; it starts at seven frames and is bounded at thirty. Acknowledgement timing is not an exact network RTT. Retries retain their original timestamp, and timing/command state resets each match.
 - **Legacy policy** (`src/policy.mjs`). Retains the original CPU-tuned target tracker for comparison. It does not use the new economic target or adaptive delay horizon.
 
-## Leaderboard refinement (v0.3)
+## Opponent-aware cap and endgame (v0.4)
+
+Leaderboard now permits its research target to reach the opponent's **already-deployed** research when that exceeds the normal cap of predicted frontier + 2. A speculative opponent forecast cannot unlock this exception. Catching up to known deployment need not raise the shared maximum driving catastrophe risk, but inertia, forecast errors, and an opponent reacting differently still matter. This is not a guarantee of zero additional risk.
+
+Over the last six seconds of acceleration, the frontier forecast gradually extends from one second to the two-second deployment horizon. The stopping calculation also accounts for the engine zeroing speed at 90 seconds: it no longer brakes for coasting that cannot occur beyond that cutoff. Commands predicted to arrive after the cutoff cannot request acceleration. Win-focused is unchanged, as are autoplay and Stop behavior.
+
+`runs/finish-validation.json` compares frozen v0.3.1, catch-up alone, v0.4, and v0.2 over **2,560 simulations**: 40 fresh seeds (LCG indices 9000–9039), eight opponent styles, and two latency conditions. The new stress mix adds sustained and late aggressive escalations, so its absolute scores should not be compared directly with older benchmark mixes. Tuning used seeds 8000–8007 and the v0.3.1 traces; the validation seeds were not used for tuning.
+
+| Timing | v0.3.1 expected cash | Catch-up only | v0.4 | v0.4 gain over v0.3.1, paired 95% interval |
+|---|---:|---:|---:|---:|
+| Normal | $12.57B | $12.81B | $12.88B | +$0.31B [$0.28B, $0.34B] |
+| Higher delay + 5% snapshot loss | $12.30B | $12.55B | $12.60B | +$0.31B [$0.27B, $0.34B] |
+
+The endgame changes add about $66M/game at normal latency and $57M/game under higher latency beyond catch-up alone. Survival changes from 73.28% to 73.18% and 71.44% to 71.27%, respectively: this is a modest expected-cash improvement, not a claim of reduced overall catastrophe risk. Intervals group games by frontier seed before averaging opponent styles.
+
+The 14 full-length recorded-path replays improve from $13.09B to $13.47B expected cash. Game 11 improves from about $7.69B to $12.40B cash conditional on survival, while game 12's replay changes from a loss to a win. These paths were used during development, are not held out, and keep opponent behavior fixed. The early catastrophe is reported separately and excluded from full-game replay averages; it is not treated as a completed 92-second simulation.
+
+**Remaining limitation:** frozen v0.2 still earns more on these recorded paths ($13.74B expected cash) and on the normal-delay stress mix ($13.25B vs $12.88B), especially against extreme escalation. v0.4 is better than v0.3.1 in this evaluation, not a universal best policy or a proven live leaderboard improvement. No live v0.4 matches were played during validation.
+
+Reproduce with `npm run eval:finish -- 40 /path/to/export.json runs/finish-validation.json`. New trace fields record the target ceiling, catch-up exception, endgame blend, forecast horizon, and deadline-limited braking.
+
+## Historical leaderboard refinement (v0.3)
 
 v0.3.1 changes session continuation, stale-state recovery, and result accounting only; the v0.3 strategy is unchanged. Later v0.2 traces challenged that strategy refinement: fixed-opponent replays of three uninterrupted online wins produced lower expected cash under v0.3 across three timing settings. The historical synthetic results below do not establish an improvement against that real opponent.
 
-Leaderboard now uses a shorter, one-second frontier forecast, predicts opponent progress through brief accelerator pauses, and caps its research target at two points above the predicted frontier. The cap cannot guarantee a risk limit: forecasts can be wrong and deployed research is irreversible. Motion prediction also distinguishes a command still in transit from one already applied. Win-focused retains its v0.2 settings.
+v0.3 introduced a shorter, one-second frontier forecast, predicted opponent progress through brief accelerator pauses, and capped its research target at two points above the predicted frontier. The cap cannot guarantee a risk limit: forecasts can be wrong and deployed research is irreversible. Motion prediction also distinguishes a command still in transit from one already applied. Win-focused retained its v0.2 settings.
 
 The frozen comparison in `runs/refinement-validation.json` uses 40 new seeds (LCG indices 7000–7039), eight opponent styles including two unseen during tuning, and two timing conditions. Three configurations were compared, totaling 1,920 simulations. Expected cash includes zero-score catastrophe outcomes.
 

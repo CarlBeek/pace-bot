@@ -184,6 +184,8 @@ export class Agent {
     if (competitive) {
       entry.delayFrames = delayFrames; entry.pendingFrames = pendingFrames; entry.predictedOpponent = d.predictedOpponent;
       entry.predictedSafety = d.predictedSafety; entry.opponentSpeed = d.opponentSpeed;
+      entry.targetCeiling = d.targetCeiling; entry.catchup = d.catchup;
+      entry.endgameBlend = d.endgameBlend; entry.forecastSeconds = d.forecastSeconds; entry.deadlineLimited = d.deadlineLimited;
     }
     this.log(entry);
     if (d.held !== !!this.lastIssued) return this.issue(d.held, now, d.reason);

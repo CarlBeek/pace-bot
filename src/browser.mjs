@@ -80,7 +80,7 @@ export function install(win = window) {
       button,select,input{font:inherit;background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:3px 6px}
       button.go{background:#14532d}button.stop{background:#7f1d1d;font-weight:bold}
       input{width:40px}.why{margin-top:6px;color:#fbbf24;min-height:1.3em;word-break:break-word}
-    </style><div class="p"><h1><span>PACE bot · v0.3.1</span><span id="st" class="off">DISARMED</span></h1>
+    </style><div class="p"><h1><span>PACE bot · v0.4</span><span id="st" class="off">DISARMED</span></h1>
       <div class="row"><span class="k">mode</span><span id="mode">no game</span></div>
       <div class="row"><span class="k">input</span><span id="inp">–</span></div>
       <div class="row"><span class="k">state age</span><span id="age">–</span></div>
@@ -147,7 +147,7 @@ export function install(win = window) {
     setMatchLimit: n => { send(agent.setMatchLimit(n, perf.now())); ui.lim && (ui.lim.value = agent.matchLimit); render(true); },
     status: () => ({ armed: agent.armed, paused: agent.paused, objective: agent.objective, completed: agent.completed, reason: agent.reason, replay: replay.status,
       last: agent.last, issued: !!agent.lastIssued, uiHeld: uiHeld(), patched, lastKeySent, performance: agent.performance() }),
-    export: () => ({ version: 2, botVersion: '0.3.1', exportedAt: new Date().toISOString(), objective: agent.objective,
+    export: () => ({ version: 2, botVersion: '0.4.0', exportedAt: new Date().toISOString(), objective: agent.objective,
       latency: agent.latency(), performance: agent.performance(), results: agent.results.map(r => ({ ...r })), trace: agent.trace }),
     destroy: () => { send(agent.disarm(perf.now(), 'adapter destroyed')); win.clearInterval(timer); panel?.remove(); },
   };

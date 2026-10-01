@@ -1,13 +1,15 @@
 // Online policy: infer opponent motion from visible deployed research, then choose a
 // profit/risk target. Constants/formulas match the verified public PACE engine.
-import { project, stopDistance, frontierSlope, validObservation } from './policy.mjs';
+import { project, stopDistance, frontierSlope, validObservation, ACCEL } from './policy.mjs';
 import { speedCap } from './controller.mjs';
 
 export const DEPLOYMENT_SECONDS = 2;
+export const ACCELERATION_END = 90;
 export const YEARS_PER_SECOND = 7 / 365;
 export const COMPETITIVE_PRESETS = {
   leaderboard: { forecast: 1, opponentForecast: 3, wealth: 1, winWeight: .25,
-    opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending' },
+    opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending',
+    catchupToDeployed: true, endgameSeconds: 6, endgameForecast: DEPLOYMENT_SECONDS, deadlineAware: true },
   competitive: { forecast: 1.5, opponentForecast: 3, wealth: 1, winWeight: .5 },
 };
 
@@ -42,10 +44,15 @@ export function decideCompetitive(obs, { held = false, history = [], lookahead =
   if (!validObservation(obs) || ![obs.own.cash, obs.own.deployed, obs.opponent.cash].every(Number.isFinite))
     return { held: false, reason: 'invalid or inactive observation' };
   const { forecast = 2, opponentForecast = 2, lead = 0, wealth = 1, winWeight = 0, hysteresis = .08,
-    opponentModel = 'bounded', maxTargetGap = Infinity, motionModel = 'issued' } = params;
+    opponentModel = 'bounded', maxTargetGap = Infinity, motionModel = 'issued',
+    catchupToDeployed = false, endgameSeconds = 0, endgameForecast = forecast, deadlineAware = false } = params;
   const slope = frontierSlope(obs, history);
   const velocity = opponentSpeed(obs, history);
-  const predictedSafety = obs.safety + Math.min(3, forecast * slope);
+  // Ramp toward a settlement-aware frontier forecast near the finish. Only past
+  // observations are used; an unseen plateau can still invalidate this forecast.
+  const endgameBlend = endgameSeconds > 0 ? Math.max(0, Math.min(1, (obs.t - ACCELERATION_END + endgameSeconds) / endgameSeconds)) : 0;
+  const forecastSeconds = forecast + endgameBlend * (endgameForecast - forecast);
+  const predictedSafety = obs.safety + Math.min(3, forecastSeconds * slope);
   const gaps = history.filter(h => h.t <= obs.t && obs.t - h.t <= 2 && Number.isFinite(h.opponent)).map(h => h.opponent - h.safety).sort((a, b) => a - b);
   const gap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : obs.opponent.deployed - obs.safety;
   // Deployment speed oscillates as players tap the accelerator. Leaderboard uses the
@@ -63,7 +70,10 @@ export function decideCompetitive(obs, { held = false, history = [], lookahead =
   const floor = Math.max(0, obs.safety - .5);
   // This bounds the research target, not total risk: frontier forecasts can be wrong
   // and already-deployed research cannot be taken back.
-  const ceiling = Math.min(Math.max(predictedSafety + 6, predictedOpponent + 3), predictedSafety + maxTargetGap);
+  // Catching up to already-visible deployment does not raise the maximum deployed
+  // research that drives shared risk. Never grant this exception for a forecast.
+  const cap = Math.max(predictedSafety + maxTargetGap, catchupToDeployed ? obs.opponent.deployed : 0);
+  const ceiling = Math.min(Math.max(predictedSafety + 6, predictedOpponent + 3), cap);
   let target = floor, best = -Infinity;
   const step = Math.max(.125, (ceiling - floor) / 128);
   for (let x = floor; x <= ceiling + 1e-8; x += step) {
@@ -73,14 +83,22 @@ export function decideCompetitive(obs, { held = false, history = [], lookahead =
     if (utility > best) { target = x; best = utility; }
   }
   let { position: x, speed: v } = obs.own;
-  const delay = Math.max(0, Math.round(delayFrames));
+  const activeFrames = Math.max(0, Math.round((ACCELERATION_END - obs.t) * 60));
+  const delay = Math.min(Math.max(0, Math.round(delayFrames)), deadlineAware ? activeFrames : Infinity);
   // A command still in transit cannot affect motion at the start of this projection.
   const pending = motionModel === 'pending' && typeof obs.own.held === 'boolean' ? Math.max(0, Math.min(delay, Math.round(pendingFrames))) : 0;
   if (pending) ({ x, v } = project(x, v, obs.own.held, pending));
   ({ x, v } = project(x, v, held, delay - pending));
-  const next = project(x, v, true, Math.max(1, Math.round(lookahead)));
-  const stop = next.x + stopDistance(next.x, next.v);
-  const accelerate = stop < target - (held ? 0 : hysteresis);
+  const nextFrames = Math.min(Math.max(1, Math.round(lookahead)), deadlineAware ? activeFrames - delay : Infinity);
+  const next = project(x, v, true, nextFrames);
+  const coastFrames = activeFrames - delay - nextFrames;
+  // The engine zeros velocity at 90 seconds; there is no coasting beyond that
+  // deadline. Avoid braking for motion that cannot occur, including input delay.
+  const deadlineLimited = deadlineAware && coastFrames < next.v / (ACCEL * speedCap(next.x)) * 60;
+  const stop = deadlineLimited ? project(next.x, next.v, false, Math.max(0, coastFrames)).x : next.x + stopDistance(next.x, next.v);
+  const accelerate = nextFrames > 0 && stop < target - (held ? 0 : hysteresis);
   return { held: accelerate, reason: accelerate ? 'building profitable lead' : 'protecting cash', stop, target, slope,
-    predictedOpponent, predictedSafety, opponentSpeed: velocity, delayFrames, atRisk };
+    predictedOpponent, predictedSafety, opponentSpeed: velocity, delayFrames, atRisk,
+    targetCeiling: ceiling, catchup: catchupToDeployed && obs.opponent.deployed > predictedSafety + maxTargetGap,
+    endgameBlend, forecastSeconds, deadlineLimited };
 }

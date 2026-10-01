@@ -65,7 +65,7 @@ test('built extension plays the next game through the UI and stops exactly at th
   assert.equal(f.clicks(), 1);
   assert.equal(f.api.status().completed, 2);
   assert.equal(f.api.status().armed, false);
-  assert.equal(f.api.export().botVersion, '0.3.1');
+  assert.equal(f.api.export().botVersion, '0.4.0');
   assert.equal(f.ui.getElementById('cnt').textContent, '2 / 2');
 });
 

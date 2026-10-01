@@ -1,0 +1,2104 @@
+{
+  "generatedAt": "2026-10-01T00:27:49.973Z",
+  "seedStart": 9000,
+  "seedsPerOpponent": 40,
+  "engineSha256": "8865cb18640b986096ba63f0502a3bb097bb8c4d76048113070b27ded7dd550c",
+  "candidates": {
+    "v031": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": false,
+        "endgameSeconds": 0,
+        "endgameForecast": 1,
+        "deadlineAware": false
+      }
+    },
+    "catchupOnly": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 0,
+        "endgameForecast": 1,
+        "deadlineAware": false
+      }
+    },
+    "v04": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true
+      }
+    },
+    "v02": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1.5,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "opponentModel": "bounded",
+        "maxTargetGap": 1000000,
+        "motionModel": "issued",
+        "catchupToDeployed": false,
+        "endgameSeconds": 0,
+        "endgameForecast": 1,
+        "deadlineAware": false
+      }
+    }
+  },
+  "tuning": "Eight seeds 8000..8007, six opponent styles, eight candidates, plus the 15-game v0.3.1 export.",
+  "caveat": "Expected cash and wins include catastrophe probability. Equal-weight synthetic opponents are not the online population. Replay paths were used in development, are not held out, and cannot model changed opponent reactions. Early terminal paths are excluded from full-game replay averages.",
+  "scenarios": [
+    {
+      "scenario": "normal",
+      "timing": {
+        "obsDelay": 3,
+        "inputDelay": 4
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 15.341934932202326,
+          "cashSE": 0.24098805484075575,
+          "cash": 17.904005734355817,
+          "opponentCash": 10.28923893303843,
+          "win": 0.8550428770432736,
+          "survival": 0.8550428770432736
+        },
+        {
+          "opponent": "cpu",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 15.373276522821985,
+          "cashSE": 0.24003062360573876,
+          "cash": 17.934732782277337,
+          "opponentCash": 10.218389132413302,
+          "win": 0.8553529579905732,
+          "survival": 0.8553529579905732
+        },
+        {
+          "opponent": "cpu",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 15.396826628991223,
+          "cashSE": 0.24047562673565315,
+          "cash": 17.975814798458824,
+          "opponentCash": 10.069903642080236,
+          "win": 0.8546948528657833,
+          "survival": 0.8546948528657833
+        },
+        {
+          "opponent": "cpu",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 15.238379910983396,
+          "cashSE": 0.18804249852410432,
+          "cash": 18.131596286666635,
+          "opponentCash": 9.686737797072963,
+          "win": 0.8396961621767088,
+          "survival": 0.8396961621767088
+        },
+        {
+          "opponent": "cautious",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 20.04301991631332,
+          "cashSE": 0.11128384533236073,
+          "cash": 20.59769399435146,
+          "opponentCash": 11.936216644706608,
+          "win": 0.9730556939397955,
+          "survival": 0.9730556939397955
+        },
+        {
+          "opponent": "cautious",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 20.04301991631332,
+          "cashSE": 0.11128384533236073,
+          "cash": 20.59769399435146,
+          "opponentCash": 11.936216644706608,
+          "win": 0.9730556939397955,
+          "survival": 0.9730556939397955
+        },
+        {
+          "opponent": "cautious",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 20.083039085452278,
+          "cashSE": 0.11044890419316933,
+          "cash": 20.64222280226147,
+          "opponentCash": 11.51227171878417,
+          "win": 0.9728964660787536,
+          "survival": 0.9728964660787536
+        },
+        {
+          "opponent": "cautious",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.846119694034083,
+          "cashSE": 0.10620086910406673,
+          "cash": 20.946496514744016,
+          "opponentCash": 8.47474289203267,
+          "win": 0.947640202567768,
+          "survival": 0.947640202567768
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 19.606205232647937,
+          "cashSE": 0.1017764323891561,
+          "cash": 20.244053788934036,
+          "opponentCash": 15.128090552948706,
+          "win": 0.9684785768640142,
+          "survival": 0.9684785768640142
+        },
+        {
+          "opponent": "oldWin",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 19.606205232647937,
+          "cashSE": 0.1017764323891561,
+          "cash": 20.244053788934036,
+          "opponentCash": 15.128090552948706,
+          "win": 0.9684785768640142,
+          "survival": 0.9684785768640142
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 19.637347856431642,
+          "cashSE": 0.10143607637519816,
+          "cash": 20.27920014393757,
+          "opponentCash": 14.77788866763917,
+          "win": 0.9683367377055676,
+          "survival": 0.9683367377055676
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.43562513508133,
+          "cashSE": 0.10176114434171489,
+          "cash": 20.576709818080527,
+          "opponentCash": 12.645393240059718,
+          "win": 0.9446838378886875,
+          "survival": 0.9446838378886875
+        },
+        {
+          "opponent": "frontier",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 16.19557476210606,
+          "cashSE": 0.11327983333561942,
+          "cash": 18.942608418939514,
+          "opponentCash": 18.09636716526464,
+          "win": 0.7456223887393836,
+          "survival": 0.8549611723200847
+        },
+        {
+          "opponent": "frontier",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 16.207754345075685,
+          "cashSE": 0.11321009539567511,
+          "cash": 18.951121255387807,
+          "opponentCash": 18.098775690516742,
+          "win": 0.7458727383627513,
+          "survival": 0.8552056003756613
+        },
+        {
+          "opponent": "frontier",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 16.257764004494785,
+          "cashSE": 0.10862046076039016,
+          "cash": 19.02379651319079,
+          "opponentCash": 18.01468158436878,
+          "win": 0.7672014773316671,
+          "survival": 0.8545890532612223
+        },
+        {
+          "opponent": "frontier",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 16.5130905888137,
+          "cashSE": 0.10621959673837213,
+          "cash": 19.10630676646884,
+          "opponentCash": 18.82907218402369,
+          "win": 0.7576772203619505,
+          "survival": 0.8642336650191744
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 10.931936910429306,
+          "cashSE": 0.10991818488294038,
+          "cash": 16.292596479805624,
+          "opponentCash": 20.436430337169515,
+          "win": 0,
+          "survival": 0.6708390097212364
+        },
+        {
+          "opponent": "aggressive",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 11.13211306452841,
+          "cashSE": 0.10444778119374212,
+          "cash": 16.59486108121762,
+          "opponentCash": 20.387060403888587,
+          "win": 0,
+          "survival": 0.6707094448331123
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 11.251082105649187,
+          "cashSE": 0.10416734061241666,
+          "cash": 16.8170399928269,
+          "opponentCash": 20.305040570367648,
+          "win": 0,
+          "survival": 0.6689568716802025
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 11.273992488116255,
+          "cashSE": 0.12027773506586376,
+          "cash": 17.93831557922121,
+          "opponentCash": 19.29828194485421,
+          "win": 0,
+          "survival": 0.6282730830451244
+        },
+        {
+          "opponent": "chaser",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 11.119286928508352,
+          "cashSE": 0.2594889987003683,
+          "cash": 16.41289548511498,
+          "opponentCash": 17.781607768165234,
+          "win": 0.03740556781620995,
+          "survival": 0.6741174307770896
+        },
+        {
+          "opponent": "chaser",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 11.396220638792332,
+          "cashSE": 0.26287643538444183,
+          "cash": 16.874566398563946,
+          "opponentCash": 17.974242099754782,
+          "win": 0.017985436333578735,
+          "survival": 0.6722488391531243
+        },
+        {
+          "opponent": "chaser",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 11.397069400525037,
+          "cashSE": 0.2640922625451399,
+          "cash": 16.936454543208537,
+          "opponentCash": 17.71887182127046,
+          "win": 0.14633434691437025,
+          "survival": 0.6698279365746886
+        },
+        {
+          "opponent": "chaser",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 10.331331912119571,
+          "cashSE": 0.33405419138515474,
+          "cash": 16.745970762068158,
+          "opponentCash": 17.041126587613814,
+          "win": 0.2536233184048363,
+          "survival": 0.6126783107294091
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 0,
+          "cashSE": 0,
+          "cash": 0,
+          "opponentCash": 22.877637105641504,
+          "win": 0,
+          "survival": 0.2525010213263849
+        },
+        {
+          "opponent": "overdrive",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 0.5309981506559995,
+          "cashSE": 0.04586028074040424,
+          "cash": 2.170172342281648,
+          "opponentCash": 22.256167221969335,
+          "win": 0,
+          "survival": 0.25227902293820115
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 0.60533546578703,
+          "cashSE": 0.04778136269436416,
+          "cash": 2.4625473002456237,
+          "opponentCash": 22.22817954877383,
+          "win": 0,
+          "survival": 0.2522761028298164
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 3.4164227873430315,
+          "cashSE": 0.06956144163455691,
+          "cash": 14.31893616511089,
+          "opponentCash": 20.652018744139372,
+          "win": 0,
+          "survival": 0.238623708985744
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 7.285645900594875,
+          "cashSE": 0.09098382797339304,
+          "cash": 11.883585905641887,
+          "opponentCash": 19.449434784547744,
+          "win": 0,
+          "survival": 0.6131274928032283
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 8.186399871662575,
+          "cashSE": 0.08904051884777871,
+          "cash": 13.383456047284053,
+          "opponentCash": 19.32746821020194,
+          "win": 0,
+          "survival": 0.6126180930306921
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 8.372011328170213,
+          "cashSE": 0.09683929756555415,
+          "cash": 13.68150031915103,
+          "opponentCash": 19.299715350514415,
+          "win": 0,
+          "survival": 0.6126107775323381
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 9.908519123227261,
+          "cashSE": 0.1015495777606453,
+          "cash": 16.305341063987544,
+          "opponentCash": 19.336423021290244,
+          "win": 0,
+          "survival": 0.6088631553804281
+        }
+      ],
+      "overall": {
+        "v031": {
+          "n": 320,
+          "expectedCash": 12.565450572850287,
+          "cashSE": 0.35584042591786935,
+          "cash": 15.284679975892917,
+          "opponentCash": 16.999377911435303,
+          "win": 0.4474506380503345,
+          "survival": 0.7327654093493883
+        },
+        "catchupOnly": {
+          "n": 320,
+          "expectedCash": 12.809498467812276,
+          "cashSE": 0.34284795454626293,
+          "cash": 15.843832211287259,
+          "opponentCash": 16.91580124455,
+          "win": 0.44509317543633903,
+          "survival": 0.7324935286406471
+        },
+        "v04": {
+          "n": 320,
+          "expectedCash": 12.875059484437678,
+          "cashSE": 0.3414729732808338,
+          "cash": 15.977322051660106,
+          "opponentCash": 16.740819112974844,
+          "win": 0.46368298511201766,
+          "survival": 0.7317735998160465
+        },
+        "v02": {
+          "n": 320,
+          "expectedCash": 13.24543520496483,
+          "cashSE": 0.29648950582600087,
+          "cash": 18.008709119543486,
+          "opponentCash": 15.745474551385838,
+          "win": 0.4679150926749937,
+          "survival": 0.7105865157241301
+        }
+      },
+      "differences": {
+        "catchupOnly - v031": {
+          "meanBillions": 0.2440478949620059,
+          "lower95": 0.22116160729155568,
+          "upper95": 0.26693418263245616
+        },
+        "v04 - v031": {
+          "meanBillions": 0.30960891158740117,
+          "lower95": 0.28147360719154163,
+          "upper95": 0.3377442159832607
+        },
+        "v04 - catchupOnly": {
+          "meanBillions": 0.06556101662539535,
+          "lower95": 0.05099832284972325,
+          "upper95": 0.08012371040106744
+        },
+        "v04 - v02": {
+          "meanBillions": -0.3703757205271542,
+          "lower95": -0.4553683458470176,
+          "upper95": -0.28538309520729077
+        }
+      }
+    },
+    {
+      "scenario": "delayed",
+      "timing": {
+        "obsDelay": 6,
+        "inputDelay": 8,
+        "drop": 0.05
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 14.652319342898181,
+          "cashSE": 0.2712759827327586,
+          "cash": 17.738553106003277,
+          "opponentCash": 10.145441530682797,
+          "win": 0.8235813970285731,
+          "survival": 0.8235813970285731
+        },
+        {
+          "opponent": "cpu",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 14.730209121499549,
+          "cashSE": 0.27585984570304245,
+          "cash": 17.830451100060113,
+          "opponentCash": 10.168694884998699,
+          "win": 0.8237666233460079,
+          "survival": 0.8237666233460079
+        },
+        {
+          "opponent": "cpu",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 14.739397602005438,
+          "cashSE": 0.27661563646733595,
+          "cash": 17.864162158738065,
+          "opponentCash": 10.03657444839195,
+          "win": 0.8227004978270311,
+          "survival": 0.8227004978270311
+        },
+        {
+          "opponent": "cpu",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 13.794085006232553,
+          "cashSE": 0.28549898779041094,
+          "cash": 17.71505748698245,
+          "opponentCash": 9.534591580948854,
+          "win": 0.7762799711317455,
+          "survival": 0.7762799711317455
+        },
+        {
+          "opponent": "cautious",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 19.791634749764004,
+          "cashSE": 0.11354623141040496,
+          "cash": 20.655275347233875,
+          "opponentCash": 11.096272154063731,
+          "win": 0.9581611734103909,
+          "survival": 0.9581611734103909
+        },
+        {
+          "opponent": "cautious",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 19.791634749764004,
+          "cashSE": 0.11354623141040496,
+          "cash": 20.655275347233875,
+          "opponentCash": 11.096272154063731,
+          "win": 0.9581611734103909,
+          "survival": 0.9581611734103909
+        },
+        {
+          "opponent": "cautious",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 19.819451468023132,
+          "cashSE": 0.11338934021899909,
+          "cash": 20.68860246928211,
+          "opponentCash": 10.683814391707779,
+          "win": 0.9579628425175697,
+          "survival": 0.9579628425175697
+        },
+        {
+          "opponent": "cautious",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.325017692386027,
+          "cashSE": 0.11725669176816175,
+          "cash": 20.996520330000667,
+          "opponentCash": 7.715456109307425,
+          "win": 0.9205883896064633,
+          "survival": 0.9205883896064633
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 19.325895455168524,
+          "cashSE": 0.10742814443144848,
+          "cash": 20.336967736876545,
+          "opponentCash": 14.153703654888178,
+          "win": 0.9502344350699886,
+          "survival": 0.9502344350699886
+        },
+        {
+          "opponent": "oldWin",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 19.325895455168524,
+          "cashSE": 0.10742814443144848,
+          "cash": 20.336967736876545,
+          "opponentCash": 14.153703654888178,
+          "win": 0.9502344350699886,
+          "survival": 0.9502344350699886
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 19.35081705079053,
+          "cashSE": 0.10745771660825104,
+          "cash": 20.369348407690495,
+          "opponentCash": 13.811569481849359,
+          "win": 0.9499451611429462,
+          "survival": 0.9499451611429462
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 19.013431136352562,
+          "cashSE": 0.10349106329112447,
+          "cash": 20.63834314045602,
+          "opponentCash": 11.647259628987612,
+          "win": 0.921479092535507,
+          "survival": 0.921479092535507
+        },
+        {
+          "opponent": "frontier",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 15.83878741562739,
+          "cashSE": 0.12503784618554203,
+          "cash": 19.05694270020281,
+          "opponentCash": 17.667162499484963,
+          "win": 0.8100106859528109,
+          "survival": 0.8311097291834697
+        },
+        {
+          "opponent": "frontier",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 15.829675172095138,
+          "cashSE": 0.1238977226084749,
+          "cash": 19.051765230455135,
+          "opponentCash": 17.640241846738686,
+          "win": 0.8097805390498898,
+          "survival": 0.8308795822805486
+        },
+        {
+          "opponent": "frontier",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 15.880530362078366,
+          "cashSE": 0.12016459493491342,
+          "cash": 19.128698487029833,
+          "opponentCash": 17.560920574139214,
+          "win": 0.8302183326528212,
+          "survival": 0.8302183326528212
+        },
+        {
+          "opponent": "frontier",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 15.736182169949121,
+          "cashSE": 0.11760801615090893,
+          "cash": 18.953479643724076,
+          "opponentCash": 18.119869651213918,
+          "win": 0.8302594679001242,
+          "survival": 0.8302594679001242
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 11.112555627349249,
+          "cashSE": 0.1024053492140778,
+          "cash": 16.79406696384486,
+          "opponentCash": 20.281985069613576,
+          "win": 0,
+          "survival": 0.6615889308324934
+        },
+        {
+          "opponent": "aggressive",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 11.200326366186381,
+          "cashSE": 0.1006716979422903,
+          "cash": 16.962957583392456,
+          "opponentCash": 20.245118503861136,
+          "win": 0,
+          "survival": 0.6603198975858546
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 11.279858689555633,
+          "cashSE": 0.10025329030863839,
+          "cash": 17.147096177704153,
+          "opponentCash": 20.14414578439417,
+          "win": 0,
+          "survival": 0.6579005354290384
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 10.617207318881118,
+          "cashSE": 0.13925215863682414,
+          "cash": 17.86535128251732,
+          "opponentCash": 18.720534745409637,
+          "win": 0.040520850493864516,
+          "survival": 0.5940863112024773
+        },
+        {
+          "opponent": "chaser",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 10.354565103829069,
+          "cashSE": 0.265125802339006,
+          "cash": 16.165539916626507,
+          "opponentCash": 17.315481625974712,
+          "win": 0.05160794007421184,
+          "survival": 0.6370066616045508
+        },
+        {
+          "opponent": "chaser",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 10.700851225025184,
+          "cashSE": 0.28311097247232886,
+          "cash": 16.671760185446363,
+          "opponentCash": 17.526665811635002,
+          "win": 0.10501648993496207,
+          "survival": 0.6381139081006084
+        },
+        {
+          "opponent": "chaser",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 10.689075970555626,
+          "cashSE": 0.2843823731642366,
+          "cash": 16.718481196623376,
+          "opponentCash": 17.275455780259186,
+          "win": 0.20586915508400475,
+          "survival": 0.6356251320656552
+        },
+        {
+          "opponent": "chaser",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 8.883616039738591,
+          "cashSE": 0.40223144246863995,
+          "cash": 16.323669042720653,
+          "opponentCash": 16.162405613577757,
+          "win": 0.36393286349597215,
+          "survival": 0.5374102580874393
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 0.0018016915882571683,
+          "cashSE": 0.001766536038148005,
+          "cash": 0.006661946347982568,
+          "opponentCash": 22.823905626401924,
+          "win": 0,
+          "survival": 0.2524946458067502
+        },
+        {
+          "opponent": "overdrive",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 0.632964968810842,
+          "cashSE": 0.04450533185528887,
+          "cash": 2.605783624456956,
+          "opponentCash": 22.137954267254322,
+          "win": 0,
+          "survival": 0.24889789338924065
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 0.7124939597470883,
+          "cashSE": 0.045909923122823944,
+          "cash": 2.920812037909049,
+          "opponentCash": 22.109893944781465,
+          "win": 0,
+          "survival": 0.24889547762011527
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 3.265059779121137,
+          "cashSE": 0.06314490069265619,
+          "cash": 14.792859158414037,
+          "opponentCash": 20.05434261971959,
+          "win": 0,
+          "survival": 0.22101994212348894
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v031",
+          "n": 40,
+          "expectedCash": 7.299257112741979,
+          "cashSE": 0.0933339321286829,
+          "cash": 12.15361726430231,
+          "opponentCash": 19.163193205006294,
+          "win": 0,
+          "survival": 0.6007163421852599
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "catchupOnly",
+          "n": 40,
+          "expectedCash": 8.153886549706188,
+          "cashSE": 0.08965123444848433,
+          "cash": 13.647857326026088,
+          "opponentCash": 19.014795459095726,
+          "win": 0,
+          "survival": 0.5984802924608081
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v04",
+          "n": 40,
+          "expectedCash": 8.352636070905724,
+          "cashSE": 0.09686940997689675,
+          "cash": 13.974550113720072,
+          "opponentCash": 18.986102892187915,
+          "win": 0,
+          "survival": 0.5984751275691862
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v02",
+          "n": 40,
+          "expectedCash": 9.580804989044834,
+          "cashSE": 0.10789962722060153,
+          "cash": 16.433119332124583,
+          "opponentCash": 18.73563808239451,
+          "win": 0,
+          "survival": 0.5840436974434461
+        }
+      ],
+      "overall": {
+        "v031": {
+          "n": 320,
+          "expectedCash": 12.297102062370838,
+          "cashSE": 0.34973096153849015,
+          "cash": 15.363453122679763,
+          "opponentCash": 16.580893170764508,
+          "win": 0.4491994539419969,
+          "survival": 0.7143616643901843
+        },
+        "catchupOnly": {
+          "n": 320,
+          "expectedCash": 12.545680451031975,
+          "cashSE": 0.33604633339247314,
+          "cash": 15.970352266743454,
+          "opponentCash": 16.49793082281693,
+          "win": 0.45586990760140483,
+          "survival": 0.7136067257054308
+        },
+        "v04": {
+          "n": 320,
+          "expectedCash": 12.603032646707694,
+          "cashSE": 0.33453043256811643,
+          "cash": 16.101468881087154,
+          "opponentCash": 16.326059662213872,
+          "win": 0.4708369986530469,
+          "survival": 0.7127153883530457
+        },
+        "v02": {
+          "n": 320,
+          "expectedCash": 12.526925516463235,
+          "cashSE": 0.29596295075651835,
+          "cash": 17.964799927117486,
+          "opponentCash": 15.086262253944906,
+          "win": 0.48163257939545934,
+          "survival": 0.6731458912538364
+        }
+      },
+      "differences": {
+        "catchupOnly - v031": {
+          "meanBillions": 0.24857838866114323,
+          "lower95": 0.21936093702579237,
+          "upper95": 0.27779584029649407
+        },
+        "v04 - v031": {
+          "meanBillions": 0.30593058433685866,
+          "lower95": 0.2715174959242125,
+          "upper95": 0.34034367274950483
+        },
+        "v04 - catchupOnly": {
+          "meanBillions": 0.0573521956757155,
+          "lower95": 0.041810622551006205,
+          "upper95": 0.0728937688004248
+        },
+        "v04 - v02": {
+          "meanBillions": 0.07610713024445104,
+          "lower95": -0.04398689511032372,
+          "upper95": 0.1962011555992258
+        }
+      }
+    }
+  ],
+  "replays": [
+    {
+      "match": 1,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "observedOpponentCash": 17222539716.196354,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17189834483.377098,
+      "oppCash": 17383484145.41973,
+      "survival": 0.8925438571294821,
+      "expectedCash": 15342681173.210773,
+      "win": 0
+    },
+    {
+      "match": 1,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "observedOpponentCash": 17222539716.196354,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17225049681.733643,
+      "oppCash": 17351994322.099876,
+      "survival": 0.8925438571294821,
+      "expectedCash": 15374112282.181503,
+      "win": 0
+    },
+    {
+      "match": 1,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "observedOpponentCash": 17222539716.196354,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17480994129.31933,
+      "oppCash": 17189234882.995136,
+      "survival": 0.8923097848019121,
+      "expectedCash": 15598462109.65642,
+      "win": 0.8923097848019121
+    },
+    {
+      "match": 1,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "observedOpponentCash": 17222539716.196354,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17869011759.338535,
+      "oppCash": 17483356579.752274,
+      "survival": 0.8793883607985347,
+      "expectedCash": 15713800960.134455,
+      "win": 0.8793883607985347
+    },
+    {
+      "match": 2,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "observedOpponentCash": 16597860361.837242,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18667110946.994526,
+      "oppCash": 16678353092.1206,
+      "survival": 0.8331027588339809,
+      "expectedCash": 15551621629.401146,
+      "win": 0.8331027588339809
+    },
+    {
+      "match": 2,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "observedOpponentCash": 16597860361.837242,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18849470032.171806,
+      "oppCash": 16572863396.097431,
+      "survival": 0.8319511072193195,
+      "expectedCash": 15681837463.762716,
+      "win": 0.8319511072193195
+    },
+    {
+      "match": 2,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "observedOpponentCash": 16597860361.837242,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18852366717.716793,
+      "oppCash": 16565619232.915955,
+      "survival": 0.831893866591939,
+      "expectedCash": 15683168243.210604,
+      "win": 0.831893866591939
+    },
+    {
+      "match": 2,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "observedOpponentCash": 16597860361.837242,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18504487307.875397,
+      "oppCash": 18179714499.665737,
+      "survival": 0.8536330894487738,
+      "expectedCash": 15796042669.287298,
+      "win": 0.8536330894487738
+    },
+    {
+      "match": 3,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "observedOpponentCash": 16126368167.752182,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17602392326.413967,
+      "oppCash": 16159650980.369703,
+      "survival": 0.8156857023087273,
+      "expectedCash": 14358019747.084728,
+      "win": 0.8156857023087273
+    },
+    {
+      "match": 3,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "observedOpponentCash": 16126368167.752182,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17602392326.413967,
+      "oppCash": 16159650980.369703,
+      "survival": 0.8156857023087273,
+      "expectedCash": 14358019747.084728,
+      "win": 0.8156857023087273
+    },
+    {
+      "match": 3,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "observedOpponentCash": 16126368167.752182,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17609930272.352505,
+      "oppCash": 16098773045.047497,
+      "survival": 0.8156857023087273,
+      "expectedCash": 14364168341.81157,
+      "win": 0.8156857023087273
+    },
+    {
+      "match": 3,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "observedOpponentCash": 16126368167.752182,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17819670305.60551,
+      "oppCash": 16584998722.032068,
+      "survival": 0.8158230716353788,
+      "expectedCash": 14537698164.248837,
+      "win": 0.8158230716353788
+    },
+    {
+      "match": 4,
+      "name": "v031",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "observedOpponentCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5983180694.702087,
+      "oppCash": 6475973297.954608,
+      "survival": 0.938366924085411,
+      "expectedCash": 5614418864.73481,
+      "win": 0
+    },
+    {
+      "match": 4,
+      "name": "catchupOnly",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "observedOpponentCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5983180694.702087,
+      "oppCash": 6475973297.954608,
+      "survival": 0.938366924085411,
+      "expectedCash": 5614418864.73481,
+      "win": 0
+    },
+    {
+      "match": 4,
+      "name": "v04",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "observedOpponentCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5983180694.702087,
+      "oppCash": 6475973297.954608,
+      "survival": 0.938366924085411,
+      "expectedCash": 5614418864.73481,
+      "win": 0
+    },
+    {
+      "match": 4,
+      "name": "v02",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "observedOpponentCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 6361263565.287182,
+      "oppCash": 6191739485.353553,
+      "survival": 0.9375539792251022,
+      "expectedCash": 5964027968.534658,
+      "win": 0.9375539792251022
+    },
+    {
+      "match": 5,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "observedOpponentCash": 7626656206.326616,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18267975936.34545,
+      "oppCash": 7570058729.929001,
+      "survival": 0.7776803037087078,
+      "expectedCash": 14206645074.320496,
+      "win": 0.7776803037087078
+    },
+    {
+      "match": 5,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "observedOpponentCash": 7626656206.326616,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19195256439.86454,
+      "oppCash": 7492011696.889541,
+      "survival": 0.7776325573953002,
+      "expectedCash": 14926856355.190468,
+      "win": 0.7776325573953002
+    },
+    {
+      "match": 5,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "observedOpponentCash": 7626656206.326616,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19231406320.490864,
+      "oppCash": 7269330448.249332,
+      "survival": 0.7759306009317036,
+      "expectedCash": 14922236663.020239,
+      "win": 0.7759306009317036
+    },
+    {
+      "match": 5,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "observedOpponentCash": 7626656206.326616,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19700156099.476578,
+      "oppCash": 7005092767.114127,
+      "survival": 0.777436767239922,
+      "expectedCash": 15315625672.098904,
+      "win": 0.777436767239922
+    },
+    {
+      "match": 6,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "observedOpponentCash": 12580559991.536476,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13413645861.097029,
+      "oppCash": 12658634661.749098,
+      "survival": 0.6334705645085852,
+      "expectedCash": 8497149815.747382,
+      "win": 0.6334705645085852
+    },
+    {
+      "match": 6,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "observedOpponentCash": 12580559991.536476,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15096605972.814898,
+      "oppCash": 12625436299.473192,
+      "survival": 0.6321266719982996,
+      "expectedCash": 9542967292.065134,
+      "win": 0.6321266719982996
+    },
+    {
+      "match": 6,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "observedOpponentCash": 12580559991.536476,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15123819300.734207,
+      "oppCash": 12421364231.515547,
+      "survival": 0.6300574590680443,
+      "expectedCash": 9528875160.024841,
+      "win": 0.6300574590680443
+    },
+    {
+      "match": 6,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "observedOpponentCash": 12580559991.536476,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14612340914.294651,
+      "oppCash": 13616068428.202887,
+      "survival": 0.6376902309596738,
+      "expectedCash": 9318147052.498047,
+      "win": 0.6376902309596738
+    },
+    {
+      "match": 7,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "observedOpponentCash": 16975946004.261774,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18429127938.51865,
+      "oppCash": 17023863183.721863,
+      "survival": 0.8728083267757568,
+      "expectedCash": 16085096319.954815,
+      "win": 0.8728083267757568
+    },
+    {
+      "match": 7,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "observedOpponentCash": 16975946004.261774,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18429127938.51865,
+      "oppCash": 17023863183.721863,
+      "survival": 0.8728083267757568,
+      "expectedCash": 16085096319.954815,
+      "win": 0.8728083267757568
+    },
+    {
+      "match": 7,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "observedOpponentCash": 16975946004.261774,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18429619800.514725,
+      "oppCash": 17017867783.75374,
+      "survival": 0.8728054469304652,
+      "expectedCash": 16085472546.746805,
+      "win": 0.8728054469304652
+    },
+    {
+      "match": 7,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "observedOpponentCash": 16975946004.261774,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18515938062.00259,
+      "oppCash": 18018183255.12339,
+      "survival": 0.8825114468406323,
+      "expectedCash": 16340527288.70944,
+      "win": 0.8825114468406323
+    },
+    {
+      "match": 8,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "observedOpponentCash": 16302984933.037981,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17668077150.50304,
+      "oppCash": 16368167198.475643,
+      "survival": 0.8412358408141409,
+      "expectedCash": 14863019737.272537,
+      "win": 0.8412358408141409
+    },
+    {
+      "match": 8,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "observedOpponentCash": 16302984933.037981,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17668077150.50304,
+      "oppCash": 16368167198.475643,
+      "survival": 0.8412358408141409,
+      "expectedCash": 14863019737.272537,
+      "win": 0.8412358408141409
+    },
+    {
+      "match": 8,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "observedOpponentCash": 16302984933.037981,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17750193126.29225,
+      "oppCash": 16292936433.712317,
+      "survival": 0.8412220815342841,
+      "expectedCash": 14931854409.33511,
+      "win": 0.8412220815342841
+    },
+    {
+      "match": 8,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "observedOpponentCash": 16302984933.037981,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17866005495.992493,
+      "oppCash": 17633647149.668804,
+      "survival": 0.8413135589695289,
+      "expectedCash": 15030912668.402607,
+      "win": 0.8413135589695289
+    },
+    {
+      "match": 9,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "observedOpponentCash": 18198977026.014908,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17596435366.449356,
+      "oppCash": 18307962030.241894,
+      "survival": 0.8097934157561554,
+      "expectedCash": 14249477500.52944,
+      "win": 0
+    },
+    {
+      "match": 9,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "observedOpponentCash": 18198977026.014908,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17972340391.71617,
+      "oppCash": 18268597219.017704,
+      "survival": 0.8095654648187193,
+      "expectedCash": 14549786103.099945,
+      "win": 0
+    },
+    {
+      "match": 9,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "observedOpponentCash": 18198977026.014908,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18000148305.23383,
+      "oppCash": 17926269141.420273,
+      "survival": 0.8019839249160393,
+      "expectedCash": 14435829586.90222,
+      "win": 0.8019839249160393
+    },
+    {
+      "match": 9,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "observedOpponentCash": 18198977026.014908,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19100399558.938232,
+      "oppCash": 19092706276.91501,
+      "survival": 0.8158226316149394,
+      "expectedCash": 15582538233.069817,
+      "win": 0.8158226316149394
+    },
+    {
+      "match": 10,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "observedOpponentCash": 17741965892.179382,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17896172915.467243,
+      "oppCash": 16938583693.674726,
+      "survival": 0.8472342400419631,
+      "expectedCash": 15162250459.695454,
+      "win": 0.8472342400419631
+    },
+    {
+      "match": 10,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "observedOpponentCash": 17741965892.179382,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17896172915.467243,
+      "oppCash": 16938583693.674726,
+      "survival": 0.8472342400419631,
+      "expectedCash": 15162250459.695454,
+      "win": 0.8472342400419631
+    },
+    {
+      "match": 10,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "observedOpponentCash": 17741965892.179382,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17907019880.083294,
+      "oppCash": 16932516782.497925,
+      "survival": 0.8471435732084949,
+      "expectedCash": 15169816806.729315,
+      "win": 0.8471435732084949
+    },
+    {
+      "match": 10,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "observedOpponentCash": 17741965892.179382,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18483756517.216972,
+      "oppCash": 17201339750.246742,
+      "survival": 0.8547494576579947,
+      "expectedCash": 15798980858.573631,
+      "win": 0.8547494576579947
+    },
+    {
+      "match": 11,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "observedOpponentCash": 18758753360.195057,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 7686794373.07296,
+      "oppCash": 18768518819.432533,
+      "survival": 0.3498333038830374,
+      "expectedCash": 2689096671.801655,
+      "win": 0
+    },
+    {
+      "match": 11,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "observedOpponentCash": 18758753360.195057,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12100120739.036959,
+      "oppCash": 18243366995.214,
+      "survival": 0.34966503661807147,
+      "expectedCash": 4230989161.2984443,
+      "win": 0
+    },
+    {
+      "match": 11,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "observedOpponentCash": 18758753360.195057,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12398137058.8945,
+      "oppCash": 17976530688.243855,
+      "survival": 0.3467696898728585,
+      "expectedCash": 4299298142.91404,
+      "win": 0
+    },
+    {
+      "match": 11,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "observedOpponentCash": 18758753360.195057,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13963413226.933369,
+      "oppCash": 15692558228.330742,
+      "survival": 0.3070759606451588,
+      "expectedCash": 4287828530.545881,
+      "win": 0
+    },
+    {
+      "match": 12,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "observedOpponentCash": 17219147972.529167,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16890445756.572258,
+      "oppCash": 17177190427.753372,
+      "survival": 0.8342602492855911,
+      "expectedCash": 14091027487.422726,
+      "win": 0
+    },
+    {
+      "match": 12,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "observedOpponentCash": 17219147972.529167,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17274626703.14019,
+      "oppCash": 17070484847.257988,
+      "survival": 0.8342602492855911,
+      "expectedCash": 14411534379.677263,
+      "win": 0.8342602492855911
+    },
+    {
+      "match": 12,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "observedOpponentCash": 17219147972.529167,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17754750783.903564,
+      "oppCash": 16913932206.03787,
+      "survival": 0.8342602491640267,
+      "expectedCash": 14812082812.824587,
+      "win": 0.8342602491640267
+    },
+    {
+      "match": 12,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "observedOpponentCash": 17219147972.529167,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18221054169.172855,
+      "oppCash": 17514873211.214645,
+      "survival": 0.837664571042715,
+      "expectedCash": 15263131524.566254,
+      "win": 0.837664571042715
+    },
+    {
+      "match": 13,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "observedOpponentCash": 16701382174.412437,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18192052587.926537,
+      "oppCash": 16893240721.679571,
+      "survival": 0.7885950690198276,
+      "expectedCash": 14346162966.18826,
+      "win": 0.7885950690198276
+    },
+    {
+      "match": 13,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "observedOpponentCash": 16701382174.412437,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18264016609.95836,
+      "oppCash": 16856935680.355427,
+      "survival": 0.7863880512104036,
+      "expectedCash": 14362604429.179596,
+      "win": 0.7863880512104036
+    },
+    {
+      "match": 13,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "observedOpponentCash": 16701382174.412437,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18549576724.003105,
+      "oppCash": 16744746660.264854,
+      "survival": 0.7863861154516927,
+      "expectedCash": 14587129583.261936,
+      "win": 0.7863861154516927
+    },
+    {
+      "match": 13,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "observedOpponentCash": 16701382174.412437,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18264801532.660248,
+      "oppCash": 17867980308.102398,
+      "survival": 0.799471938531585,
+      "expectedCash": 14602196288.210554,
+      "win": 0.799471938531585
+    },
+    {
+      "match": 14,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "observedOpponentCash": 17381133187.406654,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17540527616.088306,
+      "oppCash": 17405736512.86442,
+      "survival": 0.8546022616046913,
+      "expectedCash": 14990174570.448612,
+      "win": 0.8546022616046913
+    },
+    {
+      "match": 14,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "observedOpponentCash": 17381133187.406654,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17545278329.53851,
+      "oppCash": 17406901370.591763,
+      "survival": 0.8546465908568432,
+      "expectedCash": 14995012309.974537,
+      "win": 0.8546465908568432
+    },
+    {
+      "match": 14,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "observedOpponentCash": 17381133187.406654,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17572237812.228886,
+      "oppCash": 17090486088.107262,
+      "survival": 0.8497279591575401,
+      "expectedCash": 14931621774.016209,
+      "win": 0.8497279591575401
+    },
+    {
+      "match": 14,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "observedOpponentCash": 17381133187.406654,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17821848742.352726,
+      "oppCash": 17414815305.915237,
+      "survival": 0.856833159506588,
+      "expectedCash": 15270350966.158598,
+      "win": 0.856833159506588
+    },
+    {
+      "match": 15,
+      "name": "v031",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "observedOpponentCash": 12495565189.1801,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14402906285.125072,
+      "oppCash": 12555566292.490019,
+      "survival": 0.6153716751925078,
+      "expectedCash": 8863140568.318115,
+      "win": 0.6153716751925078
+    },
+    {
+      "match": 15,
+      "name": "catchupOnly",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "observedOpponentCash": 12495565189.1801,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14933891892.036057,
+      "oppCash": 12847357844.89336,
+      "survival": 0.6215955164522577,
+      "expectedCash": 9282840243.272337,
+      "win": 0.6215955164522577
+    },
+    {
+      "match": 15,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "observedOpponentCash": 12495565189.1801,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14959624016.981,
+      "oppCash": 12704545434.169512,
+      "survival": 0.6186659953349295,
+      "expectedCash": 9255010682.301867,
+      "win": 0.6186659953349295
+    },
+    {
+      "match": 15,
+      "name": "v02",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "observedOpponentCash": 12495565189.1801,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15475948032.026487,
+      "oppCash": 12316555768.123543,
+      "survival": 0.6110200730918228,
+      "expectedCash": 9456114897.694077,
+      "win": 0.6110200730918228
+    }
+  ],
+  "replaySummary": {
+    "v031": {
+      "n": 14,
+      "expectedCash": 13.092540265814009,
+      "cashSE": 0.9717218906162935,
+      "cash": 16.53167853885368,
+      "opponentCash": 15.849215034994442,
+      "win": 0.5628419102006349,
+      "survival": 0.7690155406330825
+    },
+    "catchupOnly": {
+      "n": 14,
+      "expectedCash": 13.416209020264965,
+      "cashSE": 0.864608434674602,
+      "cash": 17.146601937351004,
+      "opponentCash": 15.801872480580874,
+      "win": 0.6225403467399001,
+      "survival": 0.7690956580660627
+    },
+    "v04": {
+      "n": 14,
+      "expectedCash": 13.471787633053983,
+      "cashSE": 0.8681517508654282,
+      "cash": 17.258558874910634,
+      "opponentCash": 15.653153789923651,
+      "win": 0.7427194828142715,
+      "survival": 0.7674887463766185
+    },
+    "v02": {
+      "n": 14,
+      "expectedCash": 13.73670684101417,
+      "cashSE": 0.9033915749848402,
+      "cash": 17.587059408849047,
+      "opponentCash": 16.11584930360054,
+      "win": 0.7473827398098635,
+      "survival": 0.7693167369988034
+    }
+  },
+  "trace": {
+    "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+    "botVersion": "0.3.1",
+    "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+  }
+}
