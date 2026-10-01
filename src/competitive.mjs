@@ -45,19 +45,32 @@ export function decideCompetitive(obs, { held = false, history = [], lookahead =
     return { held: false, reason: 'invalid or inactive observation' };
   const { forecast = 2, opponentForecast = 2, lead = 0, wealth = 1, winWeight = 0, hysteresis = .08,
     opponentModel = 'bounded', maxTargetGap = Infinity, motionModel = 'issued',
-    catchupToDeployed = false, endgameSeconds = 0, endgameForecast = forecast, deadlineAware = false } = params;
+    catchupToDeployed = false, endgameSeconds = 0, endgameForecast = forecast, deadlineAware = false,
+    slowdownFactor = 0, deploymentForecastBoost = 0 } = params;
   const slope = frontierSlope(obs, history);
+  // A shorter public-observation window detects slowing before the half-second
+  // average catches up. Never extrapolate a negative frontier speed or a reversal.
+  const recentSlope = slowdownFactor > 0 ? frontierSlope(obs, history, 1 / 6) : slope;
+  const forecastSlope = Math.min(slope, recentSlope);
+  const frontierDeceleration = Math.max(0, (slope - recentSlope) * 6 * slowdownFactor);
+  const frontierAdvance = horizon => {
+    const duration = frontierDeceleration > 0 ? Math.min(horizon, forecastSlope / frontierDeceleration) : horizon;
+    return Math.min(3, Math.max(0, forecastSlope * duration - .5 * frontierDeceleration * duration * duration));
+  };
   const velocity = opponentSpeed(obs, history);
+  const gaps = history.filter(h => h.t <= obs.t && obs.t - h.t <= 2 && Number.isFinite(h.opponent)).map(h => h.opponent - h.safety).sort((a, b) => a - b);
+  const gap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : obs.opponent.deployed - obs.safety;
   // Ramp toward a settlement-aware frontier forecast near the finish. Only past
   // observations are used; an unseen plateau can still invalidate this forecast.
   const endgameBlend = endgameSeconds > 0 ? Math.max(0, Math.min(1, (obs.t - ACCELERATION_END + endgameSeconds) / endgameSeconds)) : 0;
-  const forecastSeconds = forecast + endgameBlend * (endgameForecast - forecast);
-  const predictedSafety = obs.safety + Math.min(3, forecastSeconds * slope);
-  const gaps = history.filter(h => h.t <= obs.t && obs.t - h.t <= 2 && Number.isFinite(h.opponent)).map(h => h.opponent - h.safety).sort((a, b) => a - b);
-  const gap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : obs.opponent.deployed - obs.safety;
+  // A sustained positive deployment offset makes lagging costly to our own cash.
+  // Extend the planning horizon using visible research, never the relative bank balance.
+  const baseForecast = forecast + Math.min(1, deploymentForecastBoost * Math.max(0, gap));
+  const forecastSeconds = baseForecast + endgameBlend * (endgameForecast - baseForecast);
+  const predictedSafety = obs.safety + frontierAdvance(forecastSeconds);
   // Deployment speed oscillates as players tap the accelerator. Leaderboard uses the
   // recent frontier offset through brief pauses; Win-focused retains the v0.2 forecast.
-  const anchor = obs.safety + Math.min(3, opponentForecast * slope) + gap;
+  const anchor = obs.safety + frontierAdvance(opponentForecast) + gap;
   const prediction = opponentModel === 'anchored' ? anchor : Math.min(
     obs.opponent.deployed + Math.min(4, opponentForecast * velocity), anchor);
   const predictedOpponent = Math.max(obs.opponent.deployed, prediction) + lead;
@@ -100,5 +113,5 @@ export function decideCompetitive(obs, { held = false, history = [], lookahead =
   return { held: accelerate, reason: accelerate ? 'building profitable lead' : 'protecting cash', stop, target, slope,
     predictedOpponent, predictedSafety, opponentSpeed: velocity, delayFrames, atRisk,
     targetCeiling: ceiling, catchup: catchupToDeployed && obs.opponent.deployed > predictedSafety + maxTargetGap,
-    endgameBlend, forecastSeconds, deadlineLimited };
+    endgameBlend, forecastSeconds, deadlineLimited, forecastSlope, frontierDeceleration };
 }

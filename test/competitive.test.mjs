@@ -23,6 +23,14 @@ test('Leaderboard enables catch-up and the finish controller without changing Wi
   assert.equal(decideCompetitive(o, { params: COMPETITIVE_PRESETS.competitive }).endgameBlend, 0);
 });
 
+test('experimental cash forecasts do not silently change the v0.4 production default', () => {
+  const params = { ...frozen031, catchupToDeployed: true, endgameSeconds: 6, endgameForecast: 2, deadlineAware: true };
+  const o = observation(); o.t = 89;
+  const history = [{ t: 88.5, safety: 11.25, opponent: 12 }, { t: 88.8, safety: 11.875, opponent: 12 }];
+  assert.deepEqual(decideCompetitive(o, { params: COMPETITIVE_PRESETS.leaderboard, history }), decideCompetitive(o, { params, history }));
+  assert.equal(COMPETITIVE_PRESETS.competitive.winWeight, .5);
+});
+
 test('online delay makes the policy brake before a zero-delay policy', () => {
   const o = observation();
   assert.equal(decideCompetitive(o, { held: true, delayFrames: 0 }).held, true);
@@ -31,6 +39,59 @@ test('online delay makes the policy brake before a zero-delay policy', () => {
 
 test('a larger cash balance reduces the target risk on a flat frontier', () => {
   assert.ok(decideCompetitive(observation(30e9)).target < decideCompetitive(observation(1e9)).target);
+});
+
+test('a cash-only objective ignores the opponent bank balance but not deployment or own cash', () => {
+  const params = { ...COMPETITIVE_PRESETS.leaderboard, winWeight: 0 };
+  const o = { t: 60, phase: 'running', safety: 36,
+    own: { position: 36, speed: .8, deployed: 35.5, held: true, cash: 12e9 }, opponent: { deployed: 36.5, cash: 1e9 } };
+  const behind = { ...o, opponent: { ...o.opponent, cash: 20e9 } };
+  assert.deepEqual(decideCompetitive(o, { params }), decideCompetitive(behind, { params }));
+  const deployed = { ...o, opponent: { ...o.opponent, deployed: 40 } };
+  assert.notEqual(decideCompetitive(o, { params }).target, decideCompetitive(deployed, { params }).target);
+  assert.ok(decideCompetitive(observation(30e9), { params }).target < decideCompetitive(observation(1e9), { params }).target);
+  const competitive = { ...params, winWeight: .25 };
+  assert.ok(decideCompetitive(behind, { params: competitive }).target > decideCompetitive(o, { params: competitive }).target);
+});
+
+test('slowdown forecast brakes extrapolation before the long slope reaches zero', () => {
+  const o = observation(); o.t = 60;
+  const history = [{ t: 59.5, safety: 11.25, opponent: 12 }, { t: 60 - 1 / 6, safety: 11.875, opponent: 12 }];
+  const params = { ...frozen031, forecast: 2, slowdownFactor: .5 };
+  const d = decideCompetitive(o, { history, params });
+  const old = decideCompetitive(o, { history, params: { ...params, slowdownFactor: 0 } });
+  assert.ok(d.forecastSlope < d.slope);
+  assert.ok(d.frontierDeceleration > 0);
+  assert.ok(d.predictedSafety >= o.safety && d.predictedSafety < old.predictedSafety);
+  assert.ok(d.predictedOpponent < old.predictedOpponent);
+  assert.ok(d.target < old.target);
+  assert.deepEqual(d, decideCompetitive(o, { params, history: [...history, { t: 61, safety: 100, opponent: 100 }] }));
+});
+
+test('slowdown forecast preserves steady rises and never predicts a falling frontier', () => {
+  const o = observation(); o.t = 60;
+  const params = { ...frozen031, forecast: 2, slowdownFactor: .5 };
+  for (const speed of [0, 1, 2]) {
+    const history = [{ t: 59.5, safety: 12 - .5 * speed, opponent: 12 }, { t: 59.75, safety: 12 - .25 * speed, opponent: 12 }];
+    const d = decideCompetitive(o, { history, params });
+    assert.equal(d.predictedSafety, decideCompetitive(o, { history, params: { ...params, slowdownFactor: 0 } }).predictedSafety);
+    assert.equal(d.frontierDeceleration, 0);
+    assert.ok(d.predictedSafety >= o.safety);
+  }
+});
+
+test('adaptive cash horizon uses deployed research offsets, is bounded, and honors settlement', () => {
+  const o = observation(); o.t = 60;
+  const params = { ...frozen031, winWeight: 0, deploymentForecastBoost: 1, endgameSeconds: 6, endgameForecast: 2 };
+  for (const [gap, horizon] of [[-2, 1], [0, 1], [.5, 1.5], [4, 2]]) {
+    const history = [{ t: 59, safety: 11, opponent: 11 + gap }, { t: 60, safety: 12, opponent: 12 + gap }];
+    const d = decideCompetitive(o, { params, history });
+    assert.equal(d.forecastSeconds, horizon);
+    assert.deepEqual(d, decideCompetitive(o, { params, history: [...history, { t: 61, safety: 100, opponent: 100 }] }));
+  }
+  const end = { ...o, t: 89.5, opponent: { ...o.opponent, deployed: 11 } };
+  const d = decideCompetitive(end, { params });
+  assert.ok(d.forecastSeconds > 1.9 && d.forecastSeconds < 2);
 });
 
 test('prediction uses only past public observations and caps implausible opponent speed', () => {

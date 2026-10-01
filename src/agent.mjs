@@ -2,6 +2,7 @@
 // Keeps authoritative (observed) state, desired action and last issued action separate.
 import { decideTarget, PRESETS } from './policy.mjs';
 import { decideCompetitive, COMPETITIVE_PRESETS } from './competitive.mjs';
+import { readOpponentIdentity, selectOpponentProfile } from './opponents.mjs';
 
 export const OBJECTIVES = ['leaderboard', 'competitive', 'cash', 'win', 'repro-cash', 'repro-win'];
 export const normalizeMatchLimit = n => Math.max(1, Math.min(50, Math.trunc(Number(n)) || 1));
@@ -16,7 +17,8 @@ export function extractObservation(snap) {
     match: `${snap.room}:${snap.match}`,
     t: g.t, phase: g.phase, safety: g.safety, hazard: g.hazard,
     own: { position: me.position, speed: me.speed, deployed: me.deployed, held: me.held, cash: me.cash, profit: me.profit, score: g.scores?.[p] ?? null },
-    opponent: { deployed: op.deployed, cash: op.cash, profit: op.profit, score: g.scores?.[1 - p] ?? null },
+    opponent: { deployed: op.deployed, cash: op.cash, profit: op.profit, score: g.scores?.[1 - p] ?? null,
+      identity: readOpponentIdentity(snap.players?.[1 - p]) },
   };
 }
 
@@ -45,6 +47,9 @@ export class Agent {
 
   resetMatch(match) {
     this.match = match;
+    this.opponentIdentity = null;
+    this.loggedProfile = null;
+    this.profilesUsed = new Set();
     this.history = [];
     this.frameGaps = [];
     this.recentAckGame = [];
@@ -67,11 +72,16 @@ export class Agent {
     return Math.max(250, 4 * (p ?? 67));
   }
 
+  get opponentProfile() { return selectOpponentProfile(this.objective, this.opponentIdentity); }
+  get profileId() { return this.opponentProfile?.id ?? this.objective; }
+
   log(e) { if (this.trace.length < this.traceLimit) this.trace.push(e); }
 
   arm(now) {
     if (this.completed >= this.matchLimit) { this.reason = `match limit ${this.matchLimit} reached`; return false; }
-    if (['running', 'settling'].includes(this.last?.phase)) this.participated = true;
+    if (['running', 'settling'].includes(this.last?.phase)) {
+      this.participated = true; this.profilesUsed.add(this.profileId);
+    }
     this.armed = true; this.reason = 'armed'; this.log({ k: 'arm', now, objective: this.objective });
     return true;
   }
@@ -109,6 +119,14 @@ export class Agent {
       if (o.t === this.last.t && o.phase === this.last.phase) { this.stats.duplicates++; return null; }
       if (o.t < this.last.t) { this.stats.outOfOrder++; return null; }
     }
+    // Retain accepted identity through metadata-free deltas within this match.
+    // Explicitly invalid/guest metadata clears it; resetMatch prevents carry-over.
+    if (o.opponent.identity !== undefined) this.opponentIdentity = o.opponent.identity;
+    const profile = this.profileId;
+    if (profile !== this.loggedProfile) {
+      this.log({ k: 'profile', now, match: this.match, profile, opponent: this.opponentIdentity });
+      this.loggedProfile = profile;
+    }
     if (this.lastRecv != null) {
       const gap = now - this.lastRecv;
       if (this.paused && gap > this.staleMs) this.freshSnapshots = 0;
@@ -120,7 +138,9 @@ export class Agent {
       if (this.frameGaps.length > 60) this.frameGaps.shift();
     }
     this.last = o; this.lastRecv = now;
-    if (this.armed && ['running', 'settling'].includes(o.phase)) this.participated = true;
+    if (this.armed && ['running', 'settling'].includes(o.phase)) {
+      this.participated = true; this.profilesUsed.add(profile);
+    }
     this.history.push({ t: o.t, safety: o.safety, opponent: o.opponent.deployed });
     if (this.history.length > 64) this.history.splice(0, this.history.length - 32);
 
@@ -140,16 +160,19 @@ export class Agent {
       this.pending = null;
     }
 
-    const entry = { k: 'obs', now, objective: this.objective, t: o.t, phase: o.phase, S: o.safety, x: o.own.position, v: o.own.speed,
+    const entry = { k: 'obs', now, objective: this.objective, profile, opponentIdentity: this.opponentIdentity,
+      t: o.t, phase: o.phase, S: o.safety, x: o.own.position, v: o.own.speed,
       dep: o.own.deployed, held: o.own.held, opp: o.opponent.deployed, cash: o.own.cash, oppCash: o.opponent.cash, hz: o.hazard };
 
     if (o.phase !== 'running') {
       if (['finished', 'crashed'].includes(o.phase) && !this.endedCounted && this.participated) {
         this.endedCounted = true; this.completed++;
-        this.results.push({ match: this.match, objective: this.objective, phase: o.phase,
+        this.results.push({ match: this.match, objective: this.objective, phase: o.phase, profile,
+          profilesUsed: [...this.profilesUsed], opponent: this.opponentIdentity,
           cash: o.phase === 'crashed' ? 0 : o.own.score ?? o.own.cash,
           opponentCash: o.phase === 'crashed' ? 0 : o.opponent.score ?? o.opponent.cash });
-        this.log({ k: 'end', now, phase: o.phase, cash: o.own.cash, oppCash: o.opponent.cash, hazard: o.hazard });
+        this.log({ k: 'end', now, phase: o.phase, profile, opponent: this.opponentIdentity,
+          cash: o.own.cash, oppCash: o.opponent.cash, hazard: o.hazard });
       }
       if (['finished', 'crashed'].includes(o.phase)) { this.paused = false; this.freshSnapshots = 0; }
       this.log(entry);
@@ -167,7 +190,8 @@ export class Agent {
       this.log({ k: 'resume', now, reason: 'fresh snapshots restored' });
     }
 
-    const competitive = COMPETITIVE_PRESETS[this.objective] && { ...COMPETITIVE_PRESETS[this.objective], ...this.policyParams };
+    const competitive = COMPETITIVE_PRESETS[this.objective] && {
+      ...COMPETITIVE_PRESETS[this.objective], ...this.opponentProfile?.params, ...this.policyParams };
     const params = PRESETS[this.objective];
     if (!competitive && !params) return this.disarm(now, 'unknown objective');
     // Compensated presets look ahead one observed decision interval (frames between snapshots).

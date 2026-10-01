@@ -12,7 +12,8 @@ const n = Number(process.argv[2] || 40);
 if (!Number.isInteger(n) || n < 2) throw new Error('Expected at least two seeds');
 const baseline = { forecast: 1, opponentForecast: 3, wealth: 1, winWeight: .25,
   opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending',
-  catchupToDeployed: false, endgameSeconds: 0, endgameForecast: 1, deadlineAware: false };
+  catchupToDeployed: false, endgameSeconds: 0, endgameForecast: 1, deadlineAware: false,
+  slowdownFactor: 0, deploymentForecastBoost: 0 };
 const candidates = {
   v031: { objective: 'leaderboard', params: baseline },
   catchupOnly: { objective: 'leaderboard', params: { ...baseline, catchupToDeployed: true } },

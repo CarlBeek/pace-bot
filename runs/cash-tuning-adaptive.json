@@ -1,0 +1,4928 @@
+{
+  "generatedAt": "2026-10-01T02:03:25.294Z",
+  "mode": "tune-adaptive",
+  "seedStart": 11000,
+  "seedsPerOpponent": 8,
+  "candidates": {
+    "v04": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0.25,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0,
+        "deploymentForecastBoost": 0
+      }
+    },
+    "pureCash": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0,
+        "deploymentForecastBoost": 0
+      }
+    },
+    "adaptive": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0,
+        "deploymentForecastBoost": 1
+      }
+    },
+    "adaptiveSlow": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0.5,
+        "deploymentForecastBoost": 1
+      }
+    },
+    "adaptiveHalf": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0.5,
+        "deploymentForecastBoost": 0.5
+      }
+    },
+    "adaptive15": {
+      "objective": "leaderboard",
+      "params": {
+        "forecast": 1.5,
+        "opponentForecast": 3,
+        "wealth": 1,
+        "winWeight": 0,
+        "opponentModel": "anchored",
+        "maxTargetGap": 2,
+        "motionModel": "pending",
+        "catchupToDeployed": true,
+        "endgameSeconds": 6,
+        "endgameForecast": 2,
+        "deadlineAware": true,
+        "slowdownFactor": 0.5,
+        "deploymentForecastBoost": 1
+      }
+    }
+  },
+  "metric": "Mean terminal own cash, with catastrophe outcomes worth zero. Neither wins nor opponent cash enter candidate ranking.",
+  "engineSha256": "8865cb18640b986096ba63f0502a3bb097bb8c4d76048113070b27ded7dd550c",
+  "caveat": "Equal-weight synthetic opponents are not the online population. Intervals cluster by frontier seed. Replays freeze opponent behavior and cannot model reactions; incomplete paths are excluded from full-game averages. No live games or leaderboard writes.",
+  "scenarios": [
+    {
+      "scenario": "normal",
+      "timing": {
+        "obsDelay": 3,
+        "inputDelay": 4
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 14.678246265295684,
+          "cashSE": 0.6604688011708959,
+          "cash": 17.729255294159177,
+          "opponentCash": 10.587183157767852,
+          "win": 0.8250738684840528,
+          "survival": 0.8250738684840528
+        },
+        {
+          "opponent": "cpu",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 15.023380274227664,
+          "cashSE": 0.6892349283659331,
+          "cash": 17.694394378488997,
+          "opponentCash": 10.692556530745565,
+          "win": 0.8460421396767611,
+          "survival": 0.8460421396767611
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 14.158344174176268,
+          "cashSE": 0.920476844941462,
+          "cash": 17.556013420710368,
+          "opponentCash": 10.400982863504993,
+          "win": 0.8013835320186019,
+          "survival": 0.8013835320186019
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 14.584954214175054,
+          "cashSE": 0.9065411069727777,
+          "cash": 17.49970398838152,
+          "opponentCash": 10.579281690132945,
+          "win": 0.8284950744430357,
+          "survival": 0.8284950744430357
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 14.763307970555346,
+          "cashSE": 0.8776035176054268,
+          "cash": 17.482602726061817,
+          "opponentCash": 10.682989997094522,
+          "win": 0.8396647636740016,
+          "survival": 0.8396647636740016
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 13.459044548656308,
+          "cashSE": 0.9737238191922838,
+          "cash": 17.636590225926472,
+          "opponentCash": 9.611114545708975,
+          "win": 0.7575154483246668,
+          "survival": 0.7575154483246668
+        },
+        {
+          "opponent": "cautious",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 19.892197622533875,
+          "cashSE": 0.2853816540619132,
+          "cash": 20.523067910155618,
+          "opponentCash": 11.606610718141916,
+          "win": 0.9690939822810277,
+          "survival": 0.9690939822810277
+        },
+        {
+          "opponent": "cautious",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 19.90379888302372,
+          "cashSE": 0.27153443565850377,
+          "cash": 20.411051145615144,
+          "opponentCash": 12.012256106102058,
+          "win": 0.9750309865309379,
+          "survival": 0.9750309865309379
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 19.90312461666378,
+          "cashSE": 0.2689119177587975,
+          "cash": 20.4126505674793,
+          "opponentCash": 11.991189538633446,
+          "win": 0.9749363551369968,
+          "survival": 0.9749363551369968
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 19.970179624916558,
+          "cashSE": 0.2652972932124497,
+          "cash": 20.33380808512142,
+          "opponentCash": 12.694434951838291,
+          "win": 0.9820250932022452,
+          "survival": 0.9820250932022452
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 19.964777881211866,
+          "cashSE": 0.26763434850527845,
+          "cash": 20.338224502862648,
+          "opponentCash": 12.657670350405175,
+          "win": 0.9815320225502712,
+          "survival": 0.9815320225502712
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 19.902687700867027,
+          "cashSE": 0.31440383029355035,
+          "cash": 20.78097957369349,
+          "opponentCash": 8.487401746506057,
+          "win": 0.9575949005820591,
+          "survival": 0.9575949005820591
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 19.37643689124532,
+          "cashSE": 0.26481799175871135,
+          "cash": 20.188374189292844,
+          "opponentCash": 14.639834658803888,
+          "win": 0.9596530153054561,
+          "survival": 0.9596530153054561
+        },
+        {
+          "opponent": "oldWin",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 19.43798533404588,
+          "cashSE": 0.2301373706453415,
+          "cash": 20.04216242127784,
+          "opponentCash": 15.149700344608577,
+          "win": 0.9698217646749859,
+          "survival": 0.9698217646749859
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 19.437538428999744,
+          "cashSE": 0.22901711593779214,
+          "cash": 20.039542186277345,
+          "opponentCash": 15.166403428850964,
+          "win": 0.969934596445123,
+          "survival": 0.969934596445123
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 19.504192133253277,
+          "cashSE": 0.2306451208145525,
+          "cash": 19.951170187121154,
+          "opponentCash": 15.706174702922986,
+          "win": 0.9775530669575085,
+          "survival": 0.9775530669575085
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 19.49081923584006,
+          "cashSE": 0.23607185675002454,
+          "cash": 19.953290645172196,
+          "opponentCash": 15.689707140006771,
+          "win": 0.9767590182474293,
+          "survival": 0.9767590182474293
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 19.505989962507424,
+          "cashSE": 0.284750624891359,
+          "cash": 20.44163437222782,
+          "opponentCash": 12.229224632384327,
+          "win": 0.9541085337978085,
+          "survival": 0.9541085337978085
+        },
+        {
+          "opponent": "frontier",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 16.170436479240216,
+          "cashSE": 0.19727787037473757,
+          "cash": 18.962478233091957,
+          "opponentCash": 18.028950505342916,
+          "win": 0.8526876443976039,
+          "survival": 0.8526876443976039
+        },
+        {
+          "opponent": "frontier",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 15.180837575054554,
+          "cashSE": 0.15020272655530506,
+          "cash": 17.70017980185436,
+          "opponentCash": 18.25488229562466,
+          "win": 0.42778082860552374,
+          "survival": 0.8578357101224114
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 14.988735147492855,
+          "cashSE": 0.15041839163755472,
+          "cash": 17.80515208752247,
+          "opponentCash": 17.509532507294065,
+          "win": 0.6303390766129238,
+          "survival": 0.8422089279620356
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 14.728857515657646,
+          "cashSE": 0.18578829620411663,
+          "cash": 17.240591445567986,
+          "opponentCash": 17.823589540210754,
+          "win": 0.3179880145804141,
+          "survival": 0.8547234037508884
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 14.766814678668757,
+          "cashSE": 0.21802609503568499,
+          "cash": 17.178807146550454,
+          "opponentCash": 18.030193661723978,
+          "win": 0.10297154389690782,
+          "survival": 0.8598232342742269
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 15.830046830230504,
+          "cashSE": 0.1731869587304491,
+          "cash": 18.643918866459725,
+          "opponentCash": 17.465045075514944,
+          "win": 0.8493552982056431,
+          "survival": 0.8493552982056431
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 11.234250802411184,
+          "cashSE": 0.1719349437352268,
+          "cash": 17.010149366001368,
+          "opponentCash": 20.183043112336353,
+          "win": 0,
+          "survival": 0.6603302088161214
+        },
+        {
+          "opponent": "aggressive",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 9.566186736253517,
+          "cashSE": 0.21361827049035512,
+          "cash": 14.50408526940379,
+          "opponentCash": 20.46054117126887,
+          "win": 0,
+          "survival": 0.660682926359575
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 9.917428445938018,
+          "cashSE": 0.20609524465494353,
+          "cash": 16.086825428786952,
+          "opponentCash": 19.31493484684002,
+          "win": 0,
+          "survival": 0.6184718142952457
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 9.635488417791521,
+          "cashSE": 0.2563247515794816,
+          "cash": 15.294891144137845,
+          "opponentCash": 19.677562939794335,
+          "win": 0,
+          "survival": 0.6321352037160408
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 9.699919219697437,
+          "cashSE": 0.2700734483630235,
+          "cash": 15.065097026975891,
+          "opponentCash": 19.957522723212822,
+          "win": 0,
+          "survival": 0.6454762587646549
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 10.13614667333963,
+          "cashSE": 0.13766031490254846,
+          "cash": 16.347611835095826,
+          "opponentCash": 19.182326592773375,
+          "win": 0,
+          "survival": 0.621505243107826
+        },
+        {
+          "opponent": "chaser",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 10.635794390028748,
+          "cashSE": 0.6665574216222043,
+          "cash": 16.51557738310487,
+          "opponentCash": 17.678028990391898,
+          "win": 0.08106611044000939,
+          "survival": 0.6393657342347635
+        },
+        {
+          "opponent": "chaser",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 11.193368733746643,
+          "cashSE": 0.5480996329285214,
+          "cash": 15.600555865558519,
+          "opponentCash": 18.868161071076553,
+          "win": 0,
+          "survival": 0.7150359672966495
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 10.344288718800351,
+          "cashSE": 0.7152429814213146,
+          "cash": 15.775650102325132,
+          "opponentCash": 17.5516196542657,
+          "win": 0.1787932341168155,
+          "survival": 0.6519294213222985
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 10.58521076398003,
+          "cashSE": 0.73272644402071,
+          "cash": 15.53371024968399,
+          "opponentCash": 17.904149792228665,
+          "win": 0,
+          "survival": 0.677795806895868
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 10.709399951906414,
+          "cashSE": 0.7329614268788028,
+          "cash": 15.508412191180916,
+          "opponentCash": 18.006025595183907,
+          "win": 0,
+          "survival": 0.6868097776211116
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 10.54105707410805,
+          "cashSE": 0.8730361228483691,
+          "cash": 16.422761176010276,
+          "opponentCash": 17.135776288428296,
+          "win": 0.271991799197684,
+          "survival": 0.6358352550109825
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 0.6772264147598032,
+          "cashSE": 0.08527030736229496,
+          "cash": 2.841156527737982,
+          "opponentCash": 22.092282006763803,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "overdrive",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 0.6242001723831144,
+          "cashSE": 0.08035671268524525,
+          "cash": 2.624502279200646,
+          "opponentCash": 22.13921790558975,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 1.9780294869593096,
+          "cashSE": 0.10377287198841827,
+          "cash": 8.060907698381609,
+          "opponentCash": 21.601546965554903,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 1.765644603983028,
+          "cashSE": 0.09646280250146157,
+          "cash": 7.197449215115656,
+          "opponentCash": 21.680099645401246,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 1.6710129857624918,
+          "cashSE": 0.08381801808204935,
+          "cash": 6.8272061070630805,
+          "opponentCash": 21.71530630454241,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 2.4085634873291126,
+          "cashSE": 0.10202424812370607,
+          "cash": 9.85011999463382,
+          "opponentCash": 21.43910314136835,
+          "win": 0,
+          "survival": 0.24555499726517316
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 8.294658834668912,
+          "cashSE": 0.1426191852012223,
+          "cash": 13.651876646949981,
+          "opponentCash": 19.181948759284776,
+          "win": 0,
+          "survival": 0.6075941009849846
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 7.702095850228309,
+          "cashSE": 0.10215942136750741,
+          "cash": 12.586414612255219,
+          "opponentCash": 19.403896563518362,
+          "win": 0,
+          "survival": 0.6120640806141728
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 8.490311685137087,
+          "cashSE": 0.16449342257680033,
+          "cash": 14.088333377784105,
+          "opponentCash": 18.779502715124455,
+          "win": 0,
+          "survival": 0.6028532779999419
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 8.117004281583116,
+          "cashSE": 0.13057678071402828,
+          "cash": 13.33192624530127,
+          "opponentCash": 19.01983601510537,
+          "win": 0,
+          "survival": 0.6093497727573982
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 8.0985465698241,
+          "cashSE": 0.12812552217256296,
+          "cash": 13.242885085544868,
+          "opponentCash": 19.15543952713572,
+          "win": 0,
+          "survival": 0.6120301214311025
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 9.076913692521703,
+          "cashSE": 0.10318987053586225,
+          "cash": 14.956489927905075,
+          "opponentCash": 18.696193981807426,
+          "win": 0,
+          "survival": 0.6073794849613132
+        }
+      ],
+      "overall": {
+        "v04": {
+          "n": 64,
+          "expectedCash": 12.619905962522967,
+          "cashSE": 0.7546697185187732,
+          "cash": 15.927741943811723,
+          "opponentCash": 16.74973523860417,
+          "win": 0.46094682761351863,
+          "survival": 0.7199191939711476
+        },
+        "pureCash": {
+          "n": 64,
+          "expectedCash": 12.328981694870427,
+          "cashSE": 0.7635996245453499,
+          "cash": 15.145418221706812,
+          "opponentCash": 17.122651498566796,
+          "win": 0.4023344649360261,
+          "survival": 0.7352585715675833
+        },
+        "adaptive": {
+          "n": 64,
+          "expectedCash": 12.40222508802093,
+          "cashSE": 0.7161661115486693,
+          "cash": 16.22813435865841,
+          "opponentCash": 16.53946406500857,
+          "win": 0.4444233492913076,
+          "survival": 0.7134091153056769
+        },
+        "adaptiveSlow": {
+          "n": 64,
+          "expectedCash": 12.36144144441753,
+          "cashSE": 0.7304794314801567,
+          "cash": 15.797906320053857,
+          "opponentCash": 16.885641159704328,
+          "win": 0.38825765614790037,
+          "survival": 0.7259540523735196
+        },
+        "adaptiveHalf": {
+          "n": 64,
+          "expectedCash": 12.39557481168331,
+          "cashSE": 0.732989718752141,
+          "cash": 15.699565678926483,
+          "opponentCash": 16.986856912413167,
+          "win": 0.36261591854607617,
+          "survival": 0.7309562742284962
+        },
+        "adaptive15": {
+          "n": 64,
+          "expectedCash": 12.607556246194976,
+          "cashSE": 0.7049796303370567,
+          "cash": 16.88501324649406,
+          "opponentCash": 15.530773250561468,
+          "win": 0.4738207475134827,
+          "survival": 0.703606145156934
+        }
+      },
+      "differences": {
+        "pureCash - v04": {
+          "meanBillions": -0.2909242676525431,
+          "lower95": -0.543853367021857,
+          "upper95": -0.037995168283229075
+        },
+        "adaptive - v04": {
+          "meanBillions": -0.21768087450204146,
+          "lower95": -0.4832490126144371,
+          "upper95": 0.0478872636103542
+        },
+        "adaptiveSlow - v04": {
+          "meanBillions": -0.2584645181054393,
+          "lower95": -0.5212885708110628,
+          "upper95": 0.004359534600184234
+        },
+        "adaptiveHalf - v04": {
+          "meanBillions": -0.22433115083965896,
+          "lower95": -0.48882446591007767,
+          "upper95": 0.04016216423075972
+        },
+        "adaptive15 - v04": {
+          "meanBillions": -0.012349716327997508,
+          "lower95": -0.23004139417221534,
+          "upper95": 0.20534196151622033
+        }
+      }
+    },
+    {
+      "scenario": "delayed",
+      "timing": {
+        "obsDelay": 6,
+        "inputDelay": 8,
+        "drop": 0.05
+      },
+      "rows": [
+        {
+          "opponent": "cpu",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 14.208867263418545,
+          "cashSE": 0.7568297602597144,
+          "cash": 17.622830656560676,
+          "opponentCash": 10.366122465774565,
+          "win": 0.8028418337649854,
+          "survival": 0.8028418337649854
+        },
+        {
+          "opponent": "cpu",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 14.04643322214563,
+          "cashSE": 0.7615147264093501,
+          "cash": 17.5083316426838,
+          "opponentCash": 10.633675980121886,
+          "win": 0.7984287338454452,
+          "survival": 0.7984287338454452
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 13.22322201216902,
+          "cashSE": 0.9049526921268907,
+          "cash": 17.470998709785423,
+          "opponentCash": 10.325069742302025,
+          "win": 0.752215004084509,
+          "survival": 0.752215004084509
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 13.414936843773601,
+          "cashSE": 0.946424954323764,
+          "cash": 17.212486723819836,
+          "opponentCash": 10.747769379934976,
+          "win": 0.774241461174401,
+          "survival": 0.774241461174401
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 13.669924290053636,
+          "cashSE": 0.8916164603030985,
+          "cash": 17.365472614476133,
+          "opponentCash": 10.532710304090884,
+          "win": 0.7822201170764648,
+          "survival": 0.7822201170764648
+        },
+        {
+          "opponent": "cpu",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 12.339045206301826,
+          "cashSE": 0.9942554289603577,
+          "cash": 17.436874568623164,
+          "opponentCash": 9.708573923088055,
+          "win": 0.7018813898891703,
+          "survival": 0.7018813898891703
+        },
+        {
+          "opponent": "cautious",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 19.453395958507464,
+          "cashSE": 0.3269688072620183,
+          "cash": 20.61671602853576,
+          "opponentCash": 10.354978547961181,
+          "win": 0.9433289241225903,
+          "survival": 0.9433289241225903
+        },
+        {
+          "opponent": "cautious",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 19.643398869148875,
+          "cashSE": 0.25863963032492504,
+          "cash": 20.449615023329063,
+          "opponentCash": 11.133085570075266,
+          "win": 0.9605309510863803,
+          "survival": 0.9605309510863803
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 19.635937346650277,
+          "cashSE": 0.26879802452614415,
+          "cash": 20.45201397202775,
+          "opponentCash": 11.088120881498138,
+          "win": 0.960003935648213,
+          "survival": 0.960003935648213
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 19.785703844173234,
+          "cashSE": 0.28022986910383996,
+          "cash": 20.359457888118843,
+          "opponentCash": 11.937217126970964,
+          "win": 0.9716758848593982,
+          "survival": 0.9716758848593982
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 19.78329323765472,
+          "cashSE": 0.2817249738247204,
+          "cash": 20.35015990396898,
+          "opponentCash": 11.997613729755644,
+          "win": 0.9720009255871002,
+          "survival": 0.9720009255871002
+        },
+        {
+          "opponent": "cautious",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 19.51893790559864,
+          "cashSE": 0.3579954024001939,
+          "cash": 20.803938478594155,
+          "opponentCash": 7.844340874342985,
+          "win": 0.9379404658595734,
+          "survival": 0.9379404658595734
+        },
+        {
+          "opponent": "oldWin",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 18.98707416496467,
+          "cashSE": 0.20977371600226888,
+          "cash": 20.24931865745114,
+          "opponentCash": 13.526801376032882,
+          "win": 0.9377967556603991,
+          "survival": 0.9377967556603991
+        },
+        {
+          "opponent": "oldWin",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 19.126811086637925,
+          "cashSE": 0.2658392965884257,
+          "cash": 20.09401301214901,
+          "opponentCash": 14.15636570831865,
+          "win": 0.9518147953621291,
+          "survival": 0.9518147953621291
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 19.097358542875906,
+          "cashSE": 0.2595621236110648,
+          "cash": 20.09637006308569,
+          "opponentCash": 14.150933797275968,
+          "win": 0.9502859719696937,
+          "survival": 0.9502859719696937
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 19.33138759064719,
+          "cashSE": 0.23293256723117753,
+          "cash": 19.966430566625572,
+          "opponentCash": 15.148573632466634,
+          "win": 0.9681791336176337,
+          "survival": 0.9681791336176337
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 19.302169574876345,
+          "cashSE": 0.2485520159605442,
+          "cash": 19.978541038996617,
+          "opponentCash": 15.030200668572606,
+          "win": 0.9660852754712108,
+          "survival": 0.9660852754712108
+        },
+        {
+          "opponent": "oldWin",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 19.10736293548205,
+          "cashSE": 0.2981521531322016,
+          "cash": 20.455094072570954,
+          "opponentCash": 11.45447369617144,
+          "win": 0.9341110003927791,
+          "survival": 0.9341110003927791
+        },
+        {
+          "opponent": "frontier",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 15.487844195769894,
+          "cashSE": 0.1420075251542656,
+          "cash": 19.02033042301237,
+          "opponentCash": 17.29294041254668,
+          "win": 0.8145870243991029,
+          "survival": 0.8145870243991029
+        },
+        {
+          "opponent": "frontier",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 14.956431299800073,
+          "cashSE": 0.1327148975334385,
+          "cash": 17.932261019919732,
+          "opponentCash": 17.798623024248116,
+          "win": 0.619639521875894,
+          "survival": 0.8347796959158243
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 14.691044815381408,
+          "cashSE": 0.20784902283837373,
+          "cash": 18.139328786120615,
+          "opponentCash": 16.893197962104388,
+          "win": 0.7052290515468694,
+          "survival": 0.8106355501734043
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 14.615346961657767,
+          "cashSE": 0.1779817977160792,
+          "cash": 17.605024914153276,
+          "opponentCash": 17.35441581165248,
+          "win": 0.6201193969262675,
+          "survival": 0.8313501866050359
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 14.647175621535547,
+          "cashSE": 0.19958360411346357,
+          "cash": 17.55251431047774,
+          "opponentCash": 17.420557845354555,
+          "win": 0.517973850099148,
+          "survival": 0.835355619768624
+        },
+        {
+          "opponent": "frontier",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 15.570297002714366,
+          "cashSE": 0.25157869966733026,
+          "cash": 18.862201221656274,
+          "opponentCash": 16.980541411145357,
+          "win": 0.8261768798893072,
+          "survival": 0.8261768798893072
+        },
+        {
+          "opponent": "aggressive",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 11.346912243816726,
+          "cashSE": 0.1972629788481983,
+          "cash": 17.317033870304122,
+          "opponentCash": 20.084499399861354,
+          "win": 0,
+          "survival": 0.6550107806876286
+        },
+        {
+          "opponent": "aggressive",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 9.739474252136944,
+          "cashSE": 0.1568131302962094,
+          "cash": 15.009708781403814,
+          "opponentCash": 20.28318642831073,
+          "win": 0,
+          "survival": 0.6500628493245187
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 9.63537394022819,
+          "cashSE": 0.21062305609336185,
+          "cash": 16.352785860083806,
+          "opponentCash": 18.758567769080305,
+          "win": 0.06197790693736547,
+          "survival": 0.5921381349450954
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 9.459855678211389,
+          "cashSE": 0.20026164523654888,
+          "cash": 15.603186436042721,
+          "opponentCash": 19.20930315921309,
+          "win": 0,
+          "survival": 0.6089039808186922
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 9.606802474315133,
+          "cashSE": 0.21032698094139693,
+          "cash": 15.353113391149893,
+          "opponentCash": 19.641881051372447,
+          "win": 0,
+          "survival": 0.6271945349764964
+        },
+        {
+          "opponent": "aggressive",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 9.937562845228108,
+          "cashSE": 0.1515745633925016,
+          "cash": 16.75045238675844,
+          "opponentCash": 18.609300156986656,
+          "win": 0,
+          "survival": 0.594808178000354
+        },
+        {
+          "opponent": "chaser",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 10.132676668520714,
+          "cashSE": 0.6976336581974671,
+          "cash": 16.317458993016665,
+          "opponentCash": 17.307162262627056,
+          "win": 0.16113031878877754,
+          "survival": 0.6156717175441587
+        },
+        {
+          "opponent": "chaser",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 10.709668619840885,
+          "cashSE": 0.5949760721809145,
+          "cash": 15.620546023663985,
+          "opponentCash": 18.41714179398174,
+          "win": 0,
+          "survival": 0.6824594471911056
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 9.723333265533062,
+          "cashSE": 0.7273020366331936,
+          "cash": 15.735609309258436,
+          "opponentCash": 17.195549351605873,
+          "win": 0.17014271599596256,
+          "survival": 0.6133085192969662
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 10.039457942393087,
+          "cashSE": 0.7528648425564867,
+          "cash": 15.50821677640502,
+          "opponentCash": 17.490222928751283,
+          "win": 0,
+          "survival": 0.6429906137911016
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 10.06382169773951,
+          "cashSE": 0.750729957415837,
+          "cash": 15.410435636928273,
+          "opponentCash": 17.62883564564628,
+          "win": 0.08969273151221843,
+          "survival": 0.6487221183526897
+        },
+        {
+          "opponent": "chaser",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 9.657476666032773,
+          "cashSE": 0.8571736938885965,
+          "cash": 16.239245738119802,
+          "opponentCash": 16.68006069292362,
+          "win": 0.25038552611039033,
+          "survival": 0.5887735600097409
+        },
+        {
+          "opponent": "overdrive",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 0.8477462587627754,
+          "cashSE": 0.06770561768372538,
+          "cash": 3.583118555117544,
+          "opponentCash": 21.945932468580228,
+          "win": 0,
+          "survival": 0.24186955167164592
+        },
+        {
+          "opponent": "overdrive",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 0.7887361290836079,
+          "cashSE": 0.07198966334085405,
+          "cash": 3.316747133901715,
+          "opponentCash": 22.002985265808977,
+          "win": 0,
+          "survival": 0.24301635597700588
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 2.1594166252679137,
+          "cashSE": 0.12132790638167339,
+          "cash": 8.909472105097032,
+          "opponentCash": 21.44589602696989,
+          "win": 0,
+          "survival": 0.2420965773817035
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 1.914131054950262,
+          "cashSE": 0.09937347542841111,
+          "cash": 7.857874278639997,
+          "opponentCash": 21.610308021765615,
+          "win": 0,
+          "survival": 0.2439860559498849
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 1.8106555111504223,
+          "cashSE": 0.11344899579389717,
+          "cash": 7.432756964833307,
+          "opponentCash": 21.628341234220706,
+          "win": 0,
+          "survival": 0.24332931417920067
+        },
+        {
+          "opponent": "overdrive",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 2.5123476748610707,
+          "cashSE": 0.10601320088645787,
+          "cash": 10.342085377661506,
+          "opponentCash": 21.376372779993126,
+          "win": 0,
+          "survival": 0.24407945494692895
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "v04",
+          "n": 8,
+          "expectedCash": 8.147498366063171,
+          "cashSE": 0.13857852917310146,
+          "cash": 13.870432194075331,
+          "opponentCash": 18.762758555644826,
+          "win": 0,
+          "survival": 0.587824671903703
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "pureCash",
+          "n": 8,
+          "expectedCash": 7.776342110643379,
+          "cashSE": 0.1244325802879762,
+          "cash": 12.962796372621849,
+          "opponentCash": 19.15260368679213,
+          "win": 0,
+          "survival": 0.600271328133349
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptive",
+          "n": 8,
+          "expectedCash": 8.611292753207202,
+          "cashSE": 0.21590518161274086,
+          "cash": 14.59905402945951,
+          "opponentCash": 18.47699489082196,
+          "win": 0,
+          "survival": 0.5899897583791065
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptiveSlow",
+          "n": 8,
+          "expectedCash": 8.192947511058128,
+          "cashSE": 0.12547120801056755,
+          "cash": 13.800755557512263,
+          "opponentCash": 18.682326563376407,
+          "win": 0,
+          "survival": 0.5944064605565793
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptiveHalf",
+          "n": 8,
+          "expectedCash": 8.225745118644578,
+          "cashSE": 0.10117334013722071,
+          "cash": 13.706669175242308,
+          "opponentCash": 18.841603194716193,
+          "win": 0,
+          "survival": 0.6006182949047194
+        },
+        {
+          "opponent": "lateSurge",
+          "name": "adaptive15",
+          "n": 8,
+          "expectedCash": 9.080380690488267,
+          "cashSE": 0.1499596075567526,
+          "cash": 15.383033468818848,
+          "opponentCash": 18.327460180886707,
+          "win": 0,
+          "survival": 0.5914615256784922
+        }
+      ],
+      "overall": {
+        "v04": {
+          "n": 64,
+          "expectedCash": 12.326501889978,
+          "cashSE": 0.7315940816200782,
+          "cash": 16.074654922259203,
+          "opponentCash": 16.20514943612859,
+          "win": 0.45746060709198194,
+          "survival": 0.6998664074692768
+        },
+        "pureCash": {
+          "n": 64,
+          "expectedCash": 12.098411948679667,
+          "cashSE": 0.7414160065067718,
+          "cash": 15.36175237620912,
+          "opponentCash": 16.69720843220719,
+          "win": 0.416301750271231,
+          "survival": 0.7151705196044702
+        },
+        "adaptive": {
+          "n": 64,
+          "expectedCash": 12.097122412664126,
+          "cashSE": 0.6981128381297145,
+          "cash": 16.46945410436478,
+          "opponentCash": 16.041791302707317,
+          "win": 0.4499818232728266,
+          "survival": 0.6888341814848364
+        },
+        "adaptiveSlow": {
+          "n": 64,
+          "expectedCash": 12.094220928358082,
+          "cashSE": 0.7169728738331744,
+          "cash": 15.989179142664693,
+          "opponentCash": 16.522517078016424,
+          "win": 0.41677698457221257,
+          "survival": 0.704466722171591
+        },
+        "adaptiveHalf": {
+          "n": 64,
+          "expectedCash": 12.13869844074624,
+          "cashSE": 0.7179924616152692,
+          "cash": 15.893707879509158,
+          "opponentCash": 16.590217959216165,
+          "win": 0.4159966124682678,
+          "survival": 0.7094407750395633
+        },
+        "adaptive15": {
+          "n": 64,
+          "expectedCash": 12.215426365838386,
+          "cashSE": 0.6907639008387029,
+          "cash": 17.034115664100394,
+          "opponentCash": 15.122640464442243,
+          "win": 0.4563119077676526,
+          "survival": 0.6774040568332932
+        }
+      },
+      "differences": {
+        "pureCash - v04": {
+          "meanBillions": -0.2280899412983301,
+          "lower95": -0.4383969503986487,
+          "upper95": -0.017782932198011553
+        },
+        "adaptive - v04": {
+          "meanBillions": -0.22937947731387243,
+          "lower95": -0.507071868757516,
+          "upper95": 0.04831291412977112
+        },
+        "adaptiveSlow - v04": {
+          "meanBillions": -0.23228096161991207,
+          "lower95": -0.5215659720221809,
+          "upper95": 0.057004048782356764
+        },
+        "adaptiveHalf - v04": {
+          "meanBillions": -0.1878034492317582,
+          "lower95": -0.4377848686390108,
+          "upper95": 0.06217797017549437
+        },
+        "adaptive15 - v04": {
+          "meanBillions": -0.11107552413960647,
+          "lower95": -0.34553693446219036,
+          "upper95": 0.12338588618297741
+        }
+      }
+    }
+  ],
+  "replays": [
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17480994129.31933,
+      "oppCash": 17189234882.995136,
+      "survival": 0.8923097848019121,
+      "expectedCash": 15598462109.65642,
+      "win": 0.8923097848019121
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16591149771.709146,
+      "oppCash": 17581115504.24642,
+      "survival": 0.8919672838197861,
+      "expectedCash": 14798762797.31867,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16616752346.045717,
+      "oppCash": 16923557321.04343,
+      "survival": 0.8895419635634783,
+      "expectedCash": 14781298509.949541,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16096465486.745558,
+      "oppCash": 17043844033.746391,
+      "survival": 0.8941222129511702,
+      "expectedCash": 14392207341.701073,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16113573747.311495,
+      "oppCash": 17096421626.614738,
+      "survival": 0.8952035598574744,
+      "expectedCash": 14424928580.619192,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 1,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17274280393.59861,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17883279370.893055,
+      "oppCash": 16195347262.766304,
+      "survival": 0.8896409081352343,
+      "expectedCash": 15909696899.9574,
+      "win": 0.8896409081352343
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18852366717.716793,
+      "oppCash": 16565619232.915955,
+      "survival": 0.831893866591939,
+      "expectedCash": 15683168243.210604,
+      "win": 0.831893866591939
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18262183130.872932,
+      "oppCash": 16673471597.611,
+      "survival": 0.831451229407439,
+      "expectedCash": 15184114615.828093,
+      "win": 0.831451229407439
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18506756396.821213,
+      "oppCash": 14766906442.897665,
+      "survival": 0.78274513692356,
+      "expectedCash": 14486073569.84079,
+      "win": 0.78274513692356
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17929510511.875553,
+      "oppCash": 15598977888.002228,
+      "survival": 0.8048067942887535,
+      "expectedCash": 14429791878.22907,
+      "win": 0.8048067942887535
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17942034897.360924,
+      "oppCash": 15864504853.182274,
+      "survival": 0.8132455543974435,
+      "expectedCash": 14591280117.122562,
+      "win": 0.8132455543974435
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 2,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18738382679.065247,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18494117803.841263,
+      "oppCash": 14673211174.54391,
+      "survival": 0.779295495938,
+      "expectedCash": 14412382705.880272,
+      "win": 0.779295495938
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17609930272.352505,
+      "oppCash": 16098773045.047497,
+      "survival": 0.8156857023087273,
+      "expectedCash": 14364168341.81157,
+      "win": 0.8156857023087273
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16714287252.709152,
+      "oppCash": 16383389240.708256,
+      "survival": 0.8174005013301779,
+      "expectedCash": 13662266779.741064,
+      "win": 0.8174005013301779
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16824015575.83574,
+      "oppCash": 15680742439.04689,
+      "survival": 0.7990385242250172,
+      "expectedCash": 13443036577.254492,
+      "win": 0.7990385242250172
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16344043282.327583,
+      "oppCash": 15943066922.353165,
+      "survival": 0.8068027799414139,
+      "expectedCash": 13186419555.664686,
+      "win": 0.8068027799414139
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16195184050.956402,
+      "oppCash": 16091120556.547297,
+      "survival": 0.8138033673373821,
+      "expectedCash": 13179695315.316984,
+      "win": 0.8138033673373821
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 3,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17673955839.124943,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17554017211.20401,
+      "oppCash": 15500419949.939491,
+      "survival": 0.8034180864391507,
+      "expectedCash": 14103214917.145443,
+      "win": 0.8034180864391507
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "v04",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5983180694.702087,
+      "oppCash": 6475973297.954608,
+      "survival": 0.938366924085411,
+      "expectedCash": 5614418864.73481,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "pureCash",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5183224321.828264,
+      "oppCash": 6785183933.206888,
+      "survival": 0.9390208311615618,
+      "expectedCash": 4867155610.779999,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "adaptive",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5140784174.622717,
+      "oppCash": 6788761372.227347,
+      "survival": 0.9390208311615618,
+      "expectedCash": 4827303428.476427,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "adaptiveSlow",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5178786984.467341,
+      "oppCash": 6780940010.588735,
+      "survival": 0.9390208311615618,
+      "expectedCash": 4862988858.563201,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "adaptiveHalf",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 5178786984.467341,
+      "oppCash": 6780940010.588735,
+      "survival": 0.9390208311615618,
+      "expectedCash": 4862988858.563201,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 4,
+      "name": "adaptive15",
+      "complete": false,
+      "through": 40.249999999999,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 2
+      },
+      "cash": 6230399119.846639,
+      "oppCash": 6354998369.123705,
+      "survival": 0.9383892594766411,
+      "expectedCash": 5846539616.316804,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19231406320.490864,
+      "oppCash": 7269330448.249332,
+      "survival": 0.7759306009317036,
+      "expectedCash": 14922236663.020239,
+      "win": 0.7759306009317036
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19170700786.75977,
+      "oppCash": 7347128087.699156,
+      "survival": 0.7770628364425297,
+      "expectedCash": 14896839129.950583,
+      "win": 0.7770628364425297
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19320655148.877155,
+      "oppCash": 6872902705.339552,
+      "survival": 0.756798306142866,
+      "expectedCash": 14621839090.240675,
+      "win": 0.756798306142866
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18842514036.839043,
+      "oppCash": 7137119860.190664,
+      "survival": 0.7611471286864575,
+      "expectedCash": 14341925456.37431,
+      "win": 0.7611471286864575
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18773780614.33895,
+      "oppCash": 7181197478.387022,
+      "survival": 0.7663506649061516,
+      "expectedCash": 14387299256.600874,
+      "win": 0.7663506649061516
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 5,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18106710374.11978,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19810431106.512367,
+      "oppCash": 5533108662.176377,
+      "survival": 0.7466470690732736,
+      "expectedCash": 14791400322.755468,
+      "win": 0.7466470690732736
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15123819300.734207,
+      "oppCash": 12421364231.515547,
+      "survival": 0.6300574590680443,
+      "expectedCash": 9528875160.024841,
+      "win": 0.6300574590680443
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15003445396.493048,
+      "oppCash": 12617125847.193668,
+      "survival": 0.6308796171386564,
+      "expectedCash": 9465367887.50027,
+      "win": 0.6308796171386564
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15208849774.044676,
+      "oppCash": 11751394188.484032,
+      "survival": 0.603048015927242,
+      "expectedCash": 9171666680.773125,
+      "win": 0.603048015927242
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14791852962.813744,
+      "oppCash": 12028406452.234829,
+      "survival": 0.6075846693611987,
+      "expectedCash": 8987303091.650656,
+      "win": 0.6075846693611987
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14746617286.70349,
+      "oppCash": 12220449086.014542,
+      "survival": 0.6135009893427229,
+      "expectedCash": 9047064294.851091,
+      "win": 0.6135009893427229
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 6,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 13447050612.240091,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15275332221.071367,
+      "oppCash": 11395508135.688995,
+      "survival": 0.5947943085419691,
+      "expectedCash": 9085680666.181005,
+      "win": 0.5947943085419691
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18429619800.514725,
+      "oppCash": 17017867783.75374,
+      "survival": 0.8728054469304652,
+      "expectedCash": 16085472546.746805,
+      "win": 0.8728054469304652
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17530041615.402706,
+      "oppCash": 17221161582.96148,
+      "survival": 0.8727566014604109,
+      "expectedCash": 15299459543.718437,
+      "win": 0.8727566014604109
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17609181874.732574,
+      "oppCash": 16797435300.826288,
+      "survival": 0.8659843171250488,
+      "expectedCash": 15249275340.921074,
+      "win": 0.8659843171250488
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16628840385.455572,
+      "oppCash": 17125188922.52026,
+      "survival": 0.8721607372470912,
+      "expectedCash": 14503021690.143135,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16723820605.54801,
+      "oppCash": 17186050792.49197,
+      "survival": 0.873832500367736,
+      "expectedCash": 14613817975.447481,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 7,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18437766326.902073,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18093442087.13014,
+      "oppCash": 16707027612.371725,
+      "survival": 0.8714513132750941,
+      "expectedCash": 15767553868.496418,
+      "win": 0.8714513132750941
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17750193126.29225,
+      "oppCash": 16292936433.712317,
+      "survival": 0.8412220815342841,
+      "expectedCash": 14931854409.33511,
+      "win": 0.8412220815342841
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17621103581.472755,
+      "oppCash": 16331297554.67883,
+      "survival": 0.8413891123139142,
+      "expectedCash": 14826204700.406897,
+      "win": 0.8413891123139142
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17727413247.888004,
+      "oppCash": 15646497434.20932,
+      "survival": 0.8304901090147566,
+      "expectedCash": 14722441360.788149,
+      "win": 0.8304901090147566
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17183761680.23904,
+      "oppCash": 15757587241.884146,
+      "survival": 0.8343325559380956,
+      "expectedCash": 14336971803.304943,
+      "win": 0.8343325559380956
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17169387962.10619,
+      "oppCash": 15856667527.651476,
+      "survival": 0.8365432978037743,
+      "expectedCash": 14362936427.092737,
+      "win": 0.8365432978037743
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 8,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17723171826.552773,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17804013587.3327,
+      "oppCash": 15452885625.918734,
+      "survival": 0.8306898813941637,
+      "expectedCash": 14789613935.201477,
+      "win": 0.8306898813941637
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18000148305.23383,
+      "oppCash": 17926269141.420273,
+      "survival": 0.8019839249160393,
+      "expectedCash": 14435829586.90222,
+      "win": 0.8019839249160393
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15574043724.341904,
+      "oppCash": 18338094427.466522,
+      "survival": 0.8031774218844414,
+      "expectedCash": 12508720286.832495,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15803679852.121168,
+      "oppCash": 17392122947.80118,
+      "survival": 0.7884676766482952,
+      "expectedCash": 12460690735.495451,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15159630819.14051,
+      "oppCash": 17754083819.647224,
+      "survival": 0.7944950009067097,
+      "expectedCash": 12044250901.398424,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15150179061.203905,
+      "oppCash": 17860932858.60933,
+      "survival": 0.7954454716245624,
+      "expectedCash": 12051141328.53591,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 9,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17539674654.511173,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17952815833.88673,
+      "oppCash": 16987080117.566294,
+      "survival": 0.790586914073188,
+      "expectedCash": 14193261269.036777,
+      "win": 0.790586914073188
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17907019880.083294,
+      "oppCash": 16932516782.497925,
+      "survival": 0.8471435732084949,
+      "expectedCash": 15169816806.729315,
+      "win": 0.8471435732084949
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17455852549.88446,
+      "oppCash": 17089952264.952074,
+      "survival": 0.8460515604278356,
+      "expectedCash": 14768551288.42796,
+      "win": 0.8460515604278356
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17633203942.785194,
+      "oppCash": 16047220084.371243,
+      "survival": 0.8206797732621991,
+      "expectedCash": 14471213813.651068,
+      "win": 0.8206797732621991
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16794047710.354422,
+      "oppCash": 16760772261.837803,
+      "survival": 0.8421945428358035,
+      "expectedCash": 14143855333.784615,
+      "win": 0.8421945428358035
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16896036784.071665,
+      "oppCash": 16684138117.298355,
+      "survival": 0.8395494214578508,
+      "expectedCash": 14185057906.997932,
+      "win": 0.8395494214578508
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 10,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17819768742.447346,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17987055071.903194,
+      "oppCash": 15985270906.616224,
+      "survival": 0.8250145909574209,
+      "expectedCash": 14839582882.674818,
+      "win": 0.8250145909574209
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12398137058.8945,
+      "oppCash": 17976530688.243855,
+      "survival": 0.3467696898728585,
+      "expectedCash": 4299298142.91404,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 11742400196.26423,
+      "oppCash": 18460805632.02672,
+      "survival": 0.3488690594191013,
+      "expectedCash": 4096560111.7933726,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13199188852.680555,
+      "oppCash": 16898012735.312048,
+      "survival": 0.33301618550187806,
+      "expectedCash": 4395543523.438589,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12867059302.340567,
+      "oppCash": 17133387434.575703,
+      "survival": 0.3350185987224401,
+      "expectedCash": 4310704177.148674,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12775437130.773855,
+      "oppCash": 17462635883.26729,
+      "survival": 0.34010530949987733,
+      "expectedCash": 4344993999.358067,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 11,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 7637706470.876693,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13687694779.07323,
+      "oppCash": 15960843937.228851,
+      "survival": 0.324318812271271,
+      "expectedCash": 4439176913.480707,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17754750783.903564,
+      "oppCash": 16913932206.03787,
+      "survival": 0.8342602491640267,
+      "expectedCash": 14812082812.824587,
+      "win": 0.8342602491640267
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16808155525.5294,
+      "oppCash": 17286901623.357162,
+      "survival": 0.8356444530569057,
+      "expectedCash": 14045641931.026423,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16882182603.923872,
+      "oppCash": 16741581964.435253,
+      "survival": 0.8278013599539064,
+      "expectedCash": 13975093718.518362,
+      "win": 0.8278013599539064
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16088346039.525923,
+      "oppCash": 16855738073.212904,
+      "survival": 0.8340673658788834,
+      "expectedCash": 13418764402.535353,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 16188908397.61789,
+      "oppCash": 17013545612.19538,
+      "survival": 0.8349093024232334,
+      "expectedCash": 13516270217.248777,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 12,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 16918266177.400331,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17777678656.720997,
+      "oppCash": 16081044475.691685,
+      "survival": 0.8322948687078806,
+      "expectedCash": 14796270723.526493,
+      "win": 0.8322948687078806
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18549576724.003105,
+      "oppCash": 16744746660.264854,
+      "survival": 0.7863861154516927,
+      "expectedCash": 14587129583.261936,
+      "win": 0.7863861154516927
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18224100178.798954,
+      "oppCash": 16864363983.776228,
+      "survival": 0.7869029322668173,
+      "expectedCash": 14340597868.621126,
+      "win": 0.7869029322668173
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18215162192.44882,
+      "oppCash": 16192868111.327429,
+      "survival": 0.7706841441211241,
+      "expectedCash": 14038136684.314875,
+      "win": 0.7706841441211241
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17936038064.10686,
+      "oppCash": 16478404773.328909,
+      "survival": 0.7775727052311848,
+      "expectedCash": 13946573638.637075,
+      "win": 0.7775727052311848
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17883498824.601147,
+      "oppCash": 16517275945.416409,
+      "survival": 0.7782810508575626,
+      "expectedCash": 13918388258.220566,
+      "win": 0.7782810508575626
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 13,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18386568182.142212,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18334603727.44868,
+      "oppCash": 16191412463.749416,
+      "survival": 0.772525862138059,
+      "expectedCash": 14163955551.506962,
+      "win": 0.772525862138059
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17572237812.228886,
+      "oppCash": 17090486088.107262,
+      "survival": 0.8497279591575401,
+      "expectedCash": 14931621774.016209,
+      "win": 0.8497279591575401
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17149755633.04917,
+      "oppCash": 17159869239.941418,
+      "survival": 0.8496878584528282,
+      "expectedCash": 14571939136.834877,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17226404431.342495,
+      "oppCash": 16856205254.805677,
+      "survival": 0.8457411430146003,
+      "expectedCash": 14569078973.795378,
+      "win": 0.8457411430146003
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16992209725.98604,
+      "oppCash": 16986952510.149237,
+      "survival": 0.8496097663020251,
+      "expectedCash": 14436747334.249998,
+      "win": 0.8496097663020251
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 16982833220.693537,
+      "oppCash": 17035863074.242104,
+      "survival": 0.8509779962117874,
+      "expectedCash": 14452017384.144762,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 14,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 17573429709.606487,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17496065155.750843,
+      "oppCash": 16827118722.328417,
+      "survival": 0.8461641361902635,
+      "expectedCash": 14804542859.24448,
+      "win": 0.8461641361902635
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14959624016.981,
+      "oppCash": 12704545434.169512,
+      "survival": 0.6186659953349295,
+      "expectedCash": 9255010682.301867,
+      "win": 0.6186659953349295
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14421108179.708101,
+      "oppCash": 13149487628.24296,
+      "survival": 0.6244050044375535,
+      "expectedCash": 9004612116.945076,
+      "win": 0.6244050044375535
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15489282167.867235,
+      "oppCash": 11676485924.502481,
+      "survival": 0.5851252661506197,
+      "expectedCash": 9063170350.955362,
+      "win": 0.5851252661506197
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15082766107.659115,
+      "oppCash": 12199135313.76721,
+      "survival": 0.5990133979891574,
+      "expectedCash": 9034778977.224585,
+      "win": 0.5990133979891574
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14881778663.113428,
+      "oppCash": 12409273060.25688,
+      "survival": 0.6061281783356598,
+      "expectedCash": 9020265391.467432,
+      "win": 0.6061281783356598
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T00-17-21-103Z.json",
+        "botVersion": "0.3.1",
+        "sha256": "bfb29f005313251274bab083e9d03a3c0c841bee41dd116e345e43084d1d4dec"
+      },
+      "match": 15,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14370692160.107786,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15869459590.900618,
+      "oppCash": 11139348260.81879,
+      "survival": 0.5761001576980147,
+      "expectedCash": 9142398172.900118,
+      "win": 0.5761001576980147
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "v04",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13124313110.62297,
+      "oppCash": 12923171327.55223,
+      "survival": 0.7309119094414777,
+      "expectedCash": 9592716755.793255,
+      "win": 0.7309119094414777
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "pureCash",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13012836338.785309,
+      "oppCash": 13252249519.620575,
+      "survival": 0.7356722148777433,
+      "expectedCash": 9573182131.195772,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "adaptive",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13471924012.103598,
+      "oppCash": 12226200552.512726,
+      "survival": 0.7160014035369324,
+      "expectedCash": 9645916501.009077,
+      "win": 0.7160014035369324
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "adaptiveSlow",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13068635998.366556,
+      "oppCash": 12338464491.072832,
+      "survival": 0.7167994717299424,
+      "expectedCash": 9367591379.860056,
+      "win": 0.7167994717299424
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "adaptiveHalf",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 12979837142.526543,
+      "oppCash": 12385205346.152147,
+      "survival": 0.7180313204264748,
+      "expectedCash": 9319929602.368935,
+      "win": 0.7180313204264748
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 1,
+      "name": "adaptive15",
+      "complete": false,
+      "through": 79.16666666666346,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13941692221.748528,
+      "oppCash": 10979774393.845444,
+      "survival": 0.6979787060065112,
+      "expectedCash": 9731004296.47708,
+      "win": 0.6979787060065112
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 19322314780.837,
+      "oppCash": 17860913549.54716,
+      "survival": 0.7940865631441125,
+      "expectedCash": 15343590536.303541,
+      "win": 0.7940865631441125
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17613639281.57024,
+      "oppCash": 18090975969.310856,
+      "survival": 0.7929904517415455,
+      "expectedCash": 13967447770.705015,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17655379559.50327,
+      "oppCash": 17165504194.512724,
+      "survival": 0.7765286367141655,
+      "expectedCash": 13709907820.012217,
+      "win": 0.7765286367141655
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17180487374.22744,
+      "oppCash": 17718634860.213936,
+      "survival": 0.7852749150879788,
+      "expectedCash": 13491405763.966543,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17203845386.17262,
+      "oppCash": 17781325332.353058,
+      "survival": 0.7867956297314423,
+      "expectedCash": 13535910364.416054,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 2,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19312994518.860012,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18744309750.567154,
+      "oppCash": 17207980292.881603,
+      "survival": 0.7760548187975298,
+      "expectedCash": 14546611906.961164,
+      "win": 0.7760548187975298
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14714152570.276396,
+      "oppCash": 13829768662.97686,
+      "survival": 0.5246708519841662,
+      "expectedCash": 7720086965.271925,
+      "win": 0.5246708519841662
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 13853028900.703571,
+      "oppCash": 15042007888.45839,
+      "survival": 0.5558834577578501,
+      "expectedCash": 7700669605.74253,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15041710363.107971,
+      "oppCash": 13321648802.288256,
+      "survival": 0.532588273709819,
+      "expectedCash": 8011038555.930769,
+      "win": 0.532588273709819
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14495063072.15915,
+      "oppCash": 13592686476.819542,
+      "survival": 0.539056329901502,
+      "expectedCash": 7813655501.368901,
+      "win": 0.539056329901502
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14226720807.414696,
+      "oppCash": 13961803043.640871,
+      "survival": 0.5444135196269266,
+      "expectedCash": 7745219147.514266,
+      "win": 0.5444135196269266
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 3,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14720043251.367552,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 15258640014.039349,
+      "oppCash": 12877350771.876219,
+      "survival": 0.5217184701094755,
+      "expectedCash": 7960714324.075834,
+      "win": 0.5217184701094755
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14820865746.390184,
+      "oppCash": 15544339081.746014,
+      "survival": 0.6060181307333312,
+      "expectedCash": 8981713355.477037,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14174648364.266556,
+      "oppCash": 16020441041.071278,
+      "survival": 0.6074329502583007,
+      "expectedCash": 8610148474.78043,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14592087672.330248,
+      "oppCash": 14224752821.182606,
+      "survival": 0.5771668863983058,
+      "expectedCash": 8422069807.889951,
+      "win": 0.5771668863983058
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14221852879.641249,
+      "oppCash": 14463754066.659195,
+      "survival": 0.5793426920107532,
+      "expectedCash": 8239326532.672243,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14252382517.228489,
+      "oppCash": 14501134327.948225,
+      "survival": 0.5822753005650704,
+      "expectedCash": 8298810313.987573,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 4,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 14848257051.612757,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 14852533542.780529,
+      "oppCash": 13359611154.311892,
+      "survival": 0.5649266113172461,
+      "expectedCash": 8390591443.798736,
+      "win": 0.5649266113172461
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18198086663.173347,
+      "oppCash": 17025444828.334164,
+      "survival": 0.8156994955965536,
+      "expectedCash": 14844170111.97287,
+      "win": 0.8156994955965536
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17926075492.808136,
+      "oppCash": 17180825667.198845,
+      "survival": 0.8172065070352348,
+      "expectedCash": 14649305538.327662,
+      "win": 0.8172065070352348
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18120700310.335266,
+      "oppCash": 16146561586.083263,
+      "survival": 0.8021031446880766,
+      "expectedCash": 14534670702.870123,
+      "win": 0.8021031446880766
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17429264551.531273,
+      "oppCash": 16247569625.706501,
+      "survival": 0.8038832892085321,
+      "expectedCash": 14011094516.170631,
+      "win": 0.8038832892085321
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17326639058.76458,
+      "oppCash": 16442651108.857557,
+      "survival": 0.8068881294345516,
+      "expectedCash": 13980659379.51419,
+      "win": 0.8068881294345516
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 5,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18307272437.825756,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18051655860.75907,
+      "oppCash": 15810687841.071468,
+      "survival": 0.7936801032477756,
+      "expectedCash": 14327240087.360573,
+      "win": 0.7936801032477756
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "v04",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9006342279.397823,
+      "oppCash": 9195279639.222404,
+      "survival": 0.7701441258458902,
+      "expectedCash": 6936181601.835719,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "pureCash",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 8943958051.607763,
+      "oppCash": 9232643867.240292,
+      "survival": 0.7668623746854444,
+      "expectedCash": 6858784910.54293,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "adaptive",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9263587264.945505,
+      "oppCash": 7980027864.501847,
+      "survival": 0.712518224934561,
+      "expectedCash": 6600474754.545376,
+      "win": 0.712518224934561
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "adaptiveSlow",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9120339376.07917,
+      "oppCash": 8152372156.607711,
+      "survival": 0.7184085675113766,
+      "expectedCash": 6552129946.386639,
+      "win": 0.7184085675113766
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "adaptiveHalf",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9065565982.004152,
+      "oppCash": 8304578719.034469,
+      "survival": 0.7240338572581261,
+      "expectedCash": 6563776706.178518,
+      "win": 0.7240338572581261
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 6,
+      "name": "adaptive15",
+      "complete": false,
+      "through": 62.36666666666441,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9432923528.821198,
+      "oppCash": 7401086210.074781,
+      "survival": 0.6908789754456294,
+      "expectedCash": 6517008543.04896,
+      "win": 0.6908789754456294
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "v04",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9133146050.076971,
+      "oppCash": 8781735712.228708,
+      "survival": 0.8569508619454476,
+      "expectedCash": 7826657379.88712,
+      "win": 0.8569508619454476
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "pureCash",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 8666269029.989334,
+      "oppCash": 9014595067.598341,
+      "survival": 0.8630714231835062,
+      "expectedCash": 7479609145.404038,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "adaptive",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9000111150.151348,
+      "oppCash": 8073583704.387643,
+      "survival": 0.8483546300804278,
+      "expectedCash": 7635285965.46938,
+      "win": 0.8483546300804278
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "adaptiveSlow",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 8820329029.852598,
+      "oppCash": 8314741238.111267,
+      "survival": 0.8566422605506521,
+      "expectedCash": 7555866598.93347,
+      "win": 0.8566422605506521
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "adaptiveHalf",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 8752177111.02845,
+      "oppCash": 8652794965.84909,
+      "survival": 0.8643024527932164,
+      "expectedCash": 7564528144.342536,
+      "win": 0.8643024527932164
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 7,
+      "name": "adaptive15",
+      "complete": false,
+      "through": 58.78333333333128,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 9173049519.988289,
+      "oppCash": 8020392676.735762,
+      "survival": 0.8470913677626883,
+      "expectedCash": 7770411064.4417515,
+      "win": 0.8470913677626883
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18992199272.128696,
+      "oppCash": 16615755200.848885,
+      "survival": 0.8075487316902594,
+      "expectedCash": 15337126434.216198,
+      "win": 0.8075487316902594
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18391256212.896168,
+      "oppCash": 16801283888.414557,
+      "survival": 0.8075815378347844,
+      "expectedCash": 14852438975.12422,
+      "win": 0.8075815378347844
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18521650354.687943,
+      "oppCash": 15688532227.565825,
+      "survival": 0.7909108347818756,
+      "expectedCash": 14648973943.564264,
+      "win": 0.7909108347818756
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17879972993.285698,
+      "oppCash": 15976361466.104565,
+      "survival": 0.7976324607544792,
+      "expectedCash": 14261646856.858103,
+      "win": 0.7976324607544792
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 17910305262.406418,
+      "oppCash": 16185594557.585009,
+      "survival": 0.8017465375220876,
+      "expectedCash": 14359525230.09797,
+      "win": 0.8017465375220876
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 8,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 19074056541.456947,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 1
+      },
+      "cash": 18553245946.465553,
+      "oppCash": 15465217606.436703,
+      "survival": 0.7890804831096059,
+      "expectedCash": 14640004274.688375,
+      "win": 0.7890804831096059
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "v04",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10912855478.274736,
+      "oppCash": 10346479735.053337,
+      "survival": 0.9134714471490195,
+      "expectedCash": 9968581886.267729,
+      "win": 0.9134714471490195
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "pureCash",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10454546038.309587,
+      "oppCash": 10593090739.79574,
+      "survival": 0.9175606188899148,
+      "expectedCash": 9592679733.124453,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "adaptive",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10484732047.164606,
+      "oppCash": 10310599524.155563,
+      "survival": 0.9112127714711353,
+      "expectedCash": 9553821746.829092,
+      "win": 0.9112127714711353
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "adaptiveSlow",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10303344331.12924,
+      "oppCash": 10371004325.672428,
+      "survival": 0.9133417908165494,
+      "expectedCash": 9410474962.793123,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "adaptiveHalf",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10298007532.338913,
+      "oppCash": 10423616660.686409,
+      "survival": 0.9148717716751388,
+      "expectedCash": 9421356395.834826,
+      "win": 0
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 9,
+      "name": "adaptive15",
+      "complete": false,
+      "through": 60.03333333333121,
+      "observedPhase": "crashed",
+      "observedCash": 0,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 10595613299.864908,
+      "oppCash": 10204998218.00805,
+      "survival": 0.9105299202802433,
+      "expectedCash": 9647622933.24628,
+      "win": 0.9105299202802433
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "v04",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18790446854.66393,
+      "oppCash": 17629456729.369495,
+      "survival": 0.8329054747330316,
+      "expectedCash": 15650666057.929659,
+      "win": 0.8329054747330316
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "pureCash",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18229754619.431797,
+      "oppCash": 17845284729.220024,
+      "survival": 0.837793843713974,
+      "expectedCash": 15272776192.57634,
+      "win": 0.837793843713974
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "adaptive",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18421743838.709095,
+      "oppCash": 16683798703.13486,
+      "survival": 0.8152627532196253,
+      "expectedCash": 15018561601.052645,
+      "win": 0.8152627532196253
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "adaptiveSlow",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17806186001.827015,
+      "oppCash": 17126494342.44896,
+      "survival": 0.8277794468250452,
+      "expectedCash": 14739594798.65623,
+      "win": 0.8277794468250452
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "adaptiveHalf",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 17837929392.150223,
+      "oppCash": 17183992337.404617,
+      "survival": 0.8281930662967116,
+      "expectedCash": 14773249439.66913,
+      "win": 0.8281930662967116
+    },
+    {
+      "trace": {
+        "file": "pace-bot-trace-2026-10-01T01-32-22-387Z.json",
+        "botVersion": "0.4.0",
+        "sha256": "1e2b519f73a4ffe4fed3255db7f637e0b0b743daf380e12ca8c5c542480a8789"
+      },
+      "match": 10,
+      "name": "adaptive15",
+      "complete": true,
+      "through": 91.99999999999606,
+      "observedPhase": "finished",
+      "observedCash": 18817740860.789364,
+      "timing": {
+        "cadence": 5,
+        "obsDelay": 1,
+        "inputDelay": 6
+      },
+      "cash": 18157954337.87802,
+      "oppCash": 16965607998.81962,
+      "survival": 0.8270993163487823,
+      "expectedCash": 15018431619.151318,
+      "win": 0.8270993163487823
+    }
+  ],
+  "replaySummary": {
+    "pace-bot-trace-2026-10-01T00-17-21-103Z.json": {
+      "v04": {
+        "n": 14,
+        "expectedCash": 13.471787633053983,
+        "cashSE": 0.8681517508654282,
+        "cash": 17.258558874910634,
+        "opponentCash": 15.653153789923651,
+        "win": 0.7427194828142715,
+        "survival": 0.7674887463766185
+      },
+      "pureCash": {
+        "n": 14,
+        "expectedCash": 12.962117013924665,
+        "cashSE": 0.8363661329931238,
+        "cash": 16.59059482307112,
+        "opponentCash": 15.893154586775848,
+        "win": 0.5020213853732381,
+        "survival": 0.7684032479898856
+      },
+      "adaptive": {
+        "n": 14,
+        "expectedCash": 12.817754209281208,
+        "cashSE": 0.804662563199528,
+        "cash": 16.87590917195817,
+        "opponentCash": 15.017423775314462,
+        "win": 0.6062954354186386,
+        "survival": 0.7499401372553278
+      },
+      "adaptiveSlow": {
+        "n": 14,
+        "expectedCash": 12.536665398717615,
+        "cashSE": 0.7809765290297933,
+        "cash": 16.338363293957826,
+        "opponentCash": 15.343047536246477,
+        "win": 0.4916474528981493,
+        "survival": 0.7580663040200275
+      },
+      "adaptiveHalf": {
+        "n": 14,
+        "expectedCash": 12.578225460930312,
+        "cashSE": 0.7837218684578047,
+        "cash": 16.315933660457205,
+        "opponentCash": 15.46286260515536,
+        "win": 0.43338589460275345,
+        "survival": 0.7612769046016584
+      },
+      "adaptive15": {
+        "n": 14,
+        "expectedCash": 13.231337977713416,
+        "cashSE": 0.8485779318831322,
+        "cash": 17.43000044311923,
+        "opponentCash": 14.616401950528944,
+        "win": 0.7256159708972653,
+        "survival": 0.748781600345213
+      }
+    },
+    "pace-bot-trace-2026-10-01T01-32-22-387Z.json": {
+      "v04": {
+        "n": 6,
+        "expectedCash": 12.979558910195205,
+        "cashSE": 1.3478704675941253,
+        "cash": 17.473010981244922,
+        "opponentCash": 16.417613008803766,
+        "win": 0.6291518528580206,
+        "survival": 0.7301548746469092
+      },
+      "pureCash": {
+        "n": 6,
+        "expectedCash": 12.5087977595427,
+        "cashSE": 1.2710366167543616,
+        "cash": 16.69806714527941,
+        "opponentCash": 16.830136530612325,
+        "win": 0.4104303147639989,
+        "survival": 0.7364814580569482
+      },
+      "adaptive": {
+        "n": 6,
+        "expectedCash": 12.390870405219994,
+        "cashSE": 1.2164821462564075,
+        "cash": 17.058878683112297,
+        "opponentCash": 15.538466389127922,
+        "win": 0.715760088251978,
+        "survival": 0.715760088251978
+      },
+      "adaptiveSlow": {
+        "n": 6,
+        "expectedCash": 12.09278732828211,
+        "cashSE": 1.1844561191049776,
+        "cash": 16.50213781211197,
+        "opponentCash": 15.854250139658783,
+        "win": 0.4947252544482598,
+        "survival": 0.7221615222980483
+      },
+      "adaptiveHalf": {
+        "n": 6,
+        "expectedCash": 12.115562312533198,
+        "cashSE": 1.1932930777349815,
+        "cash": 16.459637070689503,
+        "opponentCash": 16.009416784631554,
+        "win": 0.4968735421467129,
+        "survival": 0.7250520305294651
+      },
+      "adaptive15": {
+        "n": 6,
+        "expectedCash": 12.480598942672666,
+        "cashSE": 1.2465467575341032,
+        "cash": 17.269723242081614,
+        "opponentCash": 15.281075944232917,
+        "win": 0.7120933004884025,
+        "survival": 0.7120933004884025
+      }
+    }
+  }
+}

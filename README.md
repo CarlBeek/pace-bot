@@ -6,15 +6,15 @@ A local, inspectable controller for [Paradigm's PACE](https://www.paradigm.xyz/r
 
 1. `npm run build` (writes `extension/pace-bot.js` from `src/`; a built copy is already there).
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `extension/` folder.
-3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.4** panel appears at the bottom right, **disarmed**.
+3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.5** panel appears at the bottom right, **disarmed**.
 
-After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.4 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab. A refresh resets the run count, match limit, and armed state; set the limit and click Start again.
+After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.5 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab. A refresh resets the run count, match limit, and armed state; set the limit and click Start again.
 
 The extension has no permissions. It only runs on `paradigm.xyz/research/pace*`, as one main-world content script. It never reads cookies, tokens, or network traffic, and your existing login session is left alone.
 
 ## Use
 
-1. Use **Leaderboard** (`leaderboard`, the default) for average final cash with competitive pressure when behind. **Win-focused** (`competitive`) puts more weight on beating the opponent and accepts more risk. **Cash (legacy CPU)** and **Win (legacy CPU)** are the old practice-tuned presets, not the new online policies. `repro-cash` and `repro-win` remain available for reproduction.
+1. The live bot always optimizes **average final cash per game**, including catastrophe zeros. There is no policy dropdown or objective-switching API. It automatically selects **@ergonomic cash** for that exact game-provided account, and **general** for other/unknown opponents. Candidate selection is based on expected own cash, not wins. The general controller retains v0.4's relative-cash heuristic because removing it lowered expected cash in validation; the dedicated profile has no win bonus. Historical win-focused and legacy presets remain available only to offline evaluators. The internal/exported objective name remains `leaderboard` for compatibility.
 2. Set the match limit (1–50, default 1) and click **Start**. Start or join the first game on the page. After each game, including a catastrophe, the bot stays armed and clicks the game's **Play again** button after a one-second delay if the limit has not been reached. This uses the site's normal matchmaking/rematch flow and waits when its button is disabled or unavailable. It requests each next game only once. In a private room, the opponent must also ready up.
 3. **STOP**, or pressing **Esc**, releases the accelerator, disarms, and cancels any next-game click that has not happened yet. If a matchmaking request is already pending, use the site's Cancel control to leave that queue. The bot also disarms if a snapshot is malformed, the page is hidden, or the match limit is reached. Keep the game tab visible. A stale snapshot now **pauses** and releases input without disarming; two advancing snapshots arriving without another stale interval restore play automatically. Stop and other disarms never auto-resume.
 4. **Export trace** downloads a JSON log with every observation, decision, input and acknowledgment, plus latency percentiles.
@@ -27,11 +27,50 @@ The offline tests include the generated extension running against a simulated DO
 
 ## How it works
 
-- **Observation.** It wraps `customElements.get('pace-game').prototype.showMatch`, keeping `this`, the arguments, the return value and the original behavior. After the original render it copies an allowlist of player-visible fields into the agent (`src/agent.mjs: extractObservation`). The catastrophe threshold, RNG state and hidden opponent research are never read.
+- **Observation.** It wraps `customElements.get('pace-game').prototype.showMatch`, keeping `this`, the arguments, the return value and the original behavior. After the original render it copies an allowlist of player-visible fields into the agent (`src/agent.mjs: extractObservation`), including the other seat's public account type and username. The catastrophe threshold, RNG state and hidden opponent research are never read.
 - **Input.** It dispatches `keydown`/`keyup` Space on the `pace-game` host, which is the same path a physical Space press takes. The widget's own handler runs its blocked, phase and dialog checks, then emits `pace:input` to the session. The agent checks the UI's `#accelerator[aria-pressed]` and the game's observed `held` against what it last issued, and resyncs if they differ.
 - **Online policy** (`src/competitive.mjs`). Predicts frontier progress and opponent deployment from recent public observations, accounting for the game's two-second deployment lag. Scores candidate research targets using the public profit and catastrophe formulas. Risk is charged against accumulated cash and projected future earnings; competitive pressure increases when behind and relaxes when comfortably ahead. Forecasts are estimates, not knowledge of hidden research or future frontier changes.
 - **Timing.** New policies project motion over estimated observation-to-command-effect delay, then check the stopping point after one further decision interval. Delay is estimated from input acknowledgements in game time, subtracting half a snapshot interval for sampling delay; it starts at seven frames and is bounded at thirty. Acknowledgement timing is not an exact network RTT. Retries retain their original timestamp, and timing/command state resets each match.
 - **Legacy policy** (`src/policy.mjs`). Retains the original CPU-tuned target tracker for comparison. It does not use the new economic target or adaptive delay horizon.
+
+## Opponent-specific cash routing (v0.5)
+
+The automatic selector checks `snapshot.players[1 - snapshot.player]`. Only `kind: 'twitter'` with the exact case-normalized `username: 'ergonomic'` selects `ergonomic-cash-v1`. A guest named `@ergonomic`, a similar username, a display name, or the user's own account cannot trigger it. This uses the public account metadata the game uses to render its `@username` label, not cookies, authentication tokens, network interception, or a claim that the opponent is a bot. It is handle-based, not an immutable account-ID match; a changed handle falls back to general.
+
+The dedicated profile is exactly the frozen `forecast20` cash-only candidate below: a two-second frontier forecast, `winWeight: 0`, and the existing catch-up cap, latency compensation and deadline handling. It is selected for the reported recurring opponent, **not** promoted to all matchups. General play retains v0.4. The live objective is fixed to cash/game; routing chooses the research policy automatically. This is the best-supported policy choice from the current comparisons, not a guarantee of a globally optimal strategy.
+
+The panel displays the detected opponent and selected profile. Identity is cleared at every new match. Once observed, identity survives metadata-free deltas within the same match; explicit invalid/guest/changed metadata clears or updates it. Duplicate and out-of-order snapshots cannot change the profile. Missing identity at the start of a match selects general, without blocking play.
+
+Version 3 trace exports record opponent identity, profile changes, each observation's selected profile, and terminal results with all profiles selected during participation. Older traces lack account identity: attribution of those matches to `@ergonomic` comes from the user's report, not verified identifiers in those files. Their replay gains are promising but **not** live proof that the dedicated profile improves this account's long-run cash/game. New exports allow that attribution to be checked. Replay analysis respects recorded identity; anonymous older paths still need explicit candidate parameters for comparisons.
+
+The generated-bundle tests cover the absence of a policy selector, the fixed cash objective, switching to the dedicated profile, returning to general on autoplay, panel/export state, Stop, and the match limit. No browser reload or live matchmaking was performed during implementation. Reload between games to use v0.5; routing needs no manual policy selection.
+
+## Cash-only experiments and selection evidence
+
+The optimization criterion is **mean terminal own cash per game**, including zero-score catastrophes. Winning, score margin, and the opponent's cash are not selection criteria. Opponent research still matters because it affects our profit and shared catastrophe risk. A lower win rate is acceptable when expected own cash increases.
+
+`sim/cash.mjs` tests cash-only candidates with `winWeight: 0` against a fully specified v0.4 reference. Eighteen candidates were explored on eight tuning seeds (LCG indices 11000–11007), both latency conditions, and the two online trace exports. Five configurations were then frozen before running **3,200 held-out simulations**: 40 fresh seeds (12000–12039), eight opponent styles, two latency conditions. These validation seeds were not used for further tuning.
+
+| Expected cash / game | Frozen v0.4 | Remove win bonus only | Cash-only, 1.5s forecast | Cash-only, 2s forecast | Cash-only, 2s + slowdown |
+|---|---:|---:|---:|---:|---:|
+| Normal simulated timing | $12.78B | $12.51B | $12.82B | $12.52B | $12.73B |
+| Higher delay + 5% snapshot loss | $12.51B | $12.29B | $12.40B | $11.92B | $12.28B |
+| Older trace: 14 complete paths | $13.47B | $12.96B | $13.67B | $13.98B | $13.90B |
+| Newest trace: 6 complete paths | $12.98B | $12.51B | $12.94B | $13.13B | $13.00B |
+
+Removing the bonus alone reduces expected cash by $276M/game at normal timing (paired 95% interval: -$380M to -$171M) and $221M under higher delay (-$312M to -$130M). The two-second cash-only forecast looks better against the recorded opponent paths but worse across the equal-weight synthetic mix: -$264M and -$594M, respectively. The small +$38M result for the 1.5-second forecast at normal timing has an interval spanning zero. **No challenger replaces the general fallback.** v0.5 routes only the reported recurring account to the two-second cash-only candidate. Choice of target opponent population matters; these results do not establish a universal best policy.
+
+The trace paths were used during development, keep opponent actions fixed, and are not independent validation. Five early-catastrophe paths are retained in the reports but excluded from full-length replay averages because their unseen endings cannot be reconstructed. This does **not** exclude catastrophes from the live cash/game metric or from simulated expected cash. The simulations integrate survival probability as `exp(-hazard)` and count catastrophe cash as zero. Their opponent mix is not a measured distribution of online players.
+
+Optional experimental parameters, both disabled in the default, are `slowdownFactor` (dampen extrapolation using a shorter observed slope) and `deploymentForecastBoost` (extend the forecast when recent opponent deployment has a positive frontier offset). Both use only past public observations, not hidden research. The adaptive variants did not improve both trace sets and are not promoted.
+
+Evidence is saved in `runs/cash-tuning.json`, `runs/cash-tuning-slowdown.json`, `runs/cash-tuning-adaptive.json`, and `runs/cash-validation.json`. Reproduce the three tuning stages with `npm run eval:cash -- tune-basic 8`, `tune-slowdown 8`, or `tune-adaptive 8`, followed by an output path and optional trace paths. Validate with:
+
+```sh
+npm run eval:cash -- validate 40 runs/cash-validation.json /path/to/older-trace.json /path/to/newest-trace.json
+```
+
+No live games were played or browser tabs reloaded during this investigation. General play, autoplay, Stop, and cash accounting remain unchanged; v0.5 adds the account-specific routing above.
 
 ## Opponent-aware cap and endgame (v0.4)
 
@@ -136,6 +175,7 @@ Live practice runs used the real page in a separate throwaway Chrome profile (`n
 src/controller.mjs   handoff reproduction baseline (pure)
 src/policy.mjs       target policy, movement projection, baselines
 src/competitive.mjs  economic target selection and public-observation opponent prediction
+src/opponents.mjs    exact public-account routing to a frozen cash-only profile
 src/agent.mjs        stateful agent: allowlist, ordering, staleness, match reset, latency stats
 src/replay.mjs       guarded next-game scheduling through the normal Play again control
 src/browser.mjs      page adapter + operator panel

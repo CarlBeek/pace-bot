@@ -42,11 +42,11 @@ async function browserFixture() {
   });
   await Promise.resolve(); // customElements.whenDefined() patches Host.showMatch.
   const api = win.__paceBot;
-  function deliver(t, phase = 'running') {
-    host.showMatch({ room: 'test', match, player: 0, game: { t, phase, safety: 12, hazard: 0,
+  function deliver(t, phase = 'running', players) {
+    host.showMatch({ room: 'test', match, player: 0, players, game: { t, phase, safety: 12, hazard: 0,
       labs: [{ position: 0, speed: 0, deployed: 0, held: false, cash: 1e9, profit: 5e9 }, { deployed: 0, cash: 1e9, profit: 5e9 }] } });
   }
-  function start() { match++; deliver(.1); }
+  function start(players) { match++; deliver(.1, 'running', players); }
   const tick = time => { now = time; for (const cb of timers.values()) cb(); };
   return { api, doc, host, start, deliver, tick, clicks: () => clicks, ui: body.child.shadowRoot };
 }
@@ -65,8 +65,44 @@ test('built extension plays the next game through the UI and stops exactly at th
   assert.equal(f.clicks(), 1);
   assert.equal(f.api.status().completed, 2);
   assert.equal(f.api.status().armed, false);
-  assert.equal(f.api.export().botVersion, '0.4.0');
+  assert.equal(f.api.export().botVersion, '0.5.0');
   assert.equal(f.ui.getElementById('cnt').textContent, '2 / 2');
+});
+
+test('live extension has one cash objective and no policy selector or switching API', async () => {
+  const f = await browserFixture();
+  assert.equal(f.ui.getElementById('obj'), null);
+  assert.equal(f.api.setObjective, undefined);
+  assert.equal(f.api.status().objective, 'leaderboard');
+  assert.throws(() => { f.api.agent.objective = 'competitive'; }, TypeError);
+  f.api.arm(); f.start();
+  assert.equal(f.api.status().profile, 'leaderboard');
+  assert.equal(f.api.status().objective, 'leaderboard');
+});
+
+test('built extension shows exact opponent routing, exports it, and resets on autoplay', async () => {
+  const f = await browserFixture();
+  f.api.setMatchLimit(2); f.api.arm();
+  f.start([{ kind: 'twitter', username: 'carl' }, { kind: 'twitter', username: 'ErGoNoMiC' }]);
+  f.tick(100);
+  assert.equal(f.api.status().profile, 'ergonomic-cash-v1');
+  assert.equal(f.ui.getElementById('opponent').textContent, '@ergonomic');
+  assert.equal(f.ui.getElementById('profile').textContent, '@ergonomic cash');
+  assert.equal(f.api.agent.decision.forecastSeconds, 2);
+  f.deliver(92, 'finished');
+  const exported = f.api.export();
+  assert.equal(exported.version, 3);
+  assert.equal(exported.results[0].profile, 'ergonomic-cash-v1');
+  assert.equal(exported.results[0].opponent.username, 'ergonomic');
+  assert.ok(exported.trace.some(e => e.k === 'profile' && e.profile === 'ergonomic-cash-v1'));
+  f.tick(200); f.tick(1200);
+  assert.equal(f.clicks(), 1);
+  assert.equal(f.api.status().profile, 'leaderboard');
+  assert.equal(f.api.status().opponent, null);
+  assert.equal(f.api.agent.decision.forecastSeconds, 1);
+  f.tick(1300);
+  assert.equal(f.ui.getElementById('profile').textContent, 'general');
+  assert.equal(f.ui.getElementById('cnt').textContent, '1 / 2');
 });
 
 test('built extension STOP button cancels a pending next game', async () => {

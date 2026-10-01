@@ -175,19 +175,32 @@ function decideCompetitive(obs, { held = false, history = [], lookahead = 5, del
     return { held: false, reason: 'invalid or inactive observation' };
   const { forecast = 2, opponentForecast = 2, lead = 0, wealth = 1, winWeight = 0, hysteresis = .08,
     opponentModel = 'bounded', maxTargetGap = Infinity, motionModel = 'issued',
-    catchupToDeployed = false, endgameSeconds = 0, endgameForecast = forecast, deadlineAware = false } = params;
+    catchupToDeployed = false, endgameSeconds = 0, endgameForecast = forecast, deadlineAware = false,
+    slowdownFactor = 0, deploymentForecastBoost = 0 } = params;
   const slope = frontierSlope(obs, history);
+  // A shorter public-observation window detects slowing before the half-second
+  // average catches up. Never extrapolate a negative frontier speed or a reversal.
+  const recentSlope = slowdownFactor > 0 ? frontierSlope(obs, history, 1 / 6) : slope;
+  const forecastSlope = Math.min(slope, recentSlope);
+  const frontierDeceleration = Math.max(0, (slope - recentSlope) * 6 * slowdownFactor);
+  const frontierAdvance = horizon => {
+    const duration = frontierDeceleration > 0 ? Math.min(horizon, forecastSlope / frontierDeceleration) : horizon;
+    return Math.min(3, Math.max(0, forecastSlope * duration - .5 * frontierDeceleration * duration * duration));
+  };
   const velocity = opponentSpeed(obs, history);
+  const gaps = history.filter(h => h.t <= obs.t && obs.t - h.t <= 2 && Number.isFinite(h.opponent)).map(h => h.opponent - h.safety).sort((a, b) => a - b);
+  const gap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : obs.opponent.deployed - obs.safety;
   // Ramp toward a settlement-aware frontier forecast near the finish. Only past
   // observations are used; an unseen plateau can still invalidate this forecast.
   const endgameBlend = endgameSeconds > 0 ? Math.max(0, Math.min(1, (obs.t - ACCELERATION_END + endgameSeconds) / endgameSeconds)) : 0;
-  const forecastSeconds = forecast + endgameBlend * (endgameForecast - forecast);
-  const predictedSafety = obs.safety + Math.min(3, forecastSeconds * slope);
-  const gaps = history.filter(h => h.t <= obs.t && obs.t - h.t <= 2 && Number.isFinite(h.opponent)).map(h => h.opponent - h.safety).sort((a, b) => a - b);
-  const gap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : obs.opponent.deployed - obs.safety;
+  // A sustained positive deployment offset makes lagging costly to our own cash.
+  // Extend the planning horizon using visible research, never the relative bank balance.
+  const baseForecast = forecast + Math.min(1, deploymentForecastBoost * Math.max(0, gap));
+  const forecastSeconds = baseForecast + endgameBlend * (endgameForecast - baseForecast);
+  const predictedSafety = obs.safety + frontierAdvance(forecastSeconds);
   // Deployment speed oscillates as players tap the accelerator. Leaderboard uses the
   // recent frontier offset through brief pauses; Win-focused retains the v0.2 forecast.
-  const anchor = obs.safety + Math.min(3, opponentForecast * slope) + gap;
+  const anchor = obs.safety + frontierAdvance(opponentForecast) + gap;
   const prediction = opponentModel === 'anchored' ? anchor : Math.min(
     obs.opponent.deployed + Math.min(4, opponentForecast * velocity), anchor);
   const predictedOpponent = Math.max(obs.opponent.deployed, prediction) + lead;
@@ -230,12 +243,39 @@ function decideCompetitive(obs, { held = false, history = [], lookahead = 5, del
   return { held: accelerate, reason: accelerate ? 'building profitable lead' : 'protecting cash', stop, target, slope,
     predictedOpponent, predictedSafety, opponentSpeed: velocity, delayFrames, atRisk,
     targetCeiling: ceiling, catchup: catchupToDeployed && obs.opponent.deployed > predictedSafety + maxTargetGap,
-    endgameBlend, forecastSeconds, deadlineLimited };
+    endgameBlend, forecastSeconds, deadlineLimited, forecastSlope, frontierDeceleration };
+}
+
+// ---- src/opponents.mjs
+// Only public account metadata supplied with the game's match snapshot is used.
+// A display name, avatar, guest name or apparent playing style is not identity.
+function readOpponentIdentity(player) {
+  if (player == null) return undefined; // Missing metadata is not a new identity.
+  if (player.kind !== 'twitter' || typeof player.username !== 'string') return null;
+  const username = player.username.toLowerCase();
+  if (!/^[a-z0-9_]{1,64}$/.test(username)) return null;
+  return { kind: 'twitter', username };
+}
+
+// Frozen to the forecast20 candidate in runs/cash-validation.json. Selection is
+// based on own expected cash, not wins. Replay gains are not live validation.
+const ERGONOMIC_CASH = Object.freeze({
+  id: 'ergonomic-cash-v1', label: '@ergonomic cash',
+  params: Object.freeze({ forecast: 2, opponentForecast: 3, wealth: 1, winWeight: 0,
+    opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending',
+    catchupToDeployed: true, endgameSeconds: 6, endgameForecast: 2, deadlineAware: true,
+    slowdownFactor: 0, deploymentForecastBoost: 0 }),
+});
+
+function selectOpponentProfile(objective, identity) {
+  return objective === 'leaderboard' && identity?.kind === 'twitter' && identity.username === 'ergonomic'
+    ? ERGONOMIC_CASH : null;
 }
 
 // ---- src/agent.mjs
 // Stateful controller between a snapshot source and an input sink. No DOM access here.
 // Keeps authoritative (observed) state, desired action and last issued action separate.
+
 
 
 const OBJECTIVES = ['leaderboard', 'competitive', 'cash', 'win', 'repro-cash', 'repro-win'];
@@ -251,7 +291,8 @@ function extractObservation(snap) {
     match: `${snap.room}:${snap.match}`,
     t: g.t, phase: g.phase, safety: g.safety, hazard: g.hazard,
     own: { position: me.position, speed: me.speed, deployed: me.deployed, held: me.held, cash: me.cash, profit: me.profit, score: g.scores?.[p] ?? null },
-    opponent: { deployed: op.deployed, cash: op.cash, profit: op.profit, score: g.scores?.[1 - p] ?? null },
+    opponent: { deployed: op.deployed, cash: op.cash, profit: op.profit, score: g.scores?.[1 - p] ?? null,
+      identity: readOpponentIdentity(snap.players?.[1 - p]) },
   };
 }
 
@@ -280,6 +321,9 @@ class Agent {
 
   resetMatch(match) {
     this.match = match;
+    this.opponentIdentity = null;
+    this.loggedProfile = null;
+    this.profilesUsed = new Set();
     this.history = [];
     this.frameGaps = [];
     this.recentAckGame = [];
@@ -302,11 +346,16 @@ class Agent {
     return Math.max(250, 4 * (p ?? 67));
   }
 
+  get opponentProfile() { return selectOpponentProfile(this.objective, this.opponentIdentity); }
+  get profileId() { return this.opponentProfile?.id ?? this.objective; }
+
   log(e) { if (this.trace.length < this.traceLimit) this.trace.push(e); }
 
   arm(now) {
     if (this.completed >= this.matchLimit) { this.reason = `match limit ${this.matchLimit} reached`; return false; }
-    if (['running', 'settling'].includes(this.last?.phase)) this.participated = true;
+    if (['running', 'settling'].includes(this.last?.phase)) {
+      this.participated = true; this.profilesUsed.add(this.profileId);
+    }
     this.armed = true; this.reason = 'armed'; this.log({ k: 'arm', now, objective: this.objective });
     return true;
   }
@@ -344,6 +393,14 @@ class Agent {
       if (o.t === this.last.t && o.phase === this.last.phase) { this.stats.duplicates++; return null; }
       if (o.t < this.last.t) { this.stats.outOfOrder++; return null; }
     }
+    // Retain accepted identity through metadata-free deltas within this match.
+    // Explicitly invalid/guest metadata clears it; resetMatch prevents carry-over.
+    if (o.opponent.identity !== undefined) this.opponentIdentity = o.opponent.identity;
+    const profile = this.profileId;
+    if (profile !== this.loggedProfile) {
+      this.log({ k: 'profile', now, match: this.match, profile, opponent: this.opponentIdentity });
+      this.loggedProfile = profile;
+    }
     if (this.lastRecv != null) {
       const gap = now - this.lastRecv;
       if (this.paused && gap > this.staleMs) this.freshSnapshots = 0;
@@ -355,7 +412,9 @@ class Agent {
       if (this.frameGaps.length > 60) this.frameGaps.shift();
     }
     this.last = o; this.lastRecv = now;
-    if (this.armed && ['running', 'settling'].includes(o.phase)) this.participated = true;
+    if (this.armed && ['running', 'settling'].includes(o.phase)) {
+      this.participated = true; this.profilesUsed.add(profile);
+    }
     this.history.push({ t: o.t, safety: o.safety, opponent: o.opponent.deployed });
     if (this.history.length > 64) this.history.splice(0, this.history.length - 32);
 
@@ -375,16 +434,19 @@ class Agent {
       this.pending = null;
     }
 
-    const entry = { k: 'obs', now, objective: this.objective, t: o.t, phase: o.phase, S: o.safety, x: o.own.position, v: o.own.speed,
+    const entry = { k: 'obs', now, objective: this.objective, profile, opponentIdentity: this.opponentIdentity,
+      t: o.t, phase: o.phase, S: o.safety, x: o.own.position, v: o.own.speed,
       dep: o.own.deployed, held: o.own.held, opp: o.opponent.deployed, cash: o.own.cash, oppCash: o.opponent.cash, hz: o.hazard };
 
     if (o.phase !== 'running') {
       if (['finished', 'crashed'].includes(o.phase) && !this.endedCounted && this.participated) {
         this.endedCounted = true; this.completed++;
-        this.results.push({ match: this.match, objective: this.objective, phase: o.phase,
+        this.results.push({ match: this.match, objective: this.objective, phase: o.phase, profile,
+          profilesUsed: [...this.profilesUsed], opponent: this.opponentIdentity,
           cash: o.phase === 'crashed' ? 0 : o.own.score ?? o.own.cash,
           opponentCash: o.phase === 'crashed' ? 0 : o.opponent.score ?? o.opponent.cash });
-        this.log({ k: 'end', now, phase: o.phase, cash: o.own.cash, oppCash: o.opponent.cash, hazard: o.hazard });
+        this.log({ k: 'end', now, phase: o.phase, profile, opponent: this.opponentIdentity,
+          cash: o.own.cash, oppCash: o.opponent.cash, hazard: o.hazard });
       }
       if (['finished', 'crashed'].includes(o.phase)) { this.paused = false; this.freshSnapshots = 0; }
       this.log(entry);
@@ -402,7 +464,8 @@ class Agent {
       this.log({ k: 'resume', now, reason: 'fresh snapshots restored' });
     }
 
-    const competitive = COMPETITIVE_PRESETS[this.objective] && { ...COMPETITIVE_PRESETS[this.objective], ...this.policyParams };
+    const competitive = COMPETITIVE_PRESETS[this.objective] && {
+      ...COMPETITIVE_PRESETS[this.objective], ...this.opponentProfile?.params, ...this.policyParams };
     const params = PRESETS[this.objective];
     if (!competitive && !params) return this.disarm(now, 'unknown objective');
     // Compensated presets look ahead one observed decision interval (frames between snapshots).
@@ -510,8 +573,9 @@ function install(win = window) {
   const doc = win.document;
   const perf = win.performance;
   const agent = new Agent({ objective: 'leaderboard', matchLimit: 1 });
+  // Live play has one objective. Legacy objectives are for offline comparisons only.
+  Object.defineProperty(agent, 'objective', { value: 'leaderboard', writable: false, configurable: false });
   const replay = new ReplayQueue();
-  const labels = { leaderboard: 'Leaderboard', competitive: 'Win-focused', cash: 'Cash (legacy CPU)', win: 'Win (legacy CPU)', 'repro-cash': 'Repro cash', 'repro-win': 'Repro win' };
   let host = null, patched = false, lastKeySent = null;
 
   function uiHeld() {
@@ -578,11 +642,13 @@ function install(win = window) {
       .row{display:flex;justify-content:space-between;gap:8px}.k{color:#999}
       .armed{color:#4ade80}.off{color:#f87171}
       .ctl{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
-      button,select,input{font:inherit;background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:3px 6px}
+      button,input{font:inherit;background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:3px 6px}
       button.go{background:#14532d}button.stop{background:#7f1d1d;font-weight:bold}
       input{width:40px}.why{margin-top:6px;color:#fbbf24;min-height:1.3em;word-break:break-word}
-    </style><div class="p"><h1><span>PACE bot · v0.4</span><span id="st" class="off">DISARMED</span></h1>
-      <div class="row"><span class="k">mode</span><span id="mode">no game</span></div>
+    </style><div class="p"><h1><span>PACE bot · v0.5</span><span id="st" class="off">DISARMED</span></h1>
+      <div class="row"><span class="k">goal</span><span>Avg cash / game</span></div>
+      <div class="row"><span class="k">opponent</span><span id="opponent">unknown</span></div>
+      <div class="row"><span class="k">profile</span><span id="profile">general</span></div>
       <div class="row"><span class="k">input</span><span id="inp">–</span></div>
       <div class="row"><span class="k">state age</span><span id="age">–</span></div>
       <div class="row"><span class="k">input ack (median)</span><span id="dly">–</span></div>
@@ -592,13 +658,11 @@ function install(win = window) {
       <div class="row"><span class="k">run cash / game</span><span id="avg">–</span></div>
       <div class="why" id="why"></div>
       <div class="ctl"><button class="go" id="start">Start</button><button class="stop" id="stop">STOP</button>
-        <select id="obj">${OBJECTIVES.map(o => `<option value="${o}">${labels[o]}</option>`).join('')}</select>
         <label class="k">limit <input id="lim" type="number" min="1" max="50" value="1"></label>
         <button id="exp">Export trace</button></div></div>`;
-    for (const id of ['st', 'mode', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'why', 'start', 'stop', 'obj', 'lim', 'exp']) ui[id] = root.getElementById(id);
+    for (const id of ['st', 'opponent', 'profile', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'why', 'start', 'stop', 'lim', 'exp']) ui[id] = root.getElementById(id);
     ui.start.onclick = () => { agent.arm(perf.now()); render(); };
     ui.stop.onclick = () => send(agent.disarm(perf.now(), 'user stop')) || render();
-    ui.obj.onchange = () => { agent.objective = ui.obj.value; render(); };
     ui.lim.onchange = () => { send(agent.setMatchLimit(ui.lim.value, perf.now())); ui.lim.value = agent.matchLimit; render(true); };
     ui.exp.onclick = exportTrace;
     doc.body.appendChild(panel);
@@ -614,7 +678,8 @@ function install(win = window) {
     const o = agent.last;
     ui.st.textContent = agent.armed ? agent.paused ? 'PAUSED' : 'ARMED' : 'DISARMED';
     ui.st.className = agent.armed ? 'armed' : 'off';
-    ui.mode.textContent = !o ? 'no game' : labels[agent.objective];
+    ui.opponent.textContent = agent.opponentIdentity ? `@${agent.opponentIdentity.username}` : 'unknown';
+    ui.profile.textContent = agent.opponentProfile?.label ?? 'general';
     ui.inp.textContent = `issued ${agent.lastIssued ? 'HOLD' : 'release'} · ui ${uiHeld() == null ? '?' : uiHeld() ? 'HOLD' : 'release'}`;
     ui.age.textContent = agent.lastRecv == null ? '–' : `${Math.round(now - agent.lastRecv)} ms (t=${o.t.toFixed(2)}s ${o.phase})`;
     const a = summarize(agent.stats.ackMs.slice(-200));
@@ -627,7 +692,6 @@ function install(win = window) {
     const d = agent.decision;
     ui.why.textContent = agent.armed && replay.status ? replay.status :
       agent.armed && !agent.paused && o?.phase === 'running' && d?.target != null ? `${agent.reason} · stop ${d.stop.toFixed(2)} vs target ${d.target.toFixed(2)}` : agent.reason;
-    if (ui.obj.value !== agent.objective) ui.obj.value = agent.objective;
   }
   function exportTrace() {
     const blob = new Blob([JSON.stringify(api.export(), null, 1)], { type: 'application/json' });
@@ -644,11 +708,12 @@ function install(win = window) {
     agent,
     arm: () => { const ok = agent.arm(perf.now()); render(true); return ok; },
     stop: reason => { send(agent.disarm(perf.now(), reason || 'api stop')); render(true); },
-    setObjective: o => { if (!OBJECTIVES.includes(o)) throw new Error('unknown objective'); agent.objective = o; render(true); },
     setMatchLimit: n => { send(agent.setMatchLimit(n, perf.now())); ui.lim && (ui.lim.value = agent.matchLimit); render(true); },
     status: () => ({ armed: agent.armed, paused: agent.paused, objective: agent.objective, completed: agent.completed, reason: agent.reason, replay: replay.status,
+      profile: agent.profileId, opponent: agent.opponentIdentity,
       last: agent.last, issued: !!agent.lastIssued, uiHeld: uiHeld(), patched, lastKeySent, performance: agent.performance() }),
-    export: () => ({ version: 2, botVersion: '0.4.0', exportedAt: new Date().toISOString(), objective: agent.objective,
+    export: () => ({ version: 3, botVersion: '0.5.0', exportedAt: new Date().toISOString(), objective: agent.objective,
+      profile: agent.profileId, opponent: agent.opponentIdentity,
       latency: agent.latency(), performance: agent.performance(), results: agent.results.map(r => ({ ...r })), trace: agent.trace }),
     destroy: () => { send(agent.disarm(perf.now(), 'adapter destroyed')); win.clearInterval(timer); panel?.remove(); },
   };

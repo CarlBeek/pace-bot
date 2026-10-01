@@ -111,7 +111,10 @@ export function runReplay(samples, spec, timing = {}) {
   }
   for (let frame = 0; g.t < Math.min(92, samples.at(-1).t) - 1e-7; frame++) {
     force(g.t);
-    if (frame % cadence === 0) packets.push({ at: frame + obsDelay, o: observation(g), snap: { room: 'replay', match: 1, player: 0, game: E.view(g, 0) } });
+    if (frame % cadence === 0) packets.push({ at: frame + obsDelay, o: observation(g), snap: {
+      room: 'replay', match: 1, player: 0,
+      players: [null, samples[index].opponentIdentity === null ? { kind: 'unknown' } : samples[index].opponentIdentity],
+      game: E.view(g, 0) } });
     while (packets.length && packets[0].at <= frame) {
       const { o, snap } = packets.shift();
       history.push({ t: o.t, safety: o.safety, opponent: o.opponent.deployed });

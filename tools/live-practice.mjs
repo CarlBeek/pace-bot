@@ -1,7 +1,7 @@
 // Controlled live integration test: launches a separate Chrome with a throwaway profile (never the
 // user's profile), injects extension/pace-bot.js exactly as the MAIN-world content script would run,
 // opens the real PACE page, starts a practice game vs the computer, arms the bot and records the trace.
-// Usage: node tools/live-practice.mjs [--games N] [--objective leaderboard|competitive|...] [--headful] [--out dir]
+// Usage: node tools/live-practice.mjs [--games N] [--headful] [--out dir]
 //        [--test-controls]   (press/release/stop checks before playing)
 import { spawn } from 'node:child_process';
 import { mkdtemp, readFile, writeFile, mkdir, rm } from 'node:fs/promises';
@@ -12,7 +12,8 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
-const games = Number(opt('--games', 1)), objective = opt('--objective', 'leaderboard');
+const games = Number(opt('--games', 1)), objective = 'leaderboard';
+if (args.includes('--objective')) throw new Error('Live play always optimizes average cash. Use offline evaluators to compare other objectives.');
 const outDir = opt('--out', join(root, 'runs'));
 const headful = args.includes('--headful'), testControls = args.includes('--test-controls');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -95,7 +96,7 @@ try {
     await waitFor(`!!window.__paceBot && [...document.querySelectorAll('button')].some(b=>/Play Computer/.test(b.textContent)&&!b.disabled)`);
   }
 
-  await evaluate(`window.__paceBot.setObjective(${JSON.stringify(objective)}); window.__paceBot.setMatchLimit(${games}); true`);
+  await evaluate(`window.__paceBot.setMatchLimit(${games}); true`);
   for (let gi = 0; gi < games; gi++) {
     // Only launch the first game manually; subsequent games exercise adapter autoplay.
     if (gi === 0) await waitFor(clickPlayComputer, 10000, 200).catch(() => { throw new Error('could not start practice game'); });

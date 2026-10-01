@@ -10,7 +10,8 @@ if (!Number.isInteger(n) || n < 1) throw new Error('Expected a positive game cou
 // Explicitly override every new setting so this remains the v0.2 baseline after upgrades.
 const params = { forecast: 1.5, opponentForecast: 3, wealth: 1, winWeight: .25,
   motionModel: 'issued', opponentModel: 'bounded', maxTargetGap: 1e6,
-  catchupToDeployed: false, endgameSeconds: 0, deadlineAware: false };
+  catchupToDeployed: false, endgameSeconds: 0, deadlineAware: false,
+  slowdownFactor: 0, deploymentForecastBoost: 0 };
 const candidates = {
   v02: { objective: 'leaderboard', params },
   capped: { objective: 'leaderboard', params: { ...params, forecast: 1, opponentModel: 'anchored', maxTargetGap: 2 } },
