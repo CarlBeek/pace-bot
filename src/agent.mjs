@@ -5,7 +5,7 @@ import { decideCompetitive, COMPETITIVE_PRESETS } from './competitive.mjs';
 import { readOpponentIdentity, selectOpponentProfile } from './opponents.mjs';
 
 export const OBJECTIVES = ['leaderboard', 'competitive', 'cash', 'win', 'repro-cash', 'repro-win'];
-export const normalizeMatchLimit = n => Math.max(1, Math.min(50, Math.trunc(Number(n)) || 1));
+export const normalizeMatchLimit = n => Math.max(1, Math.min(999, Math.trunc(Number(n)) || 1));
 
 // Allowlisted, player-visible fields only. Nothing else from the snapshot is retained.
 export function extractObservation(snap) {
@@ -27,19 +27,26 @@ const pct = (xs, q) => {
   const s = [...xs].sort((a, b) => a - b);
   return s[Math.min(s.length - 1, Math.floor(q * s.length))];
 };
-export const summarize = xs => ({ n: xs.length, median: pct(xs, .5), p95: pct(xs, .95), p99: pct(xs, .99), max: xs.length ? Math.max(...xs) : null });
+export const summarize = xs => {
+  // Long unattended runs exceed JavaScript's argument limit for Math.max(...xs).
+  // Sort once for all percentiles and read the maximum without spreading arguments.
+  const s = [...xs].sort((a, b) => a - b);
+  const at = q => s.length ? s[Math.min(s.length - 1, Math.floor(q * s.length))] : null;
+  return { n: s.length, median: at(.5), p95: at(.95), p99: at(.99), max: s.length ? s[s.length - 1] : null };
+};
 
 export class Agent {
-  constructor({ objective = 'leaderboard', matchLimit = 1, staleMs = null, traceLimit = 200000, policyParams = null } = {}) {
+  constructor({ objective = 'leaderboard', matchLimit = 1, staleMs = null, traceLimit = 200000, policyParams = null, alwaysArmed = false } = {}) {
     this.objective = objective;
     this.policyParams = policyParams ? { ...policyParams } : null;
     this.matchLimit = normalizeMatchLimit(matchLimit);
     this.staleMsOverride = staleMs;
     this.traceLimit = traceLimit;
-    this.armed = false;
+    this.alwaysArmed = alwaysArmed;
+    this.armed = alwaysArmed;
     this.completed = 0;
     this.results = [];
-    this.reason = 'disarmed on load';
+    this.reason = alwaysArmed ? 'automatically armed' : 'disarmed on load';
     this.trace = [];
     this.stats = { interArrival: [], ackMs: [], ackGame: [], stale: 0, duplicates: 0, outOfOrder: 0, missedIntervals: 0, rejected: 0 };
     this.resetMatch(null);
@@ -88,7 +95,19 @@ export class Agent {
 
   setMatchLimit(n, now) {
     this.matchLimit = normalizeMatchLimit(n);
-    return this.armed && this.completed >= this.matchLimit ? this.disarm(now, `match limit ${this.matchLimit} reached`) : null;
+    if (this.armed && this.completed >= this.matchLimit) return this.disarm(now, `match limit ${this.matchLimit} reached`);
+    if (this.alwaysArmed && !this.armed && this.completed < this.matchLimit) this.arm(now);
+    return null;
+  }
+
+  // Keep unattended play enabled while releasing input until two fresh snapshots arrive.
+  pause(now, reason) {
+    if (!this.armed) return null;
+    this.freshSnapshots = 0;
+    if (this.paused) return null;
+    this.paused = true; this.desired = false; this.reason = reason;
+    this.log({ k: 'pause', now, reason });
+    return this.issue(false, now, reason);
   }
 
   // Returns the input the adapter must issue (always a release) or null.
@@ -112,7 +131,11 @@ export class Agent {
   // Called for each snapshot delivered to the game's render boundary.
   onSnapshot(snap, now) {
     const o = extractObservation(snap);
-    if (!o) { this.stats.rejected++; return this.armed ? this.disarm(now, 'malformed snapshot') : null; }
+    if (!o) {
+      this.stats.rejected++;
+      return this.alwaysArmed ? this.pause(now, 'paused: malformed snapshot') :
+        this.armed ? this.disarm(now, 'malformed snapshot') : null;
+    }
     if (o.match !== this.match) { this.resetMatch(o.match); this.log({ k: 'match', now, match: o.match }); }
     if (this.last) {
       // A forfeit can finish at the same game time as the previous running state.
@@ -184,7 +207,7 @@ export class Agent {
     if (!this.armed) { this.log(entry); return null; }
     if (this.paused) {
       // Recover from a transient stall only after two advancing snapshots arrive.
-      // Explicit Stop, hidden-page and malformed-state disarms never auto-resume.
+      // Explicit disarms never auto-resume. Always-armed adapters pause on recoverable faults.
       if (++this.freshSnapshots < 2) { this.log(entry); return null; }
       this.paused = false; this.freshSnapshots = 0;
       this.log({ k: 'resume', now, reason: 'fresh snapshots restored' });
@@ -220,14 +243,12 @@ export class Agent {
   // uiHeld: the accelerator state the page UI currently shows (null if unknown).
   tick(now, { hidden = false, uiHeld = null } = {}) {
     if (!this.armed) return null;
-    if (hidden) return this.disarm(now, 'page hidden');
+    if (hidden && !this.alwaysArmed) return this.disarm(now, 'page hidden');
     if (this.lastRecv != null && this.last?.phase === 'running' && now - this.lastRecv > this.staleMs) {
       this.freshSnapshots = 0;
       if (this.paused) return null;
-      this.stats.stale++; this.paused = true; this.desired = false;
-      this.reason = `paused: stale state (${Math.round(now - this.lastRecv)} ms)`;
-      this.log({ k: 'pause', now, reason: this.reason });
-      return this.issue(false, now, this.reason);
+      this.stats.stale++;
+      return this.pause(now, `paused: stale state (${Math.round(now - this.lastRecv)} ms)`);
     }
     if (this.paused) return null;
     if (uiHeld != null && this.last?.phase === 'running' && uiHeld !== !!this.lastIssued &&

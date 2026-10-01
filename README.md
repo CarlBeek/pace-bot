@@ -6,24 +6,24 @@ A local, inspectable controller for [Paradigm's PACE](https://www.paradigm.xyz/r
 
 1. `npm run build` (writes `extension/pace-bot.js` from `src/`; a built copy is already there).
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `extension/` folder.
-3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.5** panel appears at the bottom right, **disarmed**.
+3. Open https://www.paradigm.xyz/research/pace/. A small **PACE bot · v0.6.0** panel appears at the bottom right, **automatically armed**.
 
-After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.5 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab. A refresh resets the run count, match limit, and armed state; set the limit and click Start again.
+After updating the code, reload the extension at `chrome://extensions` and refresh the game tab **between games**. The v0.6.0 label confirms the new build is loaded. Editing or rebuilding local files does not hot-reload an already-open game tab. A refresh resets the run count and match limit to 999 and automatically arms the bot. Set a lower limit if desired before joining a game.
 
 The extension has no permissions. It only runs on `paradigm.xyz/research/pace*`, as one main-world content script. It never reads cookies, tokens, or network traffic, and your existing login session is left alone.
 
 ## Use
 
-1. The live bot always optimizes **average final cash per game**, including catastrophe zeros. There is no policy dropdown or objective-switching API. It automatically selects **@ergonomic cash** for that exact game-provided account, and **general** for other/unknown opponents. Candidate selection is based on expected own cash, not wins. The general controller retains v0.4's relative-cash heuristic because removing it lowered expected cash in validation; the dedicated profile has no win bonus. Historical win-focused and legacy presets remain available only to offline evaluators. The internal/exported objective name remains `leaderboard` for compatibility.
-2. Set the match limit (1–50, default 1) and click **Start**. Start or join the first game on the page. After each game, including a catastrophe, the bot stays armed and clicks the game's **Play again** button after a one-second delay if the limit has not been reached. This uses the site's normal matchmaking/rematch flow and waits when its button is disabled or unavailable. It requests each next game only once. In a private room, the opponent must also ready up.
-3. **STOP**, or pressing **Esc**, releases the accelerator, disarms, and cancels any next-game click that has not happened yet. If a matchmaking request is already pending, use the site's Cancel control to leave that queue. The bot also disarms if a snapshot is malformed, the page is hidden, or the match limit is reached. Keep the game tab visible. A stale snapshot now **pauses** and releases input without disarming; two advancing snapshots arriving without another stale interval restore play automatically. Stop and other disarms never auto-resume.
-4. **Export trace** downloads a JSON log with every observation, decision, input and acknowledgment, plus latency percentiles.
-5. **run cash / game** shows mean terminal score for games the bot participated in during this page session, including zero-score crashes and forfeits. A game still counts if it finishes after a pause or Stop, provided the terminal snapshot arrives. It includes practice games and resets on page reload; it is not your account's all-time ranked average. The export includes those results for analysis.
-6. The limit is the total completed-game count for this page session, not an additional-game count. To continue after reaching it, raise the limit and click **Start**. Lowering the limit to the completed count stops immediately.
+1. The live bot always optimizes **average final cash per game**, including catastrophe zeros. There is no policy dropdown or objective-switching API. It automatically selects **@egornomic cash** for that exact game-provided account, and **general** for other/unknown opponents. Candidate selection is based on expected own cash, not wins. The general controller retains v0.4's relative-cash heuristic because removing it lowered expected cash in validation; the dedicated profile has no win bonus. Historical win-focused and legacy presets remain available only to offline evaluators. The internal/exported objective name remains `leaderboard` for compatibility.
+2. The bot is always armed until the match limit is reached (**1–999, default 999**). There are no Start/Stop buttons or live arm/stop API, and Esc does not disarm it. Start or join the first game on the page. After each game, including a catastrophe, the bot clicks the game's **Play again** button after a one-second delay if the limit has not been reached. This uses the site's normal matchmaking/rematch flow and waits when its button is disabled or unavailable. It requests each next game only once. In a private room, the opponent must also ready up.
+3. Switching tabs or hiding the page no longer disarms the bot or blocks autoplay. Stale or malformed snapshots and adapter errors **pause** and release input without disabling play; two fresh advancing snapshots restore play automatically. Actual page navigation/suspension releases input too, and a restored page recovers automatically. Browser throttling or suspension can still interrupt timely play; background operation is not a guarantee of uninterrupted updates. To end a run, close the game tab, or lower the limit to the completed count (minimum 1). An already-pending matchmaking request must be cancelled using the game's Cancel control. To prevent automatic control on future page loads, disable the extension and reload/close existing game tabs.
+4. **Export trace** downloads observations, decisions, inputs and acknowledgments, plus latency percentiles. Detailed events are capped at 200,000 per page session; terminal results and cash/game accounting continue through all games, including a full 999-game run.
+5. **run cash / game** shows mean terminal score for games the bot participated in during this page session, including zero-score crashes and forfeits. A game still counts if it finishes after a pause or a limit change, provided the terminal snapshot arrives. It includes practice games and resets on page reload; it is not your account's all-time ranked average. The export includes those results for analysis.
+6. The limit is the total completed-game count for this page session, not an additional-game count. At the limit, the panel shows **LIMIT REACHED** and no further games are requested. Raising the limit automatically resumes the run without resetting the count. Lowering the limit to the completed count releases input and cancels any next-game click that has not happened yet.
 
 Don't hold Space yourself while the bot is armed, because you share one accelerator.
 
-The offline tests include the generated extension running against a simulated DOM/timer environment: automatic next-game clicks, exact match-limit stopping, Stop cancellation, stale-state recovery, and hidden-page stopping. No live matchmaking is exercised by these tests.
+The offline tests include the generated extension running against a simulated DOM/timer environment: automatic arming, background play and replay, exact stopping after 999 games, limit-change cancellation/resumption, stale/malformed-state recovery, and page suspension/restoration. No live matchmaking is exercised by these tests. Manual arming/disarming remains available in the core agent only for offline tests and evaluators.
 
 ## How it works
 
@@ -33,17 +33,19 @@ The offline tests include the generated extension running against a simulated DO
 - **Timing.** New policies project motion over estimated observation-to-command-effect delay, then check the stopping point after one further decision interval. Delay is estimated from input acknowledgements in game time, subtracting half a snapshot interval for sampling delay; it starts at seven frames and is bounded at thirty. Acknowledgement timing is not an exact network RTT. Retries retain their original timestamp, and timing/command state resets each match.
 - **Legacy policy** (`src/policy.mjs`). Retains the original CPU-tuned target tracker for comparison. It does not use the new economic target or adaptive delay horizon.
 
-## Opponent-specific cash routing (v0.5)
+## Opponent-specific cash routing (v0.5.1)
 
-The automatic selector checks `snapshot.players[1 - snapshot.player]`. Only `kind: 'twitter'` with the exact case-normalized `username: 'ergonomic'` selects `ergonomic-cash-v1`. A guest named `@ergonomic`, a similar username, a display name, or the user's own account cannot trigger it. This uses the public account metadata the game uses to render its `@username` label, not cookies, authentication tokens, network interception, or a claim that the opponent is a bot. It is handle-based, not an immutable account-ID match; a changed handle falls back to general.
+v0.5.1 corrects the account spelling from `@ergonomic` to `@egornomic`; the former no longer selects the dedicated profile.
+
+The automatic selector checks `snapshot.players[1 - snapshot.player]`. Only `kind: 'twitter'` with the exact case-normalized `username: 'egornomic'` selects `egornomic-cash-v1`. A guest named `@egornomic`, a similar username, a display name, or the user's own account cannot trigger it. This uses the public account metadata the game uses to render its `@username` label, not cookies, authentication tokens, network interception, or a claim that the opponent is a bot. It is handle-based, not an immutable account-ID match; a changed handle falls back to general.
 
 The dedicated profile is exactly the frozen `forecast20` cash-only candidate below: a two-second frontier forecast, `winWeight: 0`, and the existing catch-up cap, latency compensation and deadline handling. It is selected for the reported recurring opponent, **not** promoted to all matchups. General play retains v0.4. The live objective is fixed to cash/game; routing chooses the research policy automatically. This is the best-supported policy choice from the current comparisons, not a guarantee of a globally optimal strategy.
 
 The panel displays the detected opponent and selected profile. Identity is cleared at every new match. Once observed, identity survives metadata-free deltas within the same match; explicit invalid/guest/changed metadata clears or updates it. Duplicate and out-of-order snapshots cannot change the profile. Missing identity at the start of a match selects general, without blocking play.
 
-Version 3 trace exports record opponent identity, profile changes, each observation's selected profile, and terminal results with all profiles selected during participation. Older traces lack account identity: attribution of those matches to `@ergonomic` comes from the user's report, not verified identifiers in those files. Their replay gains are promising but **not** live proof that the dedicated profile improves this account's long-run cash/game. New exports allow that attribution to be checked. Replay analysis respects recorded identity; anonymous older paths still need explicit candidate parameters for comparisons.
+Version 3 trace exports record opponent identity, profile changes, each observation's selected profile, and terminal results with all profiles selected during participation. Older traces lack account identity: attribution of those matches to `@egornomic` comes from the user's report, not verified identifiers in those files. Their replay gains are promising but **not** live proof that the dedicated profile improves this account's long-run cash/game. New exports allow that attribution to be checked. Replay analysis respects recorded identity; anonymous older paths still need explicit candidate parameters for comparisons.
 
-The generated-bundle tests cover the absence of a policy selector, the fixed cash objective, switching to the dedicated profile, returning to general on autoplay, panel/export state, Stop, and the match limit. No browser reload or live matchmaking was performed during implementation. Reload between games to use v0.5; routing needs no manual policy selection.
+The generated-bundle tests cover the absence of a policy selector, the fixed cash objective, switching to the dedicated profile, returning to general on autoplay, panel/export state, and the match limit. No browser reload or live matchmaking was performed during implementation. Reload between games to use v0.6.0; routing needs no manual policy selection.
 
 ## Cash-only experiments and selection evidence
 
@@ -70,7 +72,7 @@ Evidence is saved in `runs/cash-tuning.json`, `runs/cash-tuning-slowdown.json`, 
 npm run eval:cash -- validate 40 runs/cash-validation.json /path/to/older-trace.json /path/to/newest-trace.json
 ```
 
-No live games were played or browser tabs reloaded during this investigation. General play, autoplay, Stop, and cash accounting remain unchanged; v0.5 adds the account-specific routing above.
+No live games were played or browser tabs reloaded during this investigation. v0.5 added the account-specific routing above without changing general strategy or cash accounting; v0.6 adds always-armed operation as described under Use.
 
 ## Opponent-aware cap and endgame (v0.4)
 
@@ -166,7 +168,7 @@ Live practice runs used the real page in a separate throwaway Chrome profile (`n
 
 - The adapter does not gate operation on the snapshot's `bot` or `ranked` fields. You are responsible for where and how you run it.
 - The handoff's quoted $17.0455B and 95.4% could not be reproduced from its written controller description, because its `sim.cjs` wasn't included. Three baselines do reproduce exactly (always-accelerate, ideal mirror $18.839873B, frontier+1 $15.383345B). The described 5 Hz cash controller gives $16.34B. Run at the real 15 Hz cadence, it gives about $17.15B.
-- Live tests ran in headless Chrome. In a visible Chrome window, timers may fire at 60 Hz, giving snapshots about every 4 frames. The lookahead adapts to that, and offline results at 4 frames are similar ($18.28B). Background tabs are throttled, so keep the game tab in front; the bot disarms if the page is hidden.
+- Historical live tests ran in headless Chrome. In a visible Chrome window, timers may fire at 60 Hz, giving snapshots about every 4 frames. The lookahead adapts to that, and offline results at 4 frames are similar ($18.28B). Background tabs can be throttled: v0.6 no longer disarms on visibility changes, but still pauses when snapshots go stale. Background lifecycle behavior is covered by offline tests, not a live browser run.
 - The historical v0.1 results above are against the built-in CPU. The new v0.2 results are offline simulations and replays, not live online validation.
 
 ## Layout

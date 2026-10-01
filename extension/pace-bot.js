@@ -259,8 +259,8 @@ function readOpponentIdentity(player) {
 
 // Frozen to the forecast20 candidate in runs/cash-validation.json. Selection is
 // based on own expected cash, not wins. Replay gains are not live validation.
-const ERGONOMIC_CASH = Object.freeze({
-  id: 'ergonomic-cash-v1', label: '@ergonomic cash',
+const EGORNOMIC_CASH = Object.freeze({
+  id: 'egornomic-cash-v1', label: '@egornomic cash',
   params: Object.freeze({ forecast: 2, opponentForecast: 3, wealth: 1, winWeight: 0,
     opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending',
     catchupToDeployed: true, endgameSeconds: 6, endgameForecast: 2, deadlineAware: true,
@@ -268,8 +268,8 @@ const ERGONOMIC_CASH = Object.freeze({
 });
 
 function selectOpponentProfile(objective, identity) {
-  return objective === 'leaderboard' && identity?.kind === 'twitter' && identity.username === 'ergonomic'
-    ? ERGONOMIC_CASH : null;
+  return objective === 'leaderboard' && identity?.kind === 'twitter' && identity.username === 'egornomic'
+    ? EGORNOMIC_CASH : null;
 }
 
 // ---- src/agent.mjs
@@ -279,7 +279,7 @@ function selectOpponentProfile(objective, identity) {
 
 
 const OBJECTIVES = ['leaderboard', 'competitive', 'cash', 'win', 'repro-cash', 'repro-win'];
-const normalizeMatchLimit = n => Math.max(1, Math.min(50, Math.trunc(Number(n)) || 1));
+const normalizeMatchLimit = n => Math.max(1, Math.min(999, Math.trunc(Number(n)) || 1));
 
 // Allowlisted, player-visible fields only. Nothing else from the snapshot is retained.
 function extractObservation(snap) {
@@ -301,19 +301,26 @@ const pct = (xs, q) => {
   const s = [...xs].sort((a, b) => a - b);
   return s[Math.min(s.length - 1, Math.floor(q * s.length))];
 };
-const summarize = xs => ({ n: xs.length, median: pct(xs, .5), p95: pct(xs, .95), p99: pct(xs, .99), max: xs.length ? Math.max(...xs) : null });
+const summarize = xs => {
+  // Long unattended runs exceed JavaScript's argument limit for Math.max(...xs).
+  // Sort once for all percentiles and read the maximum without spreading arguments.
+  const s = [...xs].sort((a, b) => a - b);
+  const at = q => s.length ? s[Math.min(s.length - 1, Math.floor(q * s.length))] : null;
+  return { n: s.length, median: at(.5), p95: at(.95), p99: at(.99), max: s.length ? s[s.length - 1] : null };
+};
 
 class Agent {
-  constructor({ objective = 'leaderboard', matchLimit = 1, staleMs = null, traceLimit = 200000, policyParams = null } = {}) {
+  constructor({ objective = 'leaderboard', matchLimit = 1, staleMs = null, traceLimit = 200000, policyParams = null, alwaysArmed = false } = {}) {
     this.objective = objective;
     this.policyParams = policyParams ? { ...policyParams } : null;
     this.matchLimit = normalizeMatchLimit(matchLimit);
     this.staleMsOverride = staleMs;
     this.traceLimit = traceLimit;
-    this.armed = false;
+    this.alwaysArmed = alwaysArmed;
+    this.armed = alwaysArmed;
     this.completed = 0;
     this.results = [];
-    this.reason = 'disarmed on load';
+    this.reason = alwaysArmed ? 'automatically armed' : 'disarmed on load';
     this.trace = [];
     this.stats = { interArrival: [], ackMs: [], ackGame: [], stale: 0, duplicates: 0, outOfOrder: 0, missedIntervals: 0, rejected: 0 };
     this.resetMatch(null);
@@ -362,7 +369,19 @@ class Agent {
 
   setMatchLimit(n, now) {
     this.matchLimit = normalizeMatchLimit(n);
-    return this.armed && this.completed >= this.matchLimit ? this.disarm(now, `match limit ${this.matchLimit} reached`) : null;
+    if (this.armed && this.completed >= this.matchLimit) return this.disarm(now, `match limit ${this.matchLimit} reached`);
+    if (this.alwaysArmed && !this.armed && this.completed < this.matchLimit) this.arm(now);
+    return null;
+  }
+
+  // Keep unattended play enabled while releasing input until two fresh snapshots arrive.
+  pause(now, reason) {
+    if (!this.armed) return null;
+    this.freshSnapshots = 0;
+    if (this.paused) return null;
+    this.paused = true; this.desired = false; this.reason = reason;
+    this.log({ k: 'pause', now, reason });
+    return this.issue(false, now, reason);
   }
 
   // Returns the input the adapter must issue (always a release) or null.
@@ -386,7 +405,11 @@ class Agent {
   // Called for each snapshot delivered to the game's render boundary.
   onSnapshot(snap, now) {
     const o = extractObservation(snap);
-    if (!o) { this.stats.rejected++; return this.armed ? this.disarm(now, 'malformed snapshot') : null; }
+    if (!o) {
+      this.stats.rejected++;
+      return this.alwaysArmed ? this.pause(now, 'paused: malformed snapshot') :
+        this.armed ? this.disarm(now, 'malformed snapshot') : null;
+    }
     if (o.match !== this.match) { this.resetMatch(o.match); this.log({ k: 'match', now, match: o.match }); }
     if (this.last) {
       // A forfeit can finish at the same game time as the previous running state.
@@ -458,7 +481,7 @@ class Agent {
     if (!this.armed) { this.log(entry); return null; }
     if (this.paused) {
       // Recover from a transient stall only after two advancing snapshots arrive.
-      // Explicit Stop, hidden-page and malformed-state disarms never auto-resume.
+      // Explicit disarms never auto-resume. Always-armed adapters pause on recoverable faults.
       if (++this.freshSnapshots < 2) { this.log(entry); return null; }
       this.paused = false; this.freshSnapshots = 0;
       this.log({ k: 'resume', now, reason: 'fresh snapshots restored' });
@@ -494,14 +517,12 @@ class Agent {
   // uiHeld: the accelerator state the page UI currently shows (null if unknown).
   tick(now, { hidden = false, uiHeld = null } = {}) {
     if (!this.armed) return null;
-    if (hidden) return this.disarm(now, 'page hidden');
+    if (hidden && !this.alwaysArmed) return this.disarm(now, 'page hidden');
     if (this.lastRecv != null && this.last?.phase === 'running' && now - this.lastRecv > this.staleMs) {
       this.freshSnapshots = 0;
       if (this.paused) return null;
-      this.stats.stale++; this.paused = true; this.desired = false;
-      this.reason = `paused: stale state (${Math.round(now - this.lastRecv)} ms)`;
-      this.log({ k: 'pause', now, reason: this.reason });
-      return this.issue(false, now, this.reason);
+      this.stats.stale++;
+      return this.pause(now, `paused: stale state (${Math.round(now - this.lastRecv)} ms)`);
     }
     if (this.paused) return null;
     if (uiHeld != null && this.last?.phase === 'running' && uiHeld !== !!this.lastIssued &&
@@ -543,7 +564,7 @@ class ReplayQueue {
     if (this.match !== agent.match) {
       this.match = agent.match; this.due = null; this.requested = false;
     }
-    if (!agent.armed || hidden || agent.completed >= agent.matchLimit || !agent.endedCounted ||
+    if (!agent.armed || agent.paused || (hidden && !agent.alwaysArmed) || agent.completed >= agent.matchLimit || !agent.endedCounted ||
         !['finished', 'crashed'].includes(agent.last?.phase)) {
       this.due = null; this.status = ''; return;
     }
@@ -572,11 +593,12 @@ function install(win = window) {
   if (win.__paceBot) return win.__paceBot;
   const doc = win.document;
   const perf = win.performance;
-  const agent = new Agent({ objective: 'leaderboard', matchLimit: 1 });
+  const agent = new Agent({ objective: 'leaderboard', matchLimit: 999, alwaysArmed: true });
+  agent.log({ k: 'arm', now: perf.now(), objective: agent.objective, automatic: true });
   // Live play has one objective. Legacy objectives are for offline comparisons only.
   Object.defineProperty(agent, 'objective', { value: 'leaderboard', writable: false, configurable: false });
   const replay = new ReplayQueue();
-  let host = null, patched = false, lastKeySent = null;
+  let host = null, patched = false, lastKeySent = null, suspended = false, destroyed = false;
 
   function uiHeld() {
     const b = host?.shadowRoot?.querySelector('#accelerator');
@@ -595,43 +617,50 @@ function install(win = window) {
 
   function patch() {
     const C = win.customElements.get('pace-game');
-    if (!C || patched) return;
+    if (!C || patched || destroyed) return;
     const orig = C.prototype.showMatch;
     if (typeof orig !== 'function') return;
     patched = true;
     C.prototype.showMatch = function (snapshot) {
       const result = orig.apply(this, arguments);
+      if (destroyed || suspended) return result;
       try {
         host = this;
         send(agent.onSnapshot(snapshot, perf.now()));
         render();
-      } catch (e) { agent.log({ k: 'error', now: perf.now(), msg: String(e) }); }
+      } catch (e) {
+        agent.log({ k: 'error', now: perf.now(), msg: String(e) });
+        send(agent.pause(perf.now(), 'paused: adapter error'));
+      }
       return result;
     };
   }
   win.customElements.whenDefined('pace-game').then(patch);
 
   const timer = win.setInterval(() => {
+    if (destroyed || suspended) return;
     try {
       const now = perf.now();
       send(agent.tick(now, { hidden: doc.hidden, uiHeld: uiHeld() }));
       replay.tick(now, { agent, hidden: doc.hidden, button: host?.shadowRoot?.querySelector('#again') });
     } catch (e) {
       agent.log({ k: 'error', now: perf.now(), msg: String(e) });
-      send(agent.disarm(perf.now(), 'adapter error'));
+      send(agent.pause(perf.now(), 'paused: adapter error'));
     }
   }, 16);
-  const onHide = () => send(agent.disarm(perf.now(), 'page hidden'));
-  doc.addEventListener('visibilitychange', () => { if (doc.hidden) onHide(); });
-  win.addEventListener('pagehide', onHide);
-  win.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && e.isTrusted && agent.armed) send(agent.disarm(perf.now(), 'emergency stop (Esc)'));
-  }, true);
+  // Switching tabs is supported. Actual navigation/BFCache suspension releases input;
+  // a restored page resumes after fresh snapshots, without a manual arming step.
+  win.addEventListener('pagehide', () => {
+    if (destroyed) return;
+    suspended = true;
+    send(agent.pause(perf.now(), 'paused: page suspended'));
+  });
+  win.addEventListener('pageshow', () => { if (!destroyed) suspended = false; });
 
   // ---- operator panel ----
   let panel, ui = {};
   function buildPanel() {
-    if (panel || !doc.body) return;
+    if (panel || !doc.body || destroyed) return;
     panel = doc.createElement('div');
     panel.id = 'pace-bot-panel';
     const root = panel.attachShadow({ mode: 'open' });
@@ -643,9 +672,8 @@ function install(win = window) {
       .armed{color:#4ade80}.off{color:#f87171}
       .ctl{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
       button,input{font:inherit;background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:3px 6px}
-      button.go{background:#14532d}button.stop{background:#7f1d1d;font-weight:bold}
       input{width:40px}.why{margin-top:6px;color:#fbbf24;min-height:1.3em;word-break:break-word}
-    </style><div class="p"><h1><span>PACE bot · v0.5</span><span id="st" class="off">DISARMED</span></h1>
+    </style><div class="p"><h1><span>PACE bot · v0.6.0</span><span id="st" class="armed">ARMED</span></h1>
       <div class="row"><span class="k">goal</span><span>Avg cash / game</span></div>
       <div class="row"><span class="k">opponent</span><span id="opponent">unknown</span></div>
       <div class="row"><span class="k">profile</span><span id="profile">general</span></div>
@@ -657,16 +685,13 @@ function install(win = window) {
       <div class="row"><span class="k">matches</span><span id="cnt">0</span></div>
       <div class="row"><span class="k">run cash / game</span><span id="avg">–</span></div>
       <div class="why" id="why"></div>
-      <div class="ctl"><button class="go" id="start">Start</button><button class="stop" id="stop">STOP</button>
-        <label class="k">limit <input id="lim" type="number" min="1" max="50" value="1"></label>
+      <div class="ctl"><label class="k">limit <input id="lim" type="number" min="1" max="999" value="999"></label>
         <button id="exp">Export trace</button></div></div>`;
-    for (const id of ['st', 'opponent', 'profile', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'why', 'start', 'stop', 'lim', 'exp']) ui[id] = root.getElementById(id);
-    ui.start.onclick = () => { agent.arm(perf.now()); render(); };
-    ui.stop.onclick = () => send(agent.disarm(perf.now(), 'user stop')) || render();
+    for (const id of ['st', 'opponent', 'profile', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'why', 'lim', 'exp']) ui[id] = root.getElementById(id);
     ui.lim.onchange = () => { send(agent.setMatchLimit(ui.lim.value, perf.now())); ui.lim.value = agent.matchLimit; render(true); };
     ui.exp.onclick = exportTrace;
     doc.body.appendChild(panel);
-    render();
+    render(true);
   }
   const fmt = c => Number.isFinite(c) ? `$${(c / 1e9).toFixed(2)}B` : '–';
   let lastRender = 0;
@@ -676,7 +701,8 @@ function install(win = window) {
     if (!force && now - lastRender < 100) return;
     lastRender = now;
     const o = agent.last;
-    ui.st.textContent = agent.armed ? agent.paused ? 'PAUSED' : 'ARMED' : 'DISARMED';
+    ui.st.textContent = agent.armed ? agent.paused ? 'PAUSED' : 'ARMED' :
+      agent.completed >= agent.matchLimit ? 'LIMIT REACHED' : 'DISABLED';
     ui.st.className = agent.armed ? 'armed' : 'off';
     ui.opponent.textContent = agent.opponentIdentity ? `@${agent.opponentIdentity.username}` : 'unknown';
     ui.profile.textContent = agent.opponentProfile?.label ?? 'general';
@@ -702,20 +728,23 @@ function install(win = window) {
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }
   if (doc.body) buildPanel(); else doc.addEventListener('DOMContentLoaded', buildPanel);
-  win.setInterval(() => render(), 250);
+  const renderTimer = win.setInterval(() => render(), 250);
 
   const api = {
     agent,
-    arm: () => { const ok = agent.arm(perf.now()); render(true); return ok; },
-    stop: reason => { send(agent.disarm(perf.now(), reason || 'api stop')); render(true); },
-    setMatchLimit: n => { send(agent.setMatchLimit(n, perf.now())); ui.lim && (ui.lim.value = agent.matchLimit); render(true); },
+    setMatchLimit: n => { if (!destroyed) { send(agent.setMatchLimit(n, perf.now())); ui.lim && (ui.lim.value = agent.matchLimit); render(true); } },
     status: () => ({ armed: agent.armed, paused: agent.paused, objective: agent.objective, completed: agent.completed, reason: agent.reason, replay: replay.status,
       profile: agent.profileId, opponent: agent.opponentIdentity,
       last: agent.last, issued: !!agent.lastIssued, uiHeld: uiHeld(), patched, lastKeySent, performance: agent.performance() }),
-    export: () => ({ version: 3, botVersion: '0.5.0', exportedAt: new Date().toISOString(), objective: agent.objective,
+    export: () => ({ version: 3, botVersion: '0.6.0', exportedAt: new Date().toISOString(), objective: agent.objective,
       profile: agent.profileId, opponent: agent.opponentIdentity,
       latency: agent.latency(), performance: agent.performance(), results: agent.results.map(r => ({ ...r })), trace: agent.trace }),
-    destroy: () => { send(agent.disarm(perf.now(), 'adapter destroyed')); win.clearInterval(timer); panel?.remove(); },
+    destroy: () => {
+      if (destroyed) return;
+      destroyed = true;
+      send(agent.disarm(perf.now(), 'adapter destroyed'));
+      win.clearInterval(timer); win.clearInterval(renderTimer); panel?.remove(); panel = null;
+    },
   };
   win.__paceBot = api;
   return api;

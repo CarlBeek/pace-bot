@@ -1,8 +1,8 @@
 // Controlled live integration test: launches a separate Chrome with a throwaway profile (never the
 // user's profile), injects extension/pace-bot.js exactly as the MAIN-world content script would run,
-// opens the real PACE page, starts a practice game vs the computer, arms the bot and records the trace.
+// opens the real PACE page, starts a practice game vs the computer, and records the auto-armed bot's trace.
 // Usage: node tools/live-practice.mjs [--games N] [--headful] [--out dir]
-//        [--test-controls]   (press/release/stop checks before playing)
+//        [--test-controls]   (automatic press and teardown release checks before playing)
 import { spawn } from 'node:child_process';
 import { mkdtemp, readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -13,6 +13,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const games = Number(opt('--games', 1)), objective = 'leaderboard';
+if (!Number.isInteger(games) || games < 1 || games > 999) throw new Error('--games must be an integer from 1 to 999');
 if (args.includes('--objective')) throw new Error('Live play always optimizes average cash. Use offline evaluators to compare other objectives.');
 const outDir = opt('--out', join(root, 'runs'));
 const headful = args.includes('--headful'), testControls = args.includes('--test-controls');
@@ -71,27 +72,21 @@ try {
   console.log('page loaded; bot installed:', await evaluate('JSON.stringify(window.__paceBot.status().patched)'));
 
   if (testControls) {
-    // Controlled press/release/stop test with the policy disarmed: drive the same key path the bot uses.
+    // Confirm automatic control without an arm command, then teardown release.
     await evaluate(clickPlayComputer);
-    await waitFor(`(() => { const s=window.__paceBot.status(); return s.last && s.last.phase==='running' && s.last.t>0.3 })()`);
-    const press = `document.querySelector('pace-game').dispatchEvent(new KeyboardEvent('keydown',{code:'Space',key:' ',bubbles:true,cancelable:true,composed:true}))`;
-    const release = `document.querySelector('pace-game').dispatchEvent(new KeyboardEvent('keyup',{code:'Space',key:' ',bubbles:true,cancelable:true,composed:true}))`;
+    await waitFor(`(() => { const s=window.__paceBot.status(); return s.armed && s.last?.phase==='running' && s.last.own.held && s.last.own.speed>0 })()`);
     const snap = () => evaluate(`(() => { const s=window.__paceBot.status(); return {t:s.last.t, held:s.last.own.held, speed:s.last.own.speed, ui:s.uiHeld} })()`);
     const c = {};
-    await evaluate(press); c.afterPressImmediate = await evaluate(`window.__paceBot.status().uiHeld`);
-    await sleep(400); c.afterPress = await snap();
-    await evaluate(release); await sleep(400); c.afterRelease = await snap();
-    // Stop: arm, let the policy press, then Stop and confirm release is observed in game state.
-    await evaluate(`window.__paceBot.arm()`);
-    await waitFor(`window.__paceBot.status().issued === true`, 5000, 20);
-    await sleep(300); c.armedHolding = await snap();
-    await evaluate(`window.__paceBot.stop('control test stop')`); await sleep(300); c.afterStop = await snap();
-    c.statusAfterStop = await evaluate(`window.__paceBot.status().reason`);
-    c.pass = c.afterPressImmediate === true && c.afterPress.held === true && c.afterPress.speed > 0 &&
-      c.afterRelease.held === false && c.armedHolding.held === true && c.afterStop.held === false && c.afterStop.ui === false;
+    c.automaticallyHolding = await snap();
+    await evaluate(`window.__paceBot.destroy()`); await sleep(300);
+    // Teardown stops observing snapshots, so verify the widget input rather than stale agent state.
+    c.afterDestroy = await evaluate(`(() => { const s=window.__paceBot.status(); return {armed:s.armed, issued:s.issued, ui:s.uiHeld} })()`);
+    c.pass = c.automaticallyHolding.held === true && c.automaticallyHolding.speed > 0 &&
+      c.afterDestroy.armed === false && c.afterDestroy.issued === false && c.afterDestroy.ui === false;
     report.controls = c;
     console.log('controls test:', JSON.stringify(c));
-    // Leave that match: reload to get a clean lobby, bot re-installs disarmed.
+    if (!c.pass) throw new Error('automatic control or teardown release check failed');
+    // Leave that match: reload to get a clean lobby, bot re-installs armed.
     await S('Page.reload'); await sleep(1500);
     await waitFor(`!!window.__paceBot && [...document.querySelectorAll('button')].some(b=>/Play Computer/.test(b.textContent)&&!b.disabled)`);
   }
@@ -101,7 +96,7 @@ try {
     // Only launch the first game manually; subsequent games exercise adapter autoplay.
     if (gi === 0) await waitFor(clickPlayComputer, 10000, 200).catch(() => { throw new Error('could not start practice game'); });
     await waitFor(`(() => { const s=window.__paceBot.status(); return s.last && s.last.phase==='running' && s.completed === ${gi} && s.last.t < 1 })()`);
-    if (gi === 0 && !(await evaluate(`window.__paceBot.arm()`))) throw new Error('arm refused');
+    if (gi === 0 && !(await evaluate(`window.__paceBot.status().armed`))) throw new Error('bot did not arm automatically');
     let last = null;
     while (true) {
       const st = await evaluate(gameState);

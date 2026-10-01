@@ -10,8 +10,8 @@ export function readOpponentIdentity(player) {
 
 // Frozen to the forecast20 candidate in runs/cash-validation.json. Selection is
 // based on own expected cash, not wins. Replay gains are not live validation.
-export const ERGONOMIC_CASH = Object.freeze({
-  id: 'ergonomic-cash-v1', label: '@ergonomic cash',
+export const EGORNOMIC_CASH = Object.freeze({
+  id: 'egornomic-cash-v1', label: '@egornomic cash',
   params: Object.freeze({ forecast: 2, opponentForecast: 3, wealth: 1, winWeight: 0,
     opponentModel: 'anchored', maxTargetGap: 2, motionModel: 'pending',
     catchupToDeployed: true, endgameSeconds: 6, endgameForecast: 2, deadlineAware: true,
@@ -19,6 +19,6 @@ export const ERGONOMIC_CASH = Object.freeze({
 });
 
 export function selectOpponentProfile(objective, identity) {
-  return objective === 'leaderboard' && identity?.kind === 'twitter' && identity.username === 'ergonomic'
-    ? ERGONOMIC_CASH : null;
+  return objective === 'leaderboard' && identity?.kind === 'twitter' && identity.username === 'egornomic'
+    ? EGORNOMIC_CASH : null;
 }

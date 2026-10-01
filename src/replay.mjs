@@ -13,7 +13,7 @@ export class ReplayQueue {
     if (this.match !== agent.match) {
       this.match = agent.match; this.due = null; this.requested = false;
     }
-    if (!agent.armed || hidden || agent.completed >= agent.matchLimit || !agent.endedCounted ||
+    if (!agent.armed || agent.paused || (hidden && !agent.alwaysArmed) || agent.completed >= agent.matchLimit || !agent.endedCounted ||
         !['finished', 'crashed'].includes(agent.last?.phase)) {
       this.due = null; this.status = ''; return;
     }

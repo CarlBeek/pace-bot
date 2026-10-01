@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Agent, extractObservation } from '../src/agent.mjs';
+import { Agent, extractObservation, summarize } from '../src/agent.mjs';
 import { decideTarget, project, PRESETS } from '../src/policy.mjs';
 
 const snap = ({ t = 10, phase = 'running', x = 0, v = 0, held = false, S = 12, opp = 0, match = 1, room = 'practice', bot = true, ranked = false, player = 0 } = {}) => {
@@ -212,15 +212,60 @@ test('a same-time terminal transition counts exactly once', () => {
   assert.equal(a.armed, false);
 });
 
-test('match limits are whole numbers from 1 to 50 and lowering to the completed count stops', () => {
+test('match limits are whole numbers from 1 to 999 and lowering to the completed count stops', () => {
   const a = new Agent({ matchLimit: 3 }); a.arm(0);
   a.onSnapshot(snap({ t: 1 }), 0);
   a.onSnapshot(snap({ t: 92, phase: 'finished' }), 100);
   a.setMatchLimit(1, 200);
   assert.equal(a.armed, false);
   assert.equal(a.arm(300), false);
-  for (const [n, expected] of [[NaN, 1], [0, 1], [Infinity, 50], [2.7, 2], ['5', 5], [999, 50]]) {
+  for (const [n, expected] of [[NaN, 1], [0, 1], [Infinity, 999], [2.7, 2], ['5', 5], [999, 999], [1000, 999]]) {
     a.setMatchLimit(n, 400);
     assert.equal(a.matchLimit, expected);
   }
+});
+
+test('always-armed mode plays immediately and does not disarm when hidden', () => {
+  const a = new Agent({ alwaysArmed: true, matchLimit: 999 });
+  assert.equal(a.armed, true);
+  assert.equal(a.onSnapshot(snap({ t: 1 }), 0).held, true);
+  assert.equal(a.tick(10, { hidden: true }), null);
+  assert.equal(a.armed, true);
+  assert.equal(a.paused, false);
+  assert.equal(a.onSnapshot(snap({ t: 1.1, held: true }), 80), null);
+});
+
+test('always-armed mode pauses on malformed data and resumes only after two fresh snapshots', () => {
+  const a = new Agent({ alwaysArmed: true });
+  a.onSnapshot(snap({ t: 1 }), 0);
+  assert.equal(a.onSnapshot({ game: null }, 10).held, false);
+  assert.equal(a.armed, true);
+  assert.equal(a.paused, true);
+  assert.equal(a.onSnapshot(snap({ t: 1 }), 20), null);
+  assert.equal(a.onSnapshot(snap({ t: 1.1 }), 80), null);
+  a.onSnapshot({ game: null }, 100); // Invalid input resets the recovery streak.
+  assert.equal(a.onSnapshot(snap({ t: 1.2 }), 160), null);
+  assert.equal(a.onSnapshot(snap({ t: 1.3 }), 240).held, true);
+  assert.equal(a.paused, false);
+});
+
+test('always-armed mode honors the limit and resumes automatically when it is raised', () => {
+  const a = new Agent({ alwaysArmed: true, matchLimit: 1 });
+  a.onSnapshot(snap({ t: 1 }), 0);
+  a.onSnapshot(snap({ t: 92, phase: 'finished' }), 100);
+  assert.equal(a.armed, false);
+  a.setMatchLimit(1, 200);
+  assert.equal(a.armed, false);
+  a.setMatchLimit(999, 300);
+  assert.equal(a.armed, true);
+  assert.equal(a.completed, 1);
+  assert.equal(a.onSnapshot(snap({ t: 1, match: 2 }), 400).held, true);
+});
+
+test('latency summaries support long sessions without argument-limit errors', () => {
+  assert.deepEqual(summarize([]), { n: 0, median: null, p95: null, p99: null, max: null });
+  assert.deepEqual(summarize([9, 2, 5]), { n: 3, median: 5, p95: 9, p99: 9, max: 9 });
+  const xs = Array.from({ length: 1200000 }, (_, i) => 1200000 - i);
+  assert.deepEqual(summarize(xs), { n: 1200000, median: 600001, p95: 1140001, p99: 1188001, max: 1200000 });
+  assert.equal(xs[0], 1200000); // Summarizing must not reorder live telemetry.
 });

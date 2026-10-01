@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "PACE bot (local)",
-  "version": "0.5.0",
-  "description": "Local, inspectable controller for PACE. Disarmed on load.",
+  "version": "0.6.0",
+  "description": "Local, inspectable controller for PACE. Automatically armed; plays up to the match limit.",
   "content_scripts": [
     {
       "matches": ["https://www.paradigm.xyz/research/pace*"],
