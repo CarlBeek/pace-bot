@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const order = ['controller.mjs', 'policy.mjs', 'competitive.mjs', 'opponents.mjs', 'agent.mjs', 'replay.mjs', 'browser.mjs'];
+const order = ['controller.mjs', 'policy.mjs', 'competitive.mjs', 'opponents.mjs', 'agent.mjs', 'replay.mjs', 'archive.mjs', 'browser.mjs'];
 let body = '';
 for (const f of order) {
   let s = await readFile(join(root, 'src', f), 'utf8');

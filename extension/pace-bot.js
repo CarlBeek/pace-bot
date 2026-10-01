@@ -322,12 +322,15 @@ class Agent {
     this.results = [];
     this.reason = alwaysArmed ? 'automatically armed' : 'disarmed on load';
     this.trace = [];
+    this.traceDropped = 0;
     this.stats = { interArrival: [], ackMs: [], ackGame: [], stale: 0, duplicates: 0, outOfOrder: 0, missedIntervals: 0, rejected: 0 };
     this.resetMatch(null);
   }
 
   resetMatch(match) {
     this.match = match;
+    this.matchTrace = [];
+    this.matchStatsStart = Object.fromEntries(Object.entries(this.stats).map(([k, v]) => [k, Array.isArray(v) ? v.length : v]));
     this.opponentIdentity = null;
     this.loggedProfile = null;
     this.profilesUsed = new Set();
@@ -356,7 +359,11 @@ class Agent {
   get opponentProfile() { return selectOpponentProfile(this.objective, this.opponentIdentity); }
   get profileId() { return this.opponentProfile?.id ?? this.objective; }
 
-  log(e) { if (this.trace.length < this.traceLimit) this.trace.push(e); }
+  log(e) {
+    if (this.trace.length < this.traceLimit) this.trace.push(e);
+    else this.traceDropped++;
+    this.matchTrace.push(e); // Independent of the session cap; reset at each new match.
+  }
 
   arm(now) {
     if (this.completed >= this.matchLimit) { this.reason = `match limit ${this.matchLimit} reached`; return false; }
@@ -534,10 +541,12 @@ class Agent {
     return null;
   }
 
-  latency() {
-    return { snapshotIntervalMs: summarize(this.stats.interArrival), inputAckMs: summarize(this.stats.ackMs),
-      inputAckGameSec: summarize(this.stats.ackGame), stale: this.stats.stale, duplicates: this.stats.duplicates,
-      outOfOrder: this.stats.outOfOrder, missedIntervals: this.stats.missedIntervals, rejected: this.stats.rejected };
+  latency({ matchOnly = false } = {}) {
+    const stats = Object.fromEntries(Object.entries(this.stats).map(([k, v]) => [k,
+      !matchOnly ? v : Array.isArray(v) ? v.slice(this.matchStatsStart[k]) : v - this.matchStatsStart[k]]));
+    return { snapshotIntervalMs: summarize(stats.interArrival), inputAckMs: summarize(stats.ackMs),
+      inputAckGameSec: summarize(stats.ackGame), stale: stats.stale, duplicates: stats.duplicates,
+      outOfOrder: stats.outOfOrder, missedIntervals: stats.missedIntervals, rejected: stats.rejected };
   }
 
   performance() {
@@ -583,10 +592,87 @@ class ReplayQueue {
   }
 }
 
+// ---- src/archive.mjs
+// Local, origin-scoped database of complete game traces. No network or file downloads.
+// Keep failed writes in memory so a quota/permission error does not silently discard data.
+class TraceArchive {
+  constructor(indexedDB) {
+    this.indexedDB = indexedDB;
+    this.connection = null;
+    this.pending = new Map();
+    this.saved = 0;
+    this.error = null;
+  }
+
+  open() {
+    if (this.connection) return this.connection;
+    this.connection = new Promise((resolve, reject) => {
+      if (!this.indexedDB) { reject(new Error('Browser storage unavailable')); return; }
+      const request = this.indexedDB.open('pace-bot-traces', 1);
+      let blocked = false;
+      request.onupgradeneeded = () => {
+        if (!request.result.objectStoreNames.contains('games')) request.result.createObjectStore('games', { keyPath: 'id' });
+      };
+      request.onerror = () => reject(request.error || new Error('Could not open trace backup'));
+      request.onblocked = () => { blocked = true; reject(new Error('Trace backup is blocked by another tab')); };
+      request.onsuccess = () => {
+        const db = request.result;
+        if (blocked) { db.close(); return; }
+        db.onversionchange = () => { db.close(); this.connection = null; };
+        resolve(db);
+      };
+    }).catch(error => { this.connection = null; throw error; });
+    return this.connection;
+  }
+
+  async transaction(mode, action) {
+    const db = await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('games', mode);
+      const request = action(tx.objectStore('games'));
+      // Request success is not enough: the transaction can still abort afterwards.
+      tx.oncomplete = () => resolve(request.result);
+      tx.onabort = () => reject(tx.error || request.error || new Error('Trace backup transaction aborted'));
+      tx.onerror = () => { /* An unhandled request error aborts the transaction. */ };
+    });
+  }
+
+  async save(record) {
+    this.pending.set(record.id, record);
+    try {
+      await this.transaction('readwrite', store => store.put(record));
+      if (this.pending.get(record.id) === record) this.pending.delete(record.id);
+      this.saved++;
+      if (!this.pending.size) this.error = null;
+      return true;
+    } catch (error) {
+      this.error = String(error?.message || error);
+      return false;
+    }
+  }
+
+  count() { return this.transaction('readonly', store => store.count()); }
+
+  async records() {
+    let stored = [], warning = null;
+    try { stored = await this.transaction('readonly', store => store.getAll()); }
+    catch (error) {
+      warning = `Could not read stored traces: ${String(error?.message || error)}. Only in-memory backups are included.`;
+      if (!this.pending.size) throw new Error(warning);
+    }
+    const merged = new Map(stored.map(record => [record.id, record]));
+    for (const [id, record] of this.pending) merged.set(id, record);
+    return { records: [...merged.values()].sort((a, b) =>
+      (a.data.exportedAt ?? '').localeCompare(b.data.exportedAt ?? '') ||
+      (a.data.gameNumber ?? 0) - (b.data.gameNumber ?? 0) || a.id.localeCompare(b.id)), warning };
+  }
+}
+
 // ---- src/browser.mjs
 // Browser adapter: observes snapshots at the pace-game render boundary (showMatch) and operates the
 // game's own keyboard handler (Space on the widget host), which applies the app's blocked/phase checks
 // before emitting pace:input. Runs in the page's main world.
+
 
 
 function install(win = window) {
@@ -598,6 +684,11 @@ function install(win = window) {
   // Live play has one objective. Legacy objectives are for offline comparisons only.
   Object.defineProperty(agent, 'objective', { value: 'leaderboard', writable: false, configurable: false });
   const replay = new ReplayQueue();
+  const sessionId = `${new Date().toISOString()}-${win.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
+  let storage;
+  try { storage = win.indexedDB; } catch { /* Keep failed saves in memory for manual export. */ }
+  const archive = new TraceArchive(storage);
+  let capturedGames = 0, storedGames = null, storageError = null, exportError = null;
   let host = null, patched = false, lastKeySent = null, suspended = false, destroyed = false;
 
   function uiHeld() {
@@ -632,6 +723,9 @@ function install(win = window) {
         agent.log({ k: 'error', now: perf.now(), msg: String(e) });
         send(agent.pause(perf.now(), 'paused: adapter error'));
       }
+      // Storage failures must not pause the controller or prevent autoplay.
+      try { saveCompletedGame(); }
+      catch (error) { storageError = `Trace capture failed: ${String(error?.message || error)}`; render(true); }
       return result;
     };
   }
@@ -673,7 +767,7 @@ function install(win = window) {
       .ctl{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
       button,input{font:inherit;background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:3px 6px}
       input{width:40px}.why{margin-top:6px;color:#fbbf24;min-height:1.3em;word-break:break-word}
-    </style><div class="p"><h1><span>PACE bot · v0.6.0</span><span id="st" class="armed">ARMED</span></h1>
+    </style><div class="p"><h1><span>PACE bot · v0.7.0</span><span id="st" class="armed">ARMED</span></h1>
       <div class="row"><span class="k">goal</span><span>Avg cash / game</span></div>
       <div class="row"><span class="k">opponent</span><span id="opponent">unknown</span></div>
       <div class="row"><span class="k">profile</span><span id="profile">general</span></div>
@@ -684,12 +778,19 @@ function install(win = window) {
       <div class="row"><span class="k">cumulative risk</span><span id="risk">–</span></div>
       <div class="row"><span class="k">matches</span><span id="cnt">0</span></div>
       <div class="row"><span class="k">run cash / game</span><span id="avg">–</span></div>
+      <div class="row"><span class="k">saved games</span><span id="backups">loading database…</span></div>
+      <div class="why" id="save-error"></div>
       <div class="why" id="why"></div>
       <div class="ctl"><label class="k">limit <input id="lim" type="number" min="1" max="999" value="999"></label>
-        <button id="exp">Export trace</button></div></div>`;
-    for (const id of ['st', 'opponent', 'profile', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'why', 'lim', 'exp']) ui[id] = root.getElementById(id);
+        <button id="exp">Export trace</button><button id="archive">Export saved traces</button></div></div>`;
+    for (const id of ['st', 'opponent', 'profile', 'inp', 'age', 'dly', 'cash', 'risk', 'cnt', 'avg', 'backups', 'save-error', 'why', 'lim', 'exp', 'archive']) ui[id] = root.getElementById(id);
     ui.lim.onchange = () => { send(agent.setMatchLimit(ui.lim.value, perf.now())); ui.lim.value = agent.matchLimit; render(true); };
-    ui.exp.onclick = exportTrace;
+    ui.exp.onclick = () => {
+      try { exportTrace(); exportError = null; }
+      catch (error) { exportError = `Manual export failed: ${String(error?.message || error)}`; }
+      render(true);
+    };
+    ui.archive.onclick = exportSavedTraces;
     doc.body.appendChild(panel);
     render(true);
   }
@@ -715,30 +816,71 @@ function install(win = window) {
     ui.cnt.textContent = `${agent.completed} / ${agent.matchLimit}`;
     const results = agent.performance();
     ui.avg.textContent = results.games ? `${fmt(results.averageCash)} · ${results.crashes} crashes` : '–';
+    ui.backups.textContent = `${storedGames ?? '…'} in database${archive.pending.size ? ` · ${archive.pending.size} pending` : ''}`;
+    ui['save-error'].textContent = [storageError, archive.error && `Save failed: ${archive.error}. Export saved traces before refreshing.`, exportError].filter(Boolean).join(' ');
     const d = agent.decision;
     ui.why.textContent = agent.armed && replay.status ? replay.status :
       agent.armed && !agent.paused && o?.phase === 'running' && d?.target != null ? `${agent.reason} · stop ${d.stop.toFixed(2)} vs target ${d.target.toFixed(2)}` : agent.reason;
   }
-  function exportTrace() {
-    const blob = new Blob([JSON.stringify(api.export(), null, 1)], { type: 'application/json' });
+  function download(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     const a = doc.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `pace-bot-trace-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    const url = URL.createObjectURL(blob);
+    a.href = url; a.download = filename;
+    // This requests a download; browser policy may block it without throwing.
+    try { a.click(); }
+    finally { win.setTimeout(() => URL.revokeObjectURL(url), 60000); }
+  }
+  const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+  function exportTrace() { download(api.export(), `pace-bot-trace-${stamp()}.json`); }
+
+  async function refreshStoredCount() {
+    try { storedGames = await archive.count(); storageError = null; }
+    catch (error) { storageError = `Database unavailable: ${String(error?.message || error)}`; }
+    render(true);
+  }
+
+  function saveCompletedGame() {
+    if (agent.results.length <= capturedGames) return;
+    const result = agent.results.at(-1), gameNumber = agent.results.length;
+    const exportedAt = new Date().toISOString();
+    const data = { version: 3, botVersion: '0.7.0', exportedAt, scope: 'game', objective: result.objective,
+      profile: result.profile, opponent: result.opponent, match: result.match, gameNumber,
+      session: { id: sessionId, completed: agent.completed, matchLimit: agent.matchLimit, performance: agent.performance() },
+      latency: agent.latency({ matchOnly: true }),
+      performance: { games: 1, averageCash: result.cash, wins: Number(result.phase === 'finished' && result.cash > result.opponentCash), crashes: Number(result.phase === 'crashed') },
+      results: [{ ...result }], trace: [...agent.matchTrace], traceTruncated: false };
+    capturedGames = gameNumber; // Duplicate terminal snapshots must not save another copy.
+    const record = { id: `${sessionId}/${result.match}`, data };
+    void archive.save(record).then(() => refreshStoredCount());
+    render(true);
+  }
+
+  async function exportSavedTraces() {
+    try {
+      const { records, warning } = await archive.records();
+      download({ version: 1, type: 'pace-bot-archive', exportedAt: new Date().toISOString(), warning,
+        traces: records.map(record => record.data) }, `pace-bot-archive-${stamp()}.json`);
+      exportError = warning;
+    } catch (error) { exportError = `Saved-trace export failed: ${String(error?.message || error)}`; }
+    render(true);
   }
   if (doc.body) buildPanel(); else doc.addEventListener('DOMContentLoaded', buildPanel);
   const renderTimer = win.setInterval(() => render(), 250);
+  void refreshStoredCount();
 
   const api = {
     agent,
     setMatchLimit: n => { if (!destroyed) { send(agent.setMatchLimit(n, perf.now())); ui.lim && (ui.lim.value = agent.matchLimit); render(true); } },
     status: () => ({ armed: agent.armed, paused: agent.paused, objective: agent.objective, completed: agent.completed, reason: agent.reason, replay: replay.status,
+      storage: { saved: storedGames, savedThisSession: archive.saved, pending: archive.pending.size, error: storageError || archive.error || exportError },
       profile: agent.profileId, opponent: agent.opponentIdentity,
       last: agent.last, issued: !!agent.lastIssued, uiHeld: uiHeld(), patched, lastKeySent, performance: agent.performance() }),
-    export: () => ({ version: 3, botVersion: '0.6.0', exportedAt: new Date().toISOString(), objective: agent.objective,
+    export: () => ({ version: 3, botVersion: '0.7.0', exportedAt: new Date().toISOString(), scope: 'session', sessionId, objective: agent.objective,
       profile: agent.profileId, opponent: agent.opponentIdentity,
-      latency: agent.latency(), performance: agent.performance(), results: agent.results.map(r => ({ ...r })), trace: agent.trace }),
+      latency: agent.latency(), performance: agent.performance(), results: agent.results.map(r => ({ ...r })), trace: agent.trace,
+      traceTruncated: agent.traceDropped > 0, traceDropped: agent.traceDropped }),
+    exportSavedTraces,
     destroy: () => {
       if (destroyed) return;
       destroyed = true;

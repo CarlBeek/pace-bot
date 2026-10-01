@@ -269,3 +269,17 @@ test('latency summaries support long sessions without argument-limit errors', ()
   assert.deepEqual(summarize(xs), { n: 1200000, median: 600001, p95: 1140001, p99: 1188001, max: 1200000 });
   assert.equal(xs[0], 1200000); // Summarizing must not reorder live telemetry.
 });
+
+test('per-game telemetry resets while session telemetry and results remain cumulative', () => {
+  const a = new Agent({ alwaysArmed: true, matchLimit: 2 });
+  a.onSnapshot(snap({ t: 1 }), 0);
+  a.onSnapshot(snap({ t: 1.1, held: true }), 80);
+  a.onSnapshot(snap({ t: 92, phase: 'finished' }), 160);
+  assert.equal(a.latency({ matchOnly: true }).snapshotIntervalMs.n, 2);
+  a.onSnapshot(snap({ t: 1, match: 2 }), 240);
+  assert.equal(a.latency({ matchOnly: true }).snapshotIntervalMs.n, 0);
+  assert.equal(a.latency({ matchOnly: true }).inputAckMs.n, 0);
+  assert.equal(a.latency().snapshotIntervalMs.n, 2);
+  assert.equal(a.results.length, 1);
+  assert.equal(a.matchTrace.filter(e => e.k === 'match').length, 1);
+});

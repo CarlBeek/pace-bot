@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PACE bot (local)",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Local, inspectable controller for PACE. Automatically armed; plays up to the match limit.",
   "content_scripts": [
     {

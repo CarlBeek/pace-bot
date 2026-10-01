@@ -48,12 +48,15 @@ export class Agent {
     this.results = [];
     this.reason = alwaysArmed ? 'automatically armed' : 'disarmed on load';
     this.trace = [];
+    this.traceDropped = 0;
     this.stats = { interArrival: [], ackMs: [], ackGame: [], stale: 0, duplicates: 0, outOfOrder: 0, missedIntervals: 0, rejected: 0 };
     this.resetMatch(null);
   }
 
   resetMatch(match) {
     this.match = match;
+    this.matchTrace = [];
+    this.matchStatsStart = Object.fromEntries(Object.entries(this.stats).map(([k, v]) => [k, Array.isArray(v) ? v.length : v]));
     this.opponentIdentity = null;
     this.loggedProfile = null;
     this.profilesUsed = new Set();
@@ -82,7 +85,11 @@ export class Agent {
   get opponentProfile() { return selectOpponentProfile(this.objective, this.opponentIdentity); }
   get profileId() { return this.opponentProfile?.id ?? this.objective; }
 
-  log(e) { if (this.trace.length < this.traceLimit) this.trace.push(e); }
+  log(e) {
+    if (this.trace.length < this.traceLimit) this.trace.push(e);
+    else this.traceDropped++;
+    this.matchTrace.push(e); // Independent of the session cap; reset at each new match.
+  }
 
   arm(now) {
     if (this.completed >= this.matchLimit) { this.reason = `match limit ${this.matchLimit} reached`; return false; }
@@ -260,10 +267,12 @@ export class Agent {
     return null;
   }
 
-  latency() {
-    return { snapshotIntervalMs: summarize(this.stats.interArrival), inputAckMs: summarize(this.stats.ackMs),
-      inputAckGameSec: summarize(this.stats.ackGame), stale: this.stats.stale, duplicates: this.stats.duplicates,
-      outOfOrder: this.stats.outOfOrder, missedIntervals: this.stats.missedIntervals, rejected: this.stats.rejected };
+  latency({ matchOnly = false } = {}) {
+    const stats = Object.fromEntries(Object.entries(this.stats).map(([k, v]) => [k,
+      !matchOnly ? v : Array.isArray(v) ? v.slice(this.matchStatsStart[k]) : v - this.matchStatsStart[k]]));
+    return { snapshotIntervalMs: summarize(stats.interArrival), inputAckMs: summarize(stats.ackMs),
+      inputAckGameSec: summarize(stats.ackGame), stale: stats.stale, duplicates: stats.duplicates,
+      outOfOrder: stats.outOfOrder, missedIntervals: stats.missedIntervals, rejected: stats.rejected };
   }
 
   performance() {

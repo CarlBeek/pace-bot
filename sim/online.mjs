@@ -84,10 +84,18 @@ export function aggregate(results) {
 
 export function readTraceMatches(path) {
   const data = JSON.parse(readFileSync(path, 'utf8'));
+  return traceMatches(data);
+}
+
+export function traceMatches(data) {
   const matches = [];
-  for (const e of data.trace) {
-    if (e.k === 'match') matches.push([]);
-    if (e.k === 'obs' && matches.length) matches.at(-1).push(e);
+  const traces = data.type === 'pace-bot-archive' ? data.traces : [data];
+  for (const trace of traces) {
+    let current = null;
+    for (const e of trace.trace) {
+      if (e.k === 'match') { current = []; matches.push(current); }
+      if (e.k === 'obs' && current) current.push(e);
+    }
   }
   return matches.filter(xs => xs.length > 1);
 }
